@@ -10,23 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JMenuItem;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.WindowConstants;
-import javax.swing.JFileChooser;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -279,26 +263,37 @@ public class View extends JFrame implements IView {
 
   private JPanel setupSecondTabForCenterPanel() {
     JPanel secondTab = new JPanel();
+
+    JPanel datePickerPanel = new JPanel();
     JLabel centerLabel = new JLabel("Select the date to check the portfolio value ");
     selectedDate = new JLabel("");
     dateChooser = new JDateChooser();
     dateChooser.setMaxSelectableDate(new Date());
     dateChooser.setDateFormatString("yyyy-MM-dd");
 
+    datePickerPanel.add(centerLabel);
+    datePickerPanel.add(dateChooser.getCalendarButton());
+
 
     costBasisLabel = new JLabel("The cost basis of the portfolio on the selected date is: $");
     costBasisLabel.setVisible(false);
     costBasis = new JLabel("");
+
+    JPanel costBasisPanel = new JPanel();
+    costBasisPanel.add(costBasisLabel);
+    costBasisPanel.add(costBasis);
+
+    JPanel valuePanel = new JPanel();
     valueLabel = new JLabel("The value of the portfolio on the selected date is: $");
     valueLabel.setVisible(false);
     value = new JLabel("");
-    secondTab.add(centerLabel);
-    secondTab.add(dateChooser.getCalendarButton());
+    valuePanel.add(valueLabel);
+    valuePanel.add(value);
+
+    secondTab.add(datePickerPanel);
     secondTab.add(selectedDate);
-    secondTab.add(costBasisLabel);
-    secondTab.add(costBasis);
-    secondTab.add(valueLabel);
-    secondTab.add(value);
+    secondTab.add(costBasisPanel);
+    secondTab.add(valuePanel);
     return secondTab;
   }
 
