@@ -1,0 +1,14 @@
+
+This application uses two external libraries:
+
+Both the libraries are licensed for free useage for academic purposes.
+
+1) SimpleJSON library to parse, serialize and deserialize JSON types.
+
+This has an Academic Free License v. 2.1
+Link to license: https://github.com/simplejson/simplejson/blob/master/LICENSE.txt 
+
+2) JCalendar library to support GUI date picking from a calendar.
+
+This library has a GNU License v 2.1
+Link to license: https://github.com/toedter/jcalendar/blob/master/JCalendar/jcalendar-license.txt
