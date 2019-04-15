@@ -63,20 +63,7 @@ public interface ModelExtn extends Model {
 
   // TODO: ------- Assignment 10 features ---------------------------
 
-  void investWeighted(
-          int portfolioNumber,
-          LocalDateTime investmentDate,
-          double totalInvestmentAmount,
-          Map<String, Double> stockWeights,
-          double commission
-  );
 
-  void investEqual(
-          int portfolioNumber,
-          LocalDateTime investmentDate,
-          double totalInvestmentAmount,
-          double commission
-  );
 
   // TODO: ------------------END-------------------------------------
 
