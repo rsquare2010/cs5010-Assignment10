@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is an implementation of the EmulatorModel interface. It is a mock model used to test the
+ * This is an implementation of the Model interface. It is a mock model used to test the
  * controller class.
  */
 public class MockModel implements ModelExtn {

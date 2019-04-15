@@ -45,7 +45,7 @@ public class ModelExtnImplTest {
 
   @Test
   public void testConstructorChoosingAPI() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.ALPHA_VANTAGE);
+    Model testEmulator = new ModelImpl(APITypes.ALPHA_VANTAGE);
     assertEquals("Number of Portfolios: 0", testEmulator.toString());
   }
 
@@ -114,9 +114,8 @@ public class ModelExtnImplTest {
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
-    testEmulator.buyStock(1, dateTime, "AAPL", 4000.0, 10);
-    testEmulator.buyStock(1, dateTime, "AAPL", 4000.0, 10);
-    assertEquals(3960, testEmulator.getCostBasis(0, dateTime.plusDays(1)),
+    testEmulator.buyStock(0, dateTime, "AAPL", 4000.0, 10);
+    assertEquals(4010, testEmulator.getCostBasis(0, dateTime.plusDays(1)),
             0.001);
   }
 

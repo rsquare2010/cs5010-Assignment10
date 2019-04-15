@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import stockemulation.controller.EmulatorCommand;
-import stockemulation.model.EmulatorModel;
+import stockemulation.model.Model;
 import stockemulation.util.StockInfoSanity;
 import stockemulation.view.EmulatorView;
 
@@ -29,7 +29,7 @@ abstract class CommonCommands implements EmulatorCommand {
     this.scanner = scanner;
   }
 
-  int choosePortfolio(EmulatorModel model, EmulatorView view) {
+  int choosePortfolio(Model model, EmulatorView view) {
     if (model.getPortfolioCount() == 0) {
       view.showMessage("create a portfolio before you perform this operation");
       return -1;
@@ -49,13 +49,13 @@ abstract class CommonCommands implements EmulatorCommand {
     return portfolioNumber - 1;
   }
 
-  LocalDateTime getDateTime(EmulatorModel model, EmulatorView view) {
+  LocalDateTime getDateTime(Model model, EmulatorView view) {
     LocalDate date = getDate(model, view);
     LocalTime time = getTime(model, view);
     return LocalDateTime.of(date, time);
   }
 
-  LocalDate getDate(EmulatorModel model, EmulatorView view) {
+  LocalDate getDate(Model model, EmulatorView view) {
 
     view.showMessage("Enter the year you want to perform this operation of the format YYYY");
     int year = getInt(scanner, view);
@@ -81,7 +81,7 @@ abstract class CommonCommands implements EmulatorCommand {
     return LocalDate.of(year, month, day);
   }
 
-  private LocalTime getTime(EmulatorModel model, EmulatorView view) {
+  private LocalTime getTime(Model model, EmulatorView view) {
     view.showMessage("Enter the hour you want to buy the stock between 09 and 16 in the "
             + "24 hour format HH");
     int hour = getHours(view);
@@ -127,7 +127,7 @@ abstract class CommonCommands implements EmulatorCommand {
     return minutes;
   }
 
-  String getTicker(EmulatorModel model, EmulatorView view) {
+  String getTicker(Model model, EmulatorView view) {
     view.showMessage("Enter the Ticker of the stock you want to buy");
     String ticker;
     boolean validTicker;
@@ -145,7 +145,7 @@ abstract class CommonCommands implements EmulatorCommand {
     return ticker;
   }
 
-  String getFilePath(EmulatorModel model, EmulatorView view) {
+  String getFilePath(Model model, EmulatorView view) {
     view.showMessage("Enter the filepath");
     String filePath = scanner.next();
     while (filePath.isEmpty()) {

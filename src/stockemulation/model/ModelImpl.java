@@ -12,7 +12,7 @@ import java.util.Map;
  * do virtual trading. Maintains the data source name from which the user has access to stock data.
  * Uses the the api package and the data source name to fetch the stock data from.
  */
-public class EmulatorModelImpl implements EmulatorModel {
+public class ModelImpl implements Model {
 
   protected final API dataSource;        /// Name of th stock data source.
   protected List<PortfolioExtn> portfolios;    /// List containing the portfolios that user created.
@@ -20,7 +20,7 @@ public class EmulatorModelImpl implements EmulatorModel {
   /**
    * Constructor the creates an empty portfolio list and assigns the data source for the model.
    */
-  public EmulatorModelImpl() {
+  public ModelImpl() {
 
     portfolios = new LinkedList<>();
     dataSource = API.getInstance(APITypes.ALPHA_VANTAGE);
@@ -29,7 +29,7 @@ public class EmulatorModelImpl implements EmulatorModel {
   /**
    * Constructor the creates an empty portfolio list and assigns the data source for the model.
    */
-  EmulatorModelImpl(APITypes datasouceType) {
+  ModelImpl(APITypes datasouceType) {
 
     portfolios = new LinkedList<>();
     dataSource = API.getInstance(datasouceType);

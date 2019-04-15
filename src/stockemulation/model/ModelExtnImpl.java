@@ -9,14 +9,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import stockemulation.util.StockInfoSanity;
 
 /**
  * This is an implementation of {@link ModelExtn} and has some of the implementations directly taken
- * from {@link EmulatorModelImpl} by extending it. This provide two constructors, one to create the
- * object with default data source which is Alpha Vantage api and other constructor to choose the
- * API.
+ * from {@link ModelImpl} by extending it. This provide two constructors, one to create the object
+ * with default data source which is Alpha Vantage api and other constructor to choose the API.
  */
-public class ModelExtnImpl extends EmulatorModelImpl implements ModelExtn {
+public class ModelExtnImpl extends ModelImpl implements ModelExtn {
 
 
   /**
@@ -90,4 +94,55 @@ public class ModelExtnImpl extends EmulatorModelImpl implements ModelExtn {
       );
     }
   }
+
+  // TODO: ------- Assignment 10 features ---------------------------
+
+  @Override
+  public void investWeighted(
+          int portfolioNumber,
+          LocalDateTime investmentDate,
+          double totalInvestmentAmount,
+          Map<String, Double> stockWeights,
+          double commission
+  ) throws IllegalArgumentException {
+    // Note this method is only for existing portfolios and not for creating portfolios.
+    // But you can add new tickers.
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+    StockInfoSanity.isDateTimeValid(investmentDate);
+    for (Map.Entry<String, Double> entry : stockWeights.entrySet()) {
+      this.buyStock(
+              portfolioNumber,
+              investmentDate,
+              entry.getKey(),
+              entry.getValue() * totalInvestmentAmount / 100,
+              commission
+      );
+    }
+  }
+
+  @Override
+  public void investEqual(
+          int portfolioNumber,
+          LocalDateTime investmentDate,
+          double totalInvestmentAmount,
+          double commission
+  ) throws IllegalArgumentException {
+    // Note this method is only for existing portfolios and not for creating portfolios.
+    Set<String> uniqueTickerList = portfolios.get(portfolioNumber).getCompositionSimple().keySet();
+    double weightedAmountPerStock = totalInvestmentAmount / uniqueTickerList.size();
+    for (String tickerName : uniqueTickerList) {
+      this.buyStock(
+              portfolioNumber,
+              investmentDate,
+              tickerName,
+              weightedAmountPerStock,
+              commission);
+    }
+  }
+
+  // TODO: ------------------END-------------------------------------
+
+
 }
