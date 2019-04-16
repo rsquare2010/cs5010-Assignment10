@@ -81,9 +81,11 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
 
     String title = (String) jsonObject.get("title");
     createPortfolio(title);
-
-    readTransactionFromPortfolioFile(jsonObject);
-
+    try {
+      readTransactionFromPortfolioFile(jsonObject);
+    }catch (Exception e) {
+      portfolios.remove(portfolios.size()-1);
+    }
   }
 
   @Override
@@ -116,7 +118,6 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     JSONParser parser = new JSONParser();
     Object obj = parser.parse(new FileReader(filepath));
     JSONObject jsonObject = (JSONObject) obj;
-
     addStrategyData(
             (String) jsonObject.get("strategyName"),
             (Map<String, Double>) jsonObject.get("tickerWeightsMap"),
