@@ -2,6 +2,9 @@ package stockemulation.model;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -55,5 +58,28 @@ interface PortfolioExtn extends Portfolio {
    * @throws IOException if the write process is not successful.
    */
   void writeToFile(String filepath) throws IOException;
+
+  // TODO: -------------------------- Assignment 10 ----------------------------- //
+
+  void investWeighted(
+          LocalDateTime investmentDate,
+          double totalInvestmentAmount,
+          Map<String, Double> stockWeights,
+          double commission
+  );
+
+  void investEqual(
+          LocalDateTime investmentDate,
+          double totalInvestmentAmount,
+          double commission
+  );
+
+  void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission);
+
+  StrategyData getStrategyByName(String strategyName);
+
+  List<String> getStrategiesList();
+
+  // TODO: -------------------------- End ----------------------------- //
 
 }

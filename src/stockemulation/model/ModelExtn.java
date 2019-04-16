@@ -4,6 +4,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,12 +61,20 @@ public interface ModelExtn extends Model {
           throws IllegalArgumentException, IOException, ParseException;
 
 
+  void dollarCosrAveraging(int portfolioNumber,
+                           String strategyName,
+                           LocalDateTime startDate,
+                           LocalDateTime endDate,
+                           int freaquencyInDays);
 
-  // TODO: ------- Assignment 10 features ---------------------------
+  void addStrategyToPortfolio(int portfolioNumber,
+                              String strategyName,
+                              Map<String, Double> tickerWeightMap,
+                              double inverstmentAmount,
+                              double commission);
+  List<String> getStrategyListFrompPortfolio(int portfolioNumber);
 
 
-
-  // TODO: ------------------END-------------------------------------
 
 
 

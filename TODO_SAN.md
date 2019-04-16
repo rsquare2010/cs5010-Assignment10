@@ -5,8 +5,8 @@
  - [ ] buy stock with zero value should throw error.
       
 ## Assignment 10 new features:
- - [x] Implement investment with weights.
- - [x] Implement investment with equal weights.
+ - [ ] Implement investment with weights.
+ - [ ] Implement investment with equal weights.
  - [ ] Implement dollar cost averaging.
  - [ ] Persist investment strategy (read and write).
  - [ ] Implement strategy for dollar cost averaging and other higher order investments.

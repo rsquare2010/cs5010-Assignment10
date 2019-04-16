@@ -63,6 +63,8 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
 
   }
 
+  // TODO: Update to add the new functionality
+
   @Override
   public void readPortfolioFromFile(String filepath) throws IllegalArgumentException, IOException,
           ParseException {
@@ -95,11 +97,24 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     }
   }
 
-  // TODO: ------- Assignment 10 features ---------------------------
+  @Override
+  public void dollarCosrAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate, LocalDateTime endDate, int freaquencyInDays) {
+    // TODO:
+  }
 
+  @Override
+  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission) {
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+    portfolios.get(portfolioNumber).createAndUpdateStrategy(strategyName, tickerWeightMap, inverstmentAmount, commission);
+  }
 
-
-  // TODO: ------------------END-------------------------------------
-
-
+  @Override
+  public List<String> getStrategyListFrompPortfolio(int portfolioNumber) {
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+    return portfolios.get(portfolioNumber).getStrategiesList();
+  }
 }
