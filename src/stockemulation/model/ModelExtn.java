@@ -61,8 +61,6 @@ public interface ModelExtn extends Model {
           throws IllegalArgumentException, IOException, ParseException;
 
 
-  // TODO _____________
-
   /**
    * This function adds a specified elemental investment strategy data. Takes in the following
    * inputs and throws error if the operation fails or if the inputs are invalid.
@@ -76,7 +74,8 @@ public interface ModelExtn extends Model {
           String strategyName,
           Map<String, Double> tickerWeightMap,
           double investmentAmount,
-          double commission);
+          double commission
+  ) throws IllegalArgumentException;
 
   /**
    * This method writes the details stored in the selected strategy into a json file specified in
@@ -114,7 +113,8 @@ public interface ModelExtn extends Model {
    *                        used for this investment.
    * @param investmentDate  the date at which this investment has to be made.
    */
-  void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate);
+  void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate)
+          throws IllegalArgumentException;
 
   /**
    * This returns a list of the strategies as their string names.
@@ -132,12 +132,13 @@ public interface ModelExtn extends Model {
    * @param endDate         TODO
    * @param frequencyInDays TODO
    */
-
-  void dollarCostAveraging(int portfolioNumber,
-                           String strategyName,
-                           LocalDateTime startDate,
-                           LocalDateTime endDate,
-                           int frequencyInDays);
+  void dollarCostAveraging(
+          int portfolioNumber,
+          String strategyName,
+          LocalDateTime startDate,
+          LocalDateTime endDate,
+          int frequencyInDays
+  ) throws IllegalArgumentException;
 
 
 }

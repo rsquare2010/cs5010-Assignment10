@@ -93,8 +93,14 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
-  public void investWeighted(LocalDateTime investmentDate, double totalInvestmentAmount,
-                             Map<String, Double> stockWeights, double commission) {
+  public void investWeighted(
+          LocalDateTime investmentDate,
+          double totalInvestmentAmount,
+          Map<String, Double> stockWeights,
+          double commission
+  )throws IllegalArgumentException {
+    StockInfoSanity.isPriceValid(totalInvestmentAmount);
+    StockInfoSanity.isCommissionValid(commission);
     LocalDateTime requiredDate = getMarketOpenDate(investmentDate);
 
     for (Map.Entry<String, Double> entry : stockWeights.entrySet()) {
@@ -108,9 +114,15 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
-  public void investEqual(LocalDateTime investmentDate, double totalInvestmentAmount,
-                          double commission) {
+  public void investEqual(
+          LocalDateTime investmentDate,
+          double totalInvestmentAmount,
+          double commission
+  ) throws IllegalArgumentException {
+    StockInfoSanity.isPriceValid(totalInvestmentAmount);
+    StockInfoSanity.isCommissionValid(commission);
     LocalDateTime requiredDate = getMarketOpenDate(investmentDate);
+
     double weightedAmountPerStock = totalInvestmentAmount / uniqueTickerList.size();
     for (String tickerName : this.uniqueTickerList.keySet()) {
       this.buyShares(
