@@ -18,8 +18,9 @@ import stockemulation.util.StockInfoSanity;
  * This is the implementation of {@link PortfolioExtn} and most of the implementation is extended
  * from {@link PortfolioImpl}. This implements the buyshares by taking in the commission price for
  * each transaction and also overrides the getCostBasis to reflect this addition. This
- * implementation provides a way to write the details of the potfolio incliding all transation
- * information stored in its {@link StockDataExtn} list into a json file.
+ * implementation provides a way to write the details of the portfolio including all transaction
+ * information stored in its {@link StockDataExtn} list and strategies stored in the {@link
+ * StrategyData} map  into a json file.
  */
 class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
 
@@ -28,7 +29,7 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   /**
    * Constructor that sets the data source reference, title of portfolio by calling the parent
    * constructor and passing along the arguments it takes. Propagates and error thrown by the base
-   * class.
+   * class. Also initializes the map of strategies.
    *
    * @param title      the tile of the portfolio.
    * @param dataSource reference of the API that is used to fetch data from.
@@ -100,12 +101,13 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
 
   @Override
   public void investWeighted(LocalDateTime investmentDate, double totalInvestmentAmount, Map<String, Double> stockWeights, double commission) {
-    StockInfoSanity.isDateTimeValid(investmentDate);
+    LocalDateTime requiredDate = getMarketOpenDate(investmentDate);
+
     for (Map.Entry<String, Double> entry : stockWeights.entrySet()) {
       this.buyShares(
               entry.getKey(),
               entry.getValue() * totalInvestmentAmount / 100,
-              investmentDate,
+              requiredDate,
               commission
       );
     }
@@ -113,12 +115,13 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
 
   @Override
   public void investEqual(LocalDateTime investmentDate, double totalInvestmentAmount, double commission) {
+    LocalDateTime requiredDate = getMarketOpenDate(investmentDate);
     double weightedAmountPerStock = totalInvestmentAmount / uniqueTickerList.size();
     for (String tickerName : this.uniqueTickerList.keySet()) {
       this.buyShares(
               tickerName,
               weightedAmountPerStock,
-              investmentDate,
+              requiredDate,
               commission);
     }
   }
@@ -145,10 +148,24 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
-  public void investWithStrategy(String strategyName, LocalDateTime speifiedDate) {
+  public void investWithStrategy(String strategyName, LocalDateTime investmentDate) {
+    LocalDateTime requiredDate = getMarketOpenDate(investmentDate);
     StrategyData strategy = this.getStrategyByName(strategyName);
     investWeighted(
-            speifiedDate, strategy.getInvestmentAmount(), strategy.getTickerAndWeights(), strategy.getCommission());
+            requiredDate, strategy.getInvestmentAmount(), strategy.getTickerAndWeights(), strategy.getCommission());
+  }
+
+  private LocalDateTime getMarketOpenDate(LocalDateTime investmentDate) {
+    while (investmentDate.isBefore(LocalDateTime.now())) {
+      try {
+        StockInfoSanity.isDateTimeValid(investmentDate);
+        break;
+      } catch (IllegalArgumentException e) {
+        investmentDate = investmentDate.plusDays(1);
+        continue;
+      }
+    }
+    return investmentDate;
   }
 
   private JSONArray addTransactionsToFileWrite() {

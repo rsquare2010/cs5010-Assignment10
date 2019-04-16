@@ -49,15 +49,6 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
   }
 
   @Override
-  public void addStock(int portfolioNumber, LocalDateTime date, String ticker, double costPerUnit, double quantity, double commission) throws IllegalArgumentException {
-    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
-      throw new IllegalArgumentException("Invalid Portfolio number");
-    }
-
-    portfolios.get(portfolioNumber).addShares(ticker, costPerUnit, quantity, date, commission);
-  }
-
-  @Override
   public void writePortfolioToFile(String filepath, int portfolioNumber)
           throws IllegalArgumentException, IOException {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
@@ -108,10 +99,6 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     }
 
     while (currentDate.isBefore(endDate)) {
-      if (currentDate.getDayOfWeek() == DayOfWeek.SATURDAY || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
-        currentDate = currentDate.plusDays(1);
-        continue;
-      }
       portfolio.investWithStrategy(strategyName, currentDate);
 
       currentDate = currentDate.plusDays(freaquencyInDays);
@@ -143,6 +130,14 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     portfolios.get(portfolioNumber).investWithStrategy(strategyName, investmentDate);
   }
 
+  private void addStock(int portfolioNumber, LocalDateTime date, String ticker, double costPerUnit, double quantity, double commission) throws IllegalArgumentException {
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+
+    portfolios.get(portfolioNumber).addShares(ticker, costPerUnit, quantity, date, commission);
+  }
+
   private void readTransactionFromPortfolioFile(JSONObject jsonObject) {
     JSONArray transactions = (JSONArray) jsonObject.get("transactions");
     Iterator<JSONObject> iterator = transactions.iterator();
@@ -160,7 +155,7 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
   }
 
   private void readStrategiesFromPortfolioFile(JSONObject jsonObject) {
-    if (!jsonObject.containsKey("strategies")){
+    if (!jsonObject.containsKey("strategies")) {
       return;
     }
     JSONArray strategies = (JSONArray) jsonObject.get("strategies");
