@@ -2,6 +2,7 @@ package stockemulation.controller;
 
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * This interface represents a set of features that the program offers. Each
@@ -19,15 +20,27 @@ public interface Features {
   void createPortfolio(String portfolioName);
 
 
-  void verifyDates(Date date);
+  void verifyDatesForBuyForm(Date date);
 
-  void verifyTime(LocalTime time);
+  void verifyTimeForBuyForm(LocalTime time);
 
-  void verifyTicker(String ticker);
+  void verifyTickerForBuyForm(String ticker);
 
-  void verifyCost(String price);
+  void verifyCostForBuyForm(String price);
 
-  void verifyCommission(String comission);
+  void verifyCommissionForBuyForm(String commission);
+
+  void verifyPriceForStrategyForm(String price);
+
+  void verifyCommissionForStrategyForm(String commission);
+
+  void verifyTickerNameForStrategyForm(String tickerName);
+
+  void createAStrategy(int portfolioNumber, String strategyName, Map<String, String> tickerWeights,
+                       String price,
+                       String commission);
+
+
 
   /**
    * Show UI to the user to facilitate them to buy stocks.
@@ -49,7 +62,7 @@ public interface Features {
   /**
    * Close the UI which helped the user to buys new stocks.
    */
-  void closeForm();
+  void closeBuyForm();
 
   /**
    * Display the contents of a portfolio to the user whose portfolio index is passed as parameter.
@@ -76,4 +89,31 @@ public interface Features {
    * @param filePath the location of the file which has to be read.
    */
   void readFromFile(String filePath);
+
+  void createStrategy();
+
+  void closeAddStrategyForm();
+
+  void verifyStrategyFormAndBuy(int portfolioIndex, String strategyName, Date date);
+
+  void showSingleBuyStrategyForm(int portfolioIndex);
+
+  void closeSingleStrategyBuyForm();
+
+  void verifyDatesForSingleStrategyBuyForm(Date date);
+
+  void showDollarCostAverageForm(int portfolioIndex);
+
+  void closeDollarCostAverageForm();
+
+  void verifyAndBuyDollarCostAverage(int portfolioIndex, String strategyName, Date startDate,
+                                     Date endDate,
+                                     String frequency);
+
+  void verifyStartDateForDCA(Date date);
+
+  void verifyEndDateForDCA(Date startDate, Date endDate);
+
+  void verifyInterval(Date startDate, Date endDate, String interval);
+
 }

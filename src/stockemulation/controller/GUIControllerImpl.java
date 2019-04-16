@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import stockemulation.model.ModelExtn;
 import stockemulation.util.StockInfoSanity;
@@ -55,7 +58,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyDates(Date date) {
+  public void verifyDatesForBuyForm(Date date) {
     if (date == null) {
       isAllFieldsValid = false;
       view.setBuyFormDateError("Date cannot be empty");
@@ -63,7 +66,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyTime(LocalTime time) {
+  public void verifyTimeForBuyForm(LocalTime time) {
     if (time == null) {
       isAllFieldsValid = false;
       view.setBuyFormTimeError("Time cannot be empty");
@@ -78,7 +81,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyTicker(String ticker) {
+  public void verifyTickerForBuyForm(String ticker) {
     try {
       StockInfoSanity.isTickerValid(ticker);
     } catch (IllegalArgumentException e) {
@@ -88,7 +91,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyCost(String price) {
+  public void verifyCostForBuyForm(String price) {
     if (price == null || price.isEmpty()) {
       isAllFieldsValid = false;
       view.setBuyFormPriceError("Price cannot be empty");
@@ -98,7 +101,7 @@ public class GUIControllerImpl implements GUIController, Features {
           StockInfoSanity.isPriceValid(Double.parseDouble(price));
         } catch (IllegalArgumentException e) {
           isAllFieldsValid = false;
-          view.setBuyFormTickerError(e.getMessage());
+          view.setBuyFormPriceError(e.getMessage());
         }
       } else {
         view.setBuyFormPriceError("Price has to be a number");
@@ -108,7 +111,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyCommission(String commission) {
+  public void verifyCommissionForBuyForm(String commission) {
     if (commission == null) {
       isAllFieldsValid = false;
       view.setBuyFormCommissionError("Commission is invalid");
@@ -128,6 +131,115 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
+  public void verifyPriceForStrategyForm(String price) {
+    if (price == null || price.isEmpty()) {
+      isAllFieldsValid = false;
+      view.setStrategyFormPriceError("Price cannot be empty");
+    } else {
+      if (validatePrice(price)) {
+        try {
+          StockInfoSanity.isPriceValid(Double.parseDouble(price));
+        } catch (IllegalArgumentException e) {
+          isAllFieldsValid = false;
+          view.setStrategyFormTickerError(e.getMessage());
+        }
+      } else {
+        view.setStrategyFormPriceError("Price has to be a number");
+        isAllFieldsValid = false;
+      }
+    }
+  }
+
+  @Override
+  public void verifyCommissionForStrategyForm(String commission) {
+    if (commission == null) {
+      isAllFieldsValid = false;
+      view.setStrategyFormCommissionError("Commission is invalid");
+    } else {
+      if (validatePrice(commission)) {
+        try {
+          StockInfoSanity.isCommissionValid(Double.parseDouble(commission));
+        } catch (IllegalArgumentException e) {
+          isAllFieldsValid = false;
+          view.setStrategyFormCommissionError(e.getMessage());
+        }
+      } else {
+        view.setStrategyFormCommissionError("Commission has to be a number");
+        isAllFieldsValid = false;
+      }
+    }
+  }
+
+  @Override
+  public void verifyTickerNameForStrategyForm(String tickerName) {
+    try {
+      StockInfoSanity.isTickerValid(tickerName);
+    } catch (IllegalArgumentException e) {
+      isAllFieldsValid = false;
+      view.setStrategyFormTickerError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void createAStrategy(int portfolioNumber,String strategyName,
+                              Map<String, String> tickerWeights, String price, String commission) {
+
+    isAllFieldsValid = true;
+    verifyStrategyName(portfolioNumber, strategyName);
+    verifyWeights(tickerWeights);
+    verifyPriceForStrategyForm(price);
+    verifyCommissionForStrategyForm(commission);
+    if(isAllFieldsValid) {
+      Map<String, Double> weights = new HashMap<>();
+      for(Map.Entry entry : tickerWeights.entrySet()){
+        weights.put(entry.getKey().toString(), Double.parseDouble(entry.getValue().toString()));
+      }
+      model.addStrategyToPortfolio(portfolioNumber, strategyName, weights,
+              Double.parseDouble(price), Double.parseDouble(commission));//FIXME catch exception.
+      view.closeAddStrategyForm();
+    }
+  }
+
+  private void verifyStrategyName(int portfolioNumber, String name) {
+    if (name != null && !(name.trim().isEmpty())) {
+      List<String> strategyList = model.getStrategyListFrompPortfolio(portfolioNumber);
+      if(strategyList.contains(name)) {
+        isAllFieldsValid = false;
+        view.setStrategyFormNameError("A strategy with the same name already exists for the " +
+                "portfolio");
+      }
+    } else {
+      view.setStrategyFormNameError(" Please Enter a valid strategy");
+      isAllFieldsValid = false;
+    }
+  }
+
+  private void verifyWeights(Map<String, String> weights) {
+    double sum = 0.0;
+    for(Map.Entry entry : weights.entrySet()){
+      verifyTickerNameForStrategyForm(entry.getKey().toString());
+      if (validatePrice(entry.getValue().toString())) {
+        try {
+          StockInfoSanity.isWeightValid(Double.parseDouble(entry.getValue().toString()));
+        } catch (IllegalArgumentException e) {
+          isAllFieldsValid = false;
+          view.setStrategyFormTickerError(e.getMessage());
+        }
+        if(isAllFieldsValid) {
+          sum += Double.parseDouble(entry.getValue().toString());
+        }
+      } else {
+        view.setStrategyFormTickerError("Weight has to be a number between 0 and 100");
+        isAllFieldsValid = false;
+      }
+    }
+    if(100 - sum > 0.01 || sum - 100 > 0.01) { //Check weights with precision.
+      isAllFieldsValid = false;
+      view.setStrategyFormTickerError("sum of weights should be 100");
+    }
+  }
+
+  @Override
   public void buyStocks() {
     if (model.getPortfolioCount() == 0) {
       view.showErrorMessage("Please create a portfolio before you buy stocks");
@@ -140,22 +252,165 @@ public class GUIControllerImpl implements GUIController, Features {
   public void verifyFormAndBuy(Date date, LocalTime time, String ticker,
                                String cost, String commission, int portfolioIndex) {
     isAllFieldsValid = true;
-    verifyDates(date);
-    verifyTime(time);
-    verifyTicker(ticker);
-    verifyCost(cost);
-    verifyCommission(commission);
+    verifyDatesForBuyForm(date);
+    verifyTimeForBuyForm(time);
+    verifyTickerForBuyForm(ticker);
+    verifyCostForBuyForm(cost);
+    verifyCommissionForBuyForm(commission);
     if (isAllFieldsValid) {
       LocalDateTime localDateTime = convertDateToLocalDate(date).atTime(time);
       model.buyStock(portfolioIndex, localDateTime, ticker, Double.parseDouble(cost),
-              Double.parseDouble(commission));
+              Double.parseDouble(commission)); //FIXME catch exceptions.
       view.closeBuyStocksForm();
     }
   }
 
   @Override
-  public void closeForm() {
+  public void closeBuyForm() {
     view.closeBuyStocksForm();
+  }
+
+  @Override
+  public void closeAddStrategyForm() {
+    view.closeAddStrategyForm();
+  }
+
+  @Override
+  public void verifyStrategyFormAndBuy(int portfolioIndex, String strategyName, Date date) {
+    isAllFieldsValid = true;
+    verifyDatesForSingleStrategyBuyForm(date);
+    if(isAllFieldsValid) {
+      System.out.println("All Fields Valid");
+      view.closeSingleStrategyBuyForm();
+    }
+  }
+
+  @Override
+  public void showSingleBuyStrategyForm(int portfolioIndex) {
+    if (model.getPortfolioCount() == 0) {
+      view.showErrorMessage("Please create a portfolio before you perform this operation");
+    } else {
+      List<String> strategies = model.getStrategyListFrompPortfolio(portfolioIndex);
+      if (strategies.size() == 0) {
+        view.showErrorMessage("Please create a strategy before you perform this operation");
+      } else {
+        view.showSingleBuyStrategy(strategies.toArray(new String[0]));
+      }
+    }
+  }
+
+  @Override
+  public void closeSingleStrategyBuyForm() {
+    view.closeSingleStrategyBuyForm();
+  }
+
+  @Override
+  public void verifyDatesForSingleStrategyBuyForm(Date date) {
+    if (date == null) {
+      isAllFieldsValid = false;
+      view.setSingleBuyStrategyDateError("Date cannot be empty");
+    } else {
+      LocalDateTime dateTime = LocalDateTime.of(convertDateToLocalDate(date), LocalTime.NOON);
+      try {
+        StockInfoSanity.isDateTimeValid(dateTime);
+      } catch (IllegalArgumentException e) {
+        isAllFieldsValid = false;
+        view.setSingleBuyStrategyDateError(e.getMessage());
+      }
+    }
+  }
+
+  @Override
+  public void showDollarCostAverageForm(int portfolioIndex) {
+    if (model.getPortfolioCount() == 0) {
+      view.showErrorMessage("Please create a portfolio before you perform this operation");
+    } else {
+      List<String> strategies = model.getStrategyListFrompPortfolio(portfolioIndex);
+      if (strategies.size() == 0) {
+        view.showErrorMessage("Please create a strategy before you perform this operation");
+      } else {
+        view.showDollarCostAverageStrategy(strategies.toArray(new String[0]));
+      }
+    }
+  }
+
+  @Override
+  public void closeDollarCostAverageForm() {
+    view.closeDollarCostAverageForm();
+  }
+
+  @Override
+  public void verifyAndBuyDollarCostAverage(int portfolioNumber, String strategyName,
+                                            Date startDate, Date endDate, String frequency) {
+//    model.dollarCostAveraging();
+    System.out.println("Portfolio Number:" + portfolioNumber);
+    System.out.println("Start Date:" + startDate.toString());
+    System.out.println("End Date:" + endDate.toString());
+    System.out.println("frequency:" + frequency);
+  }
+
+  @Override
+  public void verifyStartDateForDCA(Date date) {
+    if (date == null) {
+      isAllFieldsValid = false;
+      view.setStartDateDCAError("Date cannot be empty");
+    } else {
+      LocalDateTime dateTime = LocalDateTime.of(convertDateToLocalDate(date), LocalTime.NOON);
+      try {
+        StockInfoSanity.isDateTimeValid(dateTime);
+      } catch (IllegalArgumentException e) {
+        isAllFieldsValid = false;
+        view.setStartDateDCAError(e.getMessage());
+      }
+    }
+  }
+
+  @Override
+  public void verifyEndDateForDCA(Date startDate, Date endDate) {
+    if (endDate == null) {
+      isAllFieldsValid = false;
+      view.setEndDateDCAError("End Date cannot be empty");
+    } else {
+      LocalDateTime dateTime = LocalDateTime.of(convertDateToLocalDate(endDate), LocalTime.NOON);
+      try {
+        StockInfoSanity.isDateTimeValid(dateTime);
+      } catch (IllegalArgumentException e) {
+        isAllFieldsValid = false;
+        view.setEndDateDCAError(e.getMessage());
+      }
+    }
+    verifyStartDateForDCA(startDate);
+    if(isAllFieldsValid) {
+      if(startDate.compareTo(endDate) == -1) {
+
+      } else {
+        view.setEndDateDCAError("End date has to be greater than start date");
+      }
+    }
+  }
+
+  @Override
+  public void verifyInterval(Date startDate, Date endDate, String interval) {
+    verifyStartDateForDCA(startDate);
+    verifyEndDateForDCA(startDate,endDate);
+    if(!isValidNumber(interval)) {
+      isAllFieldsValid = false;
+      view.setIntervalDCAError("Please enter a number");
+    } else {
+      int intervalInt = Integer.parseInt(interval);
+      if (intervalInt < 0) {
+        view.setIntervalDCAError("Interval cannot be negative");
+      }
+    }
+    if(isAllFieldsValid) {
+      LocalDate startLocalDate = convertDateToLocalDate(startDate);
+      LocalDate endLocalDate = convertDateToLocalDate(endDate);
+      if(startLocalDate.plusDays(12).isAfter(endLocalDate)) {
+        isAllFieldsValid = false;
+        view.setIntervalDCAError("Interval has to be lesser than the difference between the dates");
+      }
+    }
+
   }
 
   @Override
@@ -209,5 +464,23 @@ public class GUIControllerImpl implements GUIController, Features {
       return false;
     }
     return true;
+  }
+
+  private boolean isValidNumber(String interval) {
+    try {
+      Integer.parseInt(interval);
+    } catch (NumberFormatException exception) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public void createStrategy() {
+    if (model.getPortfolioCount() == 0) {
+      view.showErrorMessage("Please create a portfolio before you create a Strategy");
+    } else {
+      view.showCreateStrategyForm();
+    }
   }
 }

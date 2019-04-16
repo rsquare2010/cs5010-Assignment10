@@ -66,13 +66,14 @@ public interface ModelExtn extends Model {
                            String strategyName,
                            LocalDateTime startDate,
                            LocalDateTime endDate,
-                           int freaquencyInDays);
+                           int frequencyInDays);
 
   void addStrategyToPortfolio(int portfolioNumber,
                               String strategyName,
                               Map<String, Double> tickerWeightMap,
-                              double inverstmentAmount,
+                              double investmentAmount,
                               double commission);
+
   List<String> getStrategyListFrompPortfolio(int portfolioNumber);
 
 

@@ -115,10 +115,10 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
-  public void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission) {
+  public void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission) {
     this.investmentStrategies.put(
             strategyName,
-            new StrategyDataImpl(strategyName, tickerWeightMap, inverstmentAmount, commission)
+            new StrategyDataImpl(strategyName, tickerWeightMap, investmentAmount, commission)
     );
   }
 
@@ -164,6 +164,7 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
       strategyObj.put("tickerWeightsMap", strategyData.getTickerAndWeights());
       strategyObj.put("investmentAmount", strategyData.getInvestmentAmount());
       strategyObj.put("commission", strategyData.getCommission());
+      strategies.add(strategyObj);
     }
     return strategies;
   }

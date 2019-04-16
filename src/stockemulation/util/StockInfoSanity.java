@@ -96,4 +96,12 @@ public interface StockInfoSanity {
       throw new IllegalArgumentException("Trading is possible only between 9 am and 4 pm");
     }
   }
+
+  static void isWeightValid(double weight) throws IllegalArgumentException {
+    if(weight <= 0.0) {
+      throw new IllegalArgumentException("Weight of a ticker has to be more than 0");
+    } else if (weight > 100.0) {
+      throw new IllegalArgumentException("Weight of a ticker should be less than 100");
+    }
+  }
 }

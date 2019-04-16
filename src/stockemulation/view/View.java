@@ -30,6 +30,9 @@ public class View extends JFrame implements IView {
 
   private JButton createPortfolioButton;
   private JButton buyStockButton;
+  private JButton createStrategyButton;
+  private JButton singleBuyStrategyButton;
+  private JButton dollarCostAverageStrategyButton;
   private JLabel selectedDate;
   private JMenuItem save;
   private JMenuItem open;
@@ -40,9 +43,13 @@ public class View extends JFrame implements IView {
   private JLabel value;
   private JLabel valueLabel;
   private BuyStockDialog buyStockDialog;
+  private DollarCostAverageDialog dollarCostAverageDialog;
+  private AddStrategyDialog createStrategyDialog;
+  private SingleStrategyBuyDialog singleBuyStrategyDialog;
   private JTabbedPane tabbedPane;
   private String[] column = {"Serial no", "Ticker", "Number of stocks"};
   private JTable table;
+  private String[][] data;
 
   /**
    * A constructor to the view class that that provides the name of the window as a parameter as
@@ -71,6 +78,9 @@ public class View extends JFrame implements IView {
     this.setJMenuBar(menuBar);
 
     setupBuyStockDialog();
+    setupCreateStrategyDialog();
+    setupSingleBuyStrategyDialog();
+    setupDollarCostAverageStrategyDialog();
   }
 
   @Override
@@ -78,8 +88,16 @@ public class View extends JFrame implements IView {
     save.addActionListener(l -> saveToFile(f));
     open.addActionListener(l -> readFromFile(f));
     buyStockDialog.setFeatures(f);
+    createStrategyDialog.setFeatures(f);
+    singleBuyStrategyDialog.setFeatures(f);
+    dollarCostAverageDialog.setFeatures(f);
     buyStockButton.addActionListener(l -> f.buyStocks());
+    dollarCostAverageStrategyButton.addActionListener(l ->
+            f.showDollarCostAverageForm(portfolioList.getSelectedIndex()));
     createPortfolioButton.addActionListener(l -> f.createPortfolio(showInputDialog()));
+    singleBuyStrategyButton.addActionListener(l ->
+            f.showSingleBuyStrategyForm(portfolioList.getSelectedIndex()));
+    createStrategyButton.addActionListener(l -> f.createStrategy());
     dateChooser.addPropertyChangeListener(l -> setDateAndFetchDetails(dateChooser.getDate(), f));
     tabbedPane.addChangeListener(l -> fetchInformationBasedOnTab(tabbedPane.getSelectedIndex(), f));
     portfolioList.addActionListener(l -> f.getPortfolioSummary(portfolioList.getSelectedIndex()));
@@ -128,6 +146,13 @@ public class View extends JFrame implements IView {
   }
 
   @Override
+  public void showCreateStrategyForm() {
+    createStrategyDialog.pack();
+    createStrategyDialog.setSelectedPortfolioIndex(portfolioList.getSelectedIndex());
+    createStrategyDialog.setVisible(true);
+  }
+
+  @Override
   public void closeBuyStocksForm() {
     buyStockDialog.clearAndHide();
     portfolioList.setSelectedIndex(portfolioList.getSelectedIndex());
@@ -163,7 +188,7 @@ public class View extends JFrame implements IView {
     tabbedPane.setVisible(true);
     tabbedPane.setSelectedIndex(0);
 
-    String[][] data = new String[portfolioSummary.size()][3];
+    data = new String[portfolioSummary.size()][3];
     Set entries = portfolioSummary.entrySet();
     Iterator entriesIterator = entries.iterator();
 
@@ -192,6 +217,74 @@ public class View extends JFrame implements IView {
   }
 
   @Override
+  public void setStrategyFormTickerError(String message) {
+    createStrategyDialog.setTickerErrorLabel(message);
+  }
+
+  @Override
+  public void setStrategyFormNameError(String message) {
+    createStrategyDialog.setStrategyNameErrorLabel(message);
+  }
+
+  @Override
+  public void setStrategyFormPriceError(String message) {
+    createStrategyDialog.setStrategyFormPriceErrorLabel(message);
+  }
+
+  @Override
+  public void setStrategyFormCommissionError(String message) {
+    createStrategyDialog.setCommissionErrorLabel(message);
+  }
+
+  @Override
+  public void showSingleBuyStrategy(String[] strategies) {
+    singleBuyStrategyDialog.pack();
+    singleBuyStrategyDialog.setSelectedPortfolioIndex(portfolioList.getSelectedIndex());
+    singleBuyStrategyDialog.setStrategies(strategies);
+    singleBuyStrategyDialog.setVisible(true);
+  }
+
+  @Override
+  public void closeSingleStrategyBuyForm() {
+    singleBuyStrategyDialog.clearAndHide();
+    portfolioList.setSelectedIndex(portfolioList.getSelectedIndex());
+  }
+
+  @Override
+  public void setSingleBuyStrategyDateError(String message) {
+    singleBuyStrategyDialog.setDateErrorLabel(message);
+  }
+
+  @Override
+  public void showDollarCostAverageStrategy(String[] strategies) {
+    dollarCostAverageDialog.pack();
+    dollarCostAverageDialog.setSelectedPortfolioIndex(portfolioList.getSelectedIndex());
+    dollarCostAverageDialog.setStrategies(strategies);
+    dollarCostAverageDialog.setVisible(true);
+  }
+
+  @Override
+  public void closeDollarCostAverageForm() {
+    dollarCostAverageDialog.clearAndHide();
+    portfolioList.setSelectedIndex(portfolioList.getSelectedIndex());
+  }
+
+  @Override
+  public void setIntervalDCAError(String message) {
+    dollarCostAverageDialog.setFrequencyErrorLabel(message);
+  }
+
+  @Override
+  public void setStartDateDCAError(String message) {
+    dollarCostAverageDialog.setStartDateErrorLabel(message);
+  }
+
+  @Override
+  public void setEndDateDCAError(String message) {
+    dollarCostAverageDialog.setEndDateErrorLabel(message);
+  }
+
+  @Override
   public void showMessage(String message) {
     statusLabel.setForeground(Color.BLACK);
     statusLabel.setText(message);
@@ -201,6 +294,11 @@ public class View extends JFrame implements IView {
   public void showErrorMessage(String message) {
     statusLabel.setText(message);
     statusLabel.setForeground(Color.RED);
+  }
+
+  @Override
+  public void closeAddStrategyForm() {
+    createStrategyDialog.clearAndHide();
   }
 
   private JPanel setupLeftPanel() {
@@ -257,6 +355,12 @@ public class View extends JFrame implements IView {
     JPanel buyStockButtonPanel = new JPanel();
     buyStockButton = new JButton("Buy Stocks");
     buyStockButtonPanel.add(buyStockButton);
+    createStrategyButton = new JButton("Create strategy");
+    buyStockButtonPanel.add(createStrategyButton);
+    singleBuyStrategyButton = new JButton("One Time Strategy");
+    buyStockButtonPanel.add(singleBuyStrategyButton);
+    dollarCostAverageStrategyButton = new JButton("$ cost averaging");
+    buyStockButtonPanel.add(dollarCostAverageStrategyButton);
     centerPanel.add(buyStockButtonPanel, BorderLayout.SOUTH);
     return centerPanel;
   }
@@ -312,6 +416,20 @@ public class View extends JFrame implements IView {
 
   private void setupBuyStockDialog() {
     buyStockDialog = new BuyStockDialog(this, "Buy Stocks", null);
+  }
+
+  private void setupCreateStrategyDialog() {
+    createStrategyDialog = new AddStrategyDialog(this, "Add Strategy", null);
+  }
+
+  private void setupSingleBuyStrategyDialog() {
+    singleBuyStrategyDialog = new SingleStrategyBuyDialog(this, "Single Buy",
+            null);
+  }
+
+  private void setupDollarCostAverageStrategyDialog() {
+    dollarCostAverageDialog = new DollarCostAverageDialog(this, "$ cost average",
+            null);
   }
 
   private void fetchInformationBasedOnTab(int index, Features f) {
