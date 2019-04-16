@@ -7,7 +7,10 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -63,43 +66,52 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
 
   }
 
-  // TODO: Update to add the new functionality
-
   @Override
   public void readPortfolioFromFile(String filepath) throws IllegalArgumentException, IOException,
           ParseException {
     JSONParser parser = new JSONParser();
-
     Object obj = parser.parse(new FileReader(filepath));
-
     JSONObject jsonObject = (JSONObject) obj;
 
     String title = (String) jsonObject.get("title");
-
     createPortfolio(title);
 
-    JSONArray transactions = (JSONArray) jsonObject.get("transactions");
-    Iterator<JSONObject> iterator = transactions.iterator();
-    while (iterator.hasNext()) {
-      JSONObject stockObj = iterator.next();
-      String tickerName = (String) stockObj.get("ticker");
-      String purchaseDate = (String) stockObj.get("purchaseDate");
-      double costPerUnit = (double) stockObj.get("costPerUnit");
-      double quantity = (double) stockObj.get("quantity");
-      double commission = (double) stockObj.get("commission");
-      buyStock(
-              portfolios.size() - 1,
-              LocalDateTime.parse(purchaseDate),
-              tickerName,
-              costPerUnit * quantity,
-              commission
-      );
-    }
+    readTransactionFromPortfolioFile(jsonObject);
+    readStrategiesFromPortfolioFile(jsonObject);
+
   }
 
   @Override
-  public void dollarCosrAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate, LocalDateTime endDate, int freaquencyInDays) {
-    // TODO:
+  public void dollarCostAveraging(
+          int portfolioNumber,
+          String strategyName,
+          LocalDateTime startDate,
+          LocalDateTime endDate,
+          int freaquencyInDays
+  ) {
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+    if (strategyName == null || startDate == null) {
+      throw new IllegalStateException("strategy name or start date cannot be null");
+    }
+
+    PortfolioExtn portfolio = portfolios.get(portfolioNumber);
+    StrategyData strategy = portfolio.getStrategyByName(strategyName);
+    LocalDateTime currentDate = startDate;
+    if (endDate == null) {
+      endDate = LocalDateTime.now();
+    }
+
+    while (currentDate.isBefore(endDate)) {
+      if (currentDate.getDayOfWeek() == DayOfWeek.SATURDAY || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY){
+        currentDate =  currentDate.plusDays(1);
+        continue;
+      }
+      portfolio.investWithStrategy(strategyName, currentDate);
+
+      currentDate = currentDate.plusDays(freaquencyInDays);
+    }
   }
 
   @Override
@@ -117,4 +129,48 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     }
     return portfolios.get(portfolioNumber).getStrategiesList();
   }
+
+
+  @Override
+  public void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate) {
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+    portfolios.get(portfolioNumber).investWithStrategy(strategyName, investmentDate);
+  }
+
+  private void readTransactionFromPortfolioFile(JSONObject jsonObject) {
+    JSONArray transactions = (JSONArray) jsonObject.get("transactions");
+    Iterator<JSONObject> iterator = transactions.iterator();
+    while (iterator.hasNext()) {
+      JSONObject stockObj = iterator.next();
+      buyStock(
+              portfolios.size() - 1,
+              LocalDateTime.parse((String) stockObj.get("purchaseDate")),
+              (String) stockObj.get("ticker"),
+              (double) stockObj.get("costPerUnit") * (double) stockObj.get("quantity"),
+              (double) stockObj.get("commission")
+      );
+    }
+  }
+
+  private void readStrategiesFromPortfolioFile(JSONObject jsonObject) {
+    JSONArray strategies = (JSONArray) jsonObject.get("transactions");
+    Iterator<JSONObject> iterator = strategies.iterator();
+    while (iterator.hasNext()) {
+      JSONObject strategyObj = iterator.next();
+      addStrategyToPortfolio(
+              portfolios.size() - 1,
+              (String) strategyObj.get("strategyName"),
+              (Map<String, Double>) strategyObj.get("tickerWeightMap"),
+              (double) strategyObj.get("investmentAmount"),
+              (double) strategyObj.get("commission")
+      );
+    }
+  }
+
+
 }
+
+
+

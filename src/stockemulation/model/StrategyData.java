@@ -11,5 +11,4 @@ public interface StrategyData {
   Map<String, Double> getTickerAndWeights();
 
   double getCommission();
-
 }

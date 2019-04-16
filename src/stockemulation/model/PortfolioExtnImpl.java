@@ -124,7 +124,7 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
 
   @Override
   public StrategyData getStrategyByName(String strategyName) {
-    if (!this.investmentStrategies.containsKey(strategyName)){
+    if (!this.investmentStrategies.containsKey(strategyName)) {
       throw new IllegalStateException("The strategy does not exist in this portfolio");
     }
     return investmentStrategies.get(strategyName);
@@ -133,6 +133,13 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   @Override
   public List<String> getStrategiesList() {
     return new ArrayList<>(investmentStrategies.keySet());
+  }
+
+  @Override
+  public void investWithStrategy(String strategyName, LocalDateTime speifiedDate) {
+    StrategyData strategy = this.getStrategyByName(strategyName);
+    investWeighted(
+            speifiedDate, strategy.getInvestmentAmount(), strategy.getTickerAndWeights(), strategy.getCommission());
   }
 
   private JSONArray addTransactionsToFileWrite() {
@@ -154,12 +161,13 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
     for (StrategyData strategyData : investmentStrategies.values()) {
       JSONObject strategyObj = new JSONObject();
       strategyObj.put("strategyName", strategyData.getStrategyName());
-      strategyObj.put("investmentAmount", strategyData.getInvestmentAmount());
       strategyObj.put("tickerWeightsMap", strategyData.getTickerAndWeights());
+      strategyObj.put("investmentAmount", strategyData.getInvestmentAmount());
       strategyObj.put("commission", strategyData.getCommission());
       strategies.add(strategyObj);
     }
     return strategies;
   }
+
 
 }

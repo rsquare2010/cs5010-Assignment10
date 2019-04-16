@@ -60,8 +60,9 @@ public interface ModelExtn extends Model {
   void readPortfolioFromFile(String filepath)
           throws IllegalArgumentException, IOException, ParseException;
 
+  void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate);
 
-  void dollarCosrAveraging(int portfolioNumber,
+  void dollarCostAveraging(int portfolioNumber,
                            String strategyName,
                            LocalDateTime startDate,
                            LocalDateTime endDate,
