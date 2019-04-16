@@ -202,8 +202,8 @@ public class GUIControllerImpl implements GUIController, Features {
         isSuccessful = false;
         view.showErrorMessage(e.getMessage());
       }
-      if(isSuccessful) {
-        view.setStrategyList(model.getStrategyList().toArray(new String[0]));
+      if (isSuccessful) {
+        view.showMessage("Strategy created successfully.");
       }
       view.closeAddStrategyForm();
     }
@@ -482,7 +482,7 @@ public class GUIControllerImpl implements GUIController, Features {
       view.showErrorMessage(e.getMessage());
     }
     if (!isError) {
-      view.setStrategyList(model.getStrategyList().toArray(new String[0]));
+      view.showMessage("Read from file successful.");
     }
   }
 

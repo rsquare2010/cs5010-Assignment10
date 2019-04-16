@@ -44,8 +44,6 @@ public class View extends JFrame implements IView {
   private String[] portfolios = {};
   private JComboBox portfolioList;
 
-  private String[] strategies = {};
-
   private JButton createPortfolioButton;
   private JButton buyStockButton;
   private JButton createStrategyButton;
@@ -172,11 +170,6 @@ public class View extends JFrame implements IView {
     ComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(portfolioList);
     this.portfolioList.setModel(comboBoxModel);
     this.portfolioList.setSelectedIndex(this.portfolioList.getSelectedIndex());
-  }
-
-  @Override
-  public void setStrategyList(String[] strategies) {
-    this.strategies = strategies;
   }
 
   @Override
@@ -497,12 +490,14 @@ public class View extends JFrame implements IView {
     selectStrategy = new SelectStrategy(this, "Strategies");
   }
 
+  @Override
   public void showSelectStrategyForm(String[] strategies) {
     selectStrategy.pack();
     selectStrategy.setVisible(true);
     selectStrategy.setStrategies(strategies);
   }
 
+  @Override
   public void hideSelectStrategyForm() {
     selectStrategy.setVisible(false);
   }

@@ -3,10 +3,17 @@ package stockemulation.view;
 import java.awt.Frame;
 import java.io.File;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 
 import stockemulation.controller.Features;
 
+/**
+ * This is custom Dialog created by extending the JDialog class. It generates a form to select
+ * the strategy from a list of strategies so that it can be saved to a file.
+ */
 public class SelectStrategy extends CustomDialog {
 
   private String[] strategies = {};

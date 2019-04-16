@@ -88,17 +88,20 @@ public class MockModel implements ModelExtn {
   }
 
   @Override
-  public void addStrategyData(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission) {
+  public void addStrategyData(String strategyName, Map<String, Double> tickerWeightMap,
+                              double investmentAmount, double commission) {
     //Not do anything here.
   }
 
   @Override
-  public void writeStrategyToFile(String filepath, String strategyName) throws IllegalArgumentException, IOException {
+  public void writeStrategyToFile(String filepath, String strategyName) throws
+          IllegalArgumentException, IOException {
     //Not do anything here.
   }
 
   @Override
-  public void readStrategyFromFile(String filepath) throws IllegalArgumentException, IOException, ParseException {
+  public void readStrategyFromFile(String filepath) throws IllegalArgumentException,
+          IOException, ParseException {
     //Not do anything here.
   }
 
