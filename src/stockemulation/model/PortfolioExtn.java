@@ -74,6 +74,8 @@ interface PortfolioExtn extends Portfolio {
           double commission
   );
 
+  void investWithStrategy(String strategyName, LocalDateTime speifiedDate);
+
   void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission);
 
   StrategyData getStrategyByName(String strategyName);
