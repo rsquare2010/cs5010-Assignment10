@@ -2,8 +2,6 @@ package stockemulation.view;
 
 import java.util.Map;
 
-import javax.swing.*;
-
 import stockemulation.controller.Features;
 
 /**

@@ -2,13 +2,22 @@ package stockemulation.view;
 
 import com.toedter.calendar.JDateChooser;
 
-import java.awt.*;
+import java.awt.Frame;
+import java.awt.Component;
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Date;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.JDialog;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 public abstract class CustomDialog extends JDialog {

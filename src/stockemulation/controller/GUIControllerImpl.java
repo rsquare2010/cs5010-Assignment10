@@ -181,7 +181,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void createAStrategy(int portfolioNumber,String strategyName,
+  public void createAStrategy(int portfolioNumber, String strategyName,
                               Map<String, String> tickerWeights, String price, String commission) {
 
     isAllFieldsValid = true;
@@ -189,9 +189,9 @@ public class GUIControllerImpl implements GUIController, Features {
     verifyWeights(tickerWeights);
     verifyPriceForStrategyForm(price);
     verifyCommissionForStrategyForm(commission);
-    if(isAllFieldsValid) {
+    if (isAllFieldsValid) {
       Map<String, Double> weights = new HashMap<>();
-      for(Map.Entry entry : tickerWeights.entrySet()){
+      for (Map.Entry entry : tickerWeights.entrySet()) {
         weights.put(entry.getKey().toString(), Double.parseDouble(entry.getValue().toString()));
       }
       model.addStrategyToPortfolio(portfolioNumber, strategyName, weights,
@@ -203,10 +203,10 @@ public class GUIControllerImpl implements GUIController, Features {
   private void verifyStrategyName(int portfolioNumber, String name) {
     if (name != null && !(name.trim().isEmpty())) {
       List<String> strategyList = model.getStrategyListFrompPortfolio(portfolioNumber);
-      if(strategyList.contains(name)) {
+      if (strategyList.contains(name)) {
         isAllFieldsValid = false;
-        view.setStrategyFormNameError("A strategy with the same name already exists for the " +
-                "portfolio");
+        view.setStrategyFormNameError("A strategy with the same name already exists for the "
+                + "portfolio");
       }
     } else {
       view.setStrategyFormNameError(" Please Enter a valid strategy");
@@ -216,7 +216,7 @@ public class GUIControllerImpl implements GUIController, Features {
 
   private void verifyWeights(Map<String, String> weights) {
     double sum = 0.0;
-    for(Map.Entry entry : weights.entrySet()){
+    for (Map.Entry entry : weights.entrySet()) {
       verifyTickerNameForStrategyForm(entry.getKey().toString());
       if (validatePrice(entry.getValue().toString())) {
         try {
@@ -225,7 +225,7 @@ public class GUIControllerImpl implements GUIController, Features {
           isAllFieldsValid = false;
           view.setStrategyFormTickerError(e.getMessage());
         }
-        if(isAllFieldsValid) {
+        if (isAllFieldsValid) {
           sum += Double.parseDouble(entry.getValue().toString());
         }
       } else {
@@ -233,7 +233,7 @@ public class GUIControllerImpl implements GUIController, Features {
         isAllFieldsValid = false;
       }
     }
-    if(100 - sum > 0.01 || sum - 100 > 0.01) { //Check weights with precision.
+    if (100 - sum > 0.01 || sum - 100 > 0.01) { //Check weights with precision.
       isAllFieldsValid = false;
       view.setStrategyFormTickerError("sum of weights should be 100");
     }
@@ -279,7 +279,7 @@ public class GUIControllerImpl implements GUIController, Features {
   public void verifyStrategyFormAndBuy(int portfolioIndex, String strategyName, Date date) {
     isAllFieldsValid = true;
     verifyDatesForSingleStrategyBuyForm(date);
-    if(isAllFieldsValid) {
+    if (isAllFieldsValid) {
       System.out.println("All Fields Valid");
       view.closeSingleStrategyBuyForm();
     }
@@ -380,10 +380,9 @@ public class GUIControllerImpl implements GUIController, Features {
       }
     }
     verifyStartDateForDCA(startDate);
-    if(isAllFieldsValid) {
-      if(startDate.compareTo(endDate) == -1) {
-
-      } else {
+    if (isAllFieldsValid) {
+      if (startDate.compareTo(endDate) != -1) {
+        isAllFieldsValid = false;
         view.setEndDateDCAError("End date has to be greater than start date");
       }
     }
@@ -392,8 +391,8 @@ public class GUIControllerImpl implements GUIController, Features {
   @Override
   public void verifyInterval(Date startDate, Date endDate, String interval) {
     verifyStartDateForDCA(startDate);
-    verifyEndDateForDCA(startDate,endDate);
-    if(!isValidNumber(interval)) {
+    verifyEndDateForDCA(startDate, endDate);
+    if (!isValidNumber(interval)) {
       isAllFieldsValid = false;
       view.setIntervalDCAError("Please enter a number");
     } else {
@@ -402,10 +401,10 @@ public class GUIControllerImpl implements GUIController, Features {
         view.setIntervalDCAError("Interval cannot be negative");
       }
     }
-    if(isAllFieldsValid) {
+    if (isAllFieldsValid) {
       LocalDate startLocalDate = convertDateToLocalDate(startDate);
       LocalDate endLocalDate = convertDateToLocalDate(endDate);
-      if(startLocalDate.plusDays(12).isAfter(endLocalDate)) {
+      if (startLocalDate.plusDays(12).isAfter(endLocalDate)) {
         isAllFieldsValid = false;
         view.setIntervalDCAError("Interval has to be lesser than the difference between the dates");
       }

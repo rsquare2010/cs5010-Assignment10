@@ -1,11 +1,14 @@
 package stockemulation.view;
 
-import java.awt.*;
+import java.awt.Frame;
 import java.awt.event.FocusListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 
 import stockemulation.controller.Features;
 import stockemulation.controller.GUIController;
@@ -67,7 +70,7 @@ public class SingleStrategyBuyDialog extends CustomDialog {
   private Map<String, Runnable> getFormValidationListeners(Features f) {
     Map<String, Runnable> formValidation = new HashMap<>();
     formValidation.put(dateChooser.getName(),
-            () -> f.verifyDatesForSingleStrategyBuyForm(dateChooser.getDate()));
+        () -> f.verifyDatesForSingleStrategyBuyForm(dateChooser.getDate()));
     return formValidation;
   }
 

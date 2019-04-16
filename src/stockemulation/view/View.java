@@ -10,7 +10,23 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JPanel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.WindowConstants;
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -49,7 +65,6 @@ public class View extends JFrame implements IView {
   private JTabbedPane tabbedPane;
   private String[] column = {"Serial no", "Ticker", "Number of stocks"};
   private JTable table;
-  private String[][] data;
 
   /**
    * A constructor to the view class that that provides the name of the window as a parameter as
@@ -187,6 +202,7 @@ public class View extends JFrame implements IView {
   public void setPortfolioSummary(Map<String, Double> portfolioSummary) {
     tabbedPane.setVisible(true);
     tabbedPane.setSelectedIndex(0);
+    String[][] data;
 
     data = new String[portfolioSummary.size()][3];
     Set entries = portfolioSummary.entrySet();

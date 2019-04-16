@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is an implementation of the Model interface. It is a mock model used to test the
- * controller class.
+ * This is an implementation of the Model interface. It is a mock model used to test the controller
+ * class.
  */
 public class MockModel implements ModelExtn {
 
@@ -88,13 +88,15 @@ public class MockModel implements ModelExtn {
   }
 
   @Override
-  public void dollarCosrAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate, LocalDateTime endDate, int freaquencyInDays) {
-
+  public void dollarCosrAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate,
+                                  LocalDateTime endDate, int freaquencyInDays) {
+    //Not do anything here
   }
 
   @Override
-  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission) {
-
+  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String, Double>
+          tickerWeightMap, double inverstmentAmount, double commission) {
+    //Not do anything here
   }
 
   @Override

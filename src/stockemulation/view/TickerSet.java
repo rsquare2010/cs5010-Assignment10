@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
 
-public class EntrySet extends JPanel {
+
+public class TickerSet extends JPanel {
 
   private List<Ticker> entries;
 
-  public EntrySet() {
+  public TickerSet() {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     this.setAlignmentX(SwingConstants.CENTER);
     this.entries = new ArrayList<Ticker>();
@@ -52,10 +55,11 @@ public class EntrySet extends JPanel {
 
     if (entries.size() == 1) {
       entries.get(0).enableMinus(false);
-    }
-    else {
+      entries.get(0).setWeightField(100.0);//OR
+    } else {
       for (Ticker e : entries) {
         e.enableMinus(true);
+        e.setWeightField(100.0 / entries.size());//OR
       }
     }
   }

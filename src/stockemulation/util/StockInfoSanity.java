@@ -83,9 +83,9 @@ public interface StockInfoSanity {
   }
 
   /**
-   * This method checks if the time value of a transaction is valid. The application only
-   * supports trading hours between 9 am and 4 pm so any transactions with a timestamp outside of
-   * this will be considered invalid.
+   * This method checks if the time value of a transaction is valid. The application only supports
+   * trading hours between 9 am and 4 pm so any transactions with a timestamp outside of this will
+   * be considered invalid.
    *
    * @param time the time at which a transaction happens.
    * @throws IllegalArgumentException if the time provided is during non supported trading hours.
@@ -98,7 +98,7 @@ public interface StockInfoSanity {
   }
 
   static void isWeightValid(double weight) throws IllegalArgumentException {
-    if(weight <= 0.0) {
+    if (weight <= 0.0) {
       throw new IllegalArgumentException("Weight of a ticker has to be more than 0");
     } else if (weight > 100.0) {
       throw new IllegalArgumentException("Weight of a ticker should be less than 100");

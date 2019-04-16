@@ -101,8 +101,10 @@ class BuyStockDialog extends CustomDialog {
     formValidation.put(hourBox.getName(), () -> f.verifyTimeForBuyForm(getSelectedTime()));
     formValidation.put(minuteBox.getName(), () -> f.verifyTimeForBuyForm(getSelectedTime()));
 
-    formValidation.put(tickerTextField.getName(), () -> f.verifyTickerForBuyForm(tickerTextField.getText()));
-    formValidation.put(priceTextField.getName(), () -> f.verifyCostForBuyForm(priceTextField.getText()));
+    formValidation.put(tickerTextField.getName(),
+        () -> f.verifyTickerForBuyForm(tickerTextField.getText()));
+    formValidation.put(priceTextField.getName(),
+        () -> f.verifyCostForBuyForm(priceTextField.getText()));
     formValidation.put(commissionTextField.getName(),
         () -> f.verifyCommissionForBuyForm(commissionTextField.getText()));
     return formValidation;

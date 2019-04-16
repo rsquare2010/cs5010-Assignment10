@@ -2,13 +2,18 @@ package stockemulation.view;
 
 import com.toedter.calendar.JDateChooser;
 
-import java.awt.*;
+import java.awt.Frame;
 import java.awt.event.FocusListener;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 
 import stockemulation.controller.Features;
 import stockemulation.controller.GUIController;
@@ -35,7 +40,7 @@ public class DollarCostAverageDialog extends CustomDialog {
     rootPanel.add(createAlignedLabel("Choose a strategy to invest in:"));
     rootPanel.add(strategyList);
     addComponentsToRootPanel("Date to start purchases:", startDateErrorLabel, getDateComponent());
-    endDateChooser =  new JDateChooser();
+    endDateChooser = new JDateChooser();
     endDateChooser.setName("date");
     endDateChooser.setDateFormatString("yyyy-MM-dd");
     endDateChooser.setMaxSelectableDate(new Date());
@@ -45,6 +50,7 @@ public class DollarCostAverageDialog extends CustomDialog {
 
     addOptionsToRootPanel();
   }
+
   void setSelectedPortfolioIndex(int portfolioIndex) {
     this.portfolioIndex = portfolioIndex;
   }
@@ -80,11 +86,11 @@ public class DollarCostAverageDialog extends CustomDialog {
   private Map<String, Runnable> getFormValidationListeners(Features f) {
     Map<String, Runnable> formValidation = new HashMap<>();
     formValidation.put(dateChooser.getName(),
-            () -> verifyDates(f, dateChooser.getDate()));
+        () -> verifyDates(f, dateChooser.getDate()));
     formValidation.put(endDateChooser.getName(),
-            () -> f.verifyEndDateForDCA(dateChooser.getDate(), endDateChooser.getDate()));
-    formValidation.put(frequencyTextField.getName(), () -> f.verifyInterval(dateChooser.getDate()
-            , endDateChooser.getDate(), frequencyTextField.getText()));
+        () -> f.verifyEndDateForDCA(dateChooser.getDate(), endDateChooser.getDate()));
+    formValidation.put(frequencyTextField.getName(), () -> f.verifyInterval(dateChooser.getDate(),
+        endDateChooser.getDate(), frequencyTextField.getText()));
     return formValidation;
   }
 
@@ -111,9 +117,12 @@ public class DollarCostAverageDialog extends CustomDialog {
     setErrorMessage(startDateErrorLabel, message);
   }
 
-  void setEndDateErrorLabel(String message) { setErrorMessage(endDateErrorLabel, message);}
+  void setEndDateErrorLabel(String message) {
+    setErrorMessage(endDateErrorLabel, message);
+  }
 
-  void setFrequencyErrorLabel(String message) { setErrorMessage(frequencyErrorLabel, message);
+  void setFrequencyErrorLabel(String message) {
+    setErrorMessage(frequencyErrorLabel, message);
   }
 
   private String getSelectedStrategy() {

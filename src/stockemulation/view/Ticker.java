@@ -1,9 +1,11 @@
 package stockemulation.view;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.AbstractAction;
 
 public class Ticker extends JPanel {
 
@@ -11,14 +13,14 @@ public class Ticker extends JPanel {
   private JTextField weightField;
   private JButton add;
   private JButton remove;
-  private EntrySet parent;
+  private TickerSet parent;
 
-  public Ticker(String tickerFieldText, String weightFieldText, EntrySet list) {
+  public Ticker(String tickerFieldText, String weightFieldText, TickerSet list) {
     this.parent = list;
     this.add = new JButton(new AddEntryAction());
-    add.setBounds(0,0, 30,30);
+    add.setBounds(0, 0, 30, 30);
     this.remove = new JButton(new RemoveEntryAction());
-    remove.setBounds(0,0, 30,30);
+    remove.setBounds(0, 0, 30, 30);
     this.tickerField = new JTextField(10);
     this.tickerField.setText(tickerFieldText);
     this.weightField = new JTextField(10);
@@ -35,6 +37,18 @@ public class Ticker extends JPanel {
 
   public String getWeight() {
     return weightField.getText();
+  }
+
+  public void setWeightField(Double weight) {
+    weightField.setText(weight.toString());
+  }
+
+  public void enableAdd(boolean enabled) {
+    this.add.setEnabled(enabled);
+  }
+
+  public void enableMinus(boolean enabled) {
+    this.remove.setEnabled(enabled);
   }
 
   public class AddEntryAction extends AbstractAction {
@@ -58,14 +72,6 @@ public class Ticker extends JPanel {
     public void actionPerformed(ActionEvent e) {
       parent.removeItem(Ticker.this);
     }
-  }
-
-  public void enableAdd(boolean enabled) {
-    this.add.setEnabled(enabled);
-  }
-
-  public void enableMinus(boolean enabled) {
-    this.remove.setEnabled(enabled);
   }
 
 }
