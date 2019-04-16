@@ -11,6 +11,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,6 @@ import stockemulation.util.StockInfoSanity;
  * with default data source which is Alpha Vantage api and other constructor to choose the API.
  */
 public class ModelExtnImpl extends ModelImpl implements ModelExtn {
-
 
   /**
    * Default constructor that calls the default constructor of the base class and sets the api to

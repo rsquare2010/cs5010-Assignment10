@@ -4,18 +4,31 @@ import java.util.Map;
 
 import stockemulation.util.StockInfoSanity;
 
+/**
+ * Implementation class for {@link StrategyData}. This holds the information strategy name, stock
+ * composition and their distribution weights as member variables.
+ */
 class StrategyDataImpl implements StrategyData {
   private String strategyName;
   private Map<String, Double> tickerAndWeights;
   private double investmentAmount;
   private double commission;
 
+  /**
+   * Constructor for this implementation that sets the values for the member data.
+   *
+   * @param strategyName     the name of this strategy.
+   * @param tickerAndWeights map of the stock composition and their distribution weights,
+   * @param investmentAmount the total amount to be invested in this strategy.
+   * @param commission       the commission amount to be paid to make this investment.
+   * @throws IllegalArgumentException if the names of the inputs are invalid.
+   */
   StrategyDataImpl(
           String strategyName,
           Map<String, Double> tickerAndWeights,
           double investmentAmount,
           double commission
-  ) throws IllegalArgumentException{
+  ) throws IllegalArgumentException {
     if (strategyName == null || strategyName.equals("")) {
       throw new IllegalArgumentException("Strategy name cannot be null or empty");
     }
