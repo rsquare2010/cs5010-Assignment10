@@ -82,7 +82,7 @@ class TickerSet extends JPanel {
     } else {
       for (Ticker e : entries) {
         e.enableMinus(true);
-        Double value = 100.0/ entries.size();
+        Double value = 100.0 / entries.size();
         DecimalFormat two = new DecimalFormat("#0.00");
         e.setWeightField(two.format(value));
       }

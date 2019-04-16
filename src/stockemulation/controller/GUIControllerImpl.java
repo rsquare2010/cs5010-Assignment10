@@ -268,7 +268,7 @@ public class GUIControllerImpl implements GUIController, Features {
         view.showErrorMessage(e.getMessage());
       }
       view.closeBuyStocksForm();
-      if(isSuccessfull) {
+      if (isSuccessfull) {
         view.showMessage("Operation successful");
       }
     }
@@ -298,10 +298,9 @@ public class GUIControllerImpl implements GUIController, Features {
         view.showErrorMessage(e.getMessage());
       }
       view.closeSingleStrategyBuyForm();
-      if(isSuccessful) {
+      if (isSuccessful) {
         view.showMessage("Operation successful");
       }
-
     }
   }
 
@@ -452,6 +451,26 @@ public class GUIControllerImpl implements GUIController, Features {
       }
     }
 
+  }
+
+  @Override
+  public void saveStrategy(String fileName, String strategyName) {
+//    try {
+//      model.writePortfolioToFile(filePath, portfolioIndex);
+//    } catch (IOException | IllegalArgumentException e) {
+//      view.showErrorMessage(e.getMessage());
+//    }
+  }
+
+  @Override
+  public void readStrategyFromFile(String filePath) {
+//    boolean isError = false;
+//    try {
+////      model.readPortfolioFromFile(filePath);
+//    } catch (IllegalArgumentException | ParseException | IOException e) {
+//      isError = true;
+//      view.showErrorMessage(e.getMessage());
+//    }
   }
 
   @Override

@@ -58,12 +58,6 @@ public class MockModel implements ModelExtn {
   }
 
   @Override
-  public void addStock(int portfolioNumber, LocalDateTime date, String ticker, double costPerUnit,
-                       double quantity, double commission) throws IllegalArgumentException {
-    //Not do anything here.
-  }
-
-  @Override
   public boolean createPortfolio(String portfolioName) {
     return "test".matches(portfolioName);
   }

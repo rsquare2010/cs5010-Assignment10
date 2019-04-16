@@ -63,7 +63,8 @@ public class DollarCostAverageCommand extends CommonCommands {
     int interval = getInt(scanner, view);
     boolean isSuccess = true;
     try {
-      model.dollarCostAveraging(portfolioNumber, strategyName, startdateTime, endDateTime, interval);
+      model.dollarCostAveraging(portfolioNumber, strategyName, startdateTime, endDateTime,
+              interval);
     } catch (IllegalArgumentException e) {
       isSuccess = false;
       view.showMessage("Operation failed: " + e.getMessage());

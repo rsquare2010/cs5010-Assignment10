@@ -7,9 +7,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -106,11 +104,13 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
   }
 
   @Override
-  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission) {
+  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String,
+          Double> tickerWeightMap, double inverstmentAmount, double commission) {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
       throw new IllegalArgumentException("Invalid Portfolio number");
     }
-    portfolios.get(portfolioNumber).createAndUpdateStrategy(strategyName, tickerWeightMap, inverstmentAmount, commission);
+    portfolios.get(portfolioNumber).createAndUpdateStrategy(strategyName, tickerWeightMap,
+            inverstmentAmount, commission);
   }
 
   @Override
@@ -123,14 +123,16 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
 
 
   @Override
-  public void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate) {
+  public void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime
+          investmentDate) {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
       throw new IllegalArgumentException("Invalid Portfolio number");
     }
     portfolios.get(portfolioNumber).investWithStrategy(strategyName, investmentDate);
   }
 
-  private void addStock(int portfolioNumber, LocalDateTime date, String ticker, double costPerUnit, double quantity, double commission) throws IllegalArgumentException {
+  private void addStock(int portfolioNumber, LocalDateTime date, String ticker, double costPerUnit,
+                        double quantity, double commission) throws IllegalArgumentException {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
       throw new IllegalArgumentException("Invalid Portfolio number");
     }

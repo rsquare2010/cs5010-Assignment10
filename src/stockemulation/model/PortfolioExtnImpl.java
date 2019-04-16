@@ -63,7 +63,8 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
-  public void addShares(String tickerName, double costPerUnit, double quantity, LocalDateTime specifiedDate, double commission) throws IllegalArgumentException {
+  public void addShares(String tickerName, double costPerUnit, double quantity, LocalDateTime
+          specifiedDate, double commission) throws IllegalArgumentException {
     StockInfoSanity.isTickerValid(tickerName);
     StockInfoSanity.isDateTimeValid(specifiedDate);
     StockInfoSanity.isCommissionValid(commission);
@@ -100,7 +101,8 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
-  public void investWeighted(LocalDateTime investmentDate, double totalInvestmentAmount, Map<String, Double> stockWeights, double commission) {
+  public void investWeighted(LocalDateTime investmentDate, double totalInvestmentAmount,
+                             Map<String, Double> stockWeights, double commission) {
     LocalDateTime requiredDate = getMarketOpenDate(investmentDate);
 
     for (Map.Entry<String, Double> entry : stockWeights.entrySet()) {
@@ -114,7 +116,8 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
-  public void investEqual(LocalDateTime investmentDate, double totalInvestmentAmount, double commission) {
+  public void investEqual(LocalDateTime investmentDate, double totalInvestmentAmount,
+                          double commission) {
     LocalDateTime requiredDate = getMarketOpenDate(investmentDate);
     double weightedAmountPerStock = totalInvestmentAmount / uniqueTickerList.size();
     for (String tickerName : this.uniqueTickerList.keySet()) {
@@ -127,7 +130,8 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
-  public void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission) {
+  public void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap,
+                                      double investmentAmount, double commission) {
     this.investmentStrategies.put(
             strategyName,
             new StrategyDataImpl(strategyName, tickerWeightMap, investmentAmount, commission)
@@ -152,7 +156,8 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
     LocalDateTime requiredDate = getMarketOpenDate(investmentDate);
     StrategyData strategy = this.getStrategyByName(strategyName);
     investWeighted(
-            requiredDate, strategy.getInvestmentAmount(), strategy.getTickerAndWeights(), strategy.getCommission());
+            requiredDate, strategy.getInvestmentAmount(), strategy.getTickerAndWeights(),
+            strategy.getCommission());
   }
 
   private LocalDateTime getMarketOpenDate(LocalDateTime investmentDate) {
