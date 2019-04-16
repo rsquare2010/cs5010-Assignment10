@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This is a test class used to test EmulatorModelImpl which is an implementation of the Emulator
+ * This is a test class used to test ModelImpl which is an implementation of the Emulator
  * Model class.
  */
 public class EmulatorModelImplTest {
@@ -26,7 +26,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testConstructor() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     assertEquals("Number of Portfolios: 0", testEmulator.toString());
   }
 
@@ -34,7 +34,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testCreatePortfolioOnEmpty() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample");
     List<String> testStringList = new LinkedList<>();
     testStringList.add("sample");
@@ -43,7 +43,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testCreatePortfolioOnNonEmpty() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
 
@@ -57,7 +57,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testCreatePortfolioExceptionOnExisting() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     exception.expect(IllegalArgumentException.class);
     exception.expectMessage("Portfolio title already exists");
@@ -70,7 +70,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testBuyStockValid() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -85,7 +85,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testBuyStockValidMultiple() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -102,7 +102,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testBuyStockInvalidPortfolioNumber() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -113,7 +113,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testBuyStockInvalidPortfolioNumberNegative() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -124,7 +124,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testBuyStockInvalidTickerName() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -136,7 +136,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testBuyStockInvalidValue() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -148,7 +148,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testBuyStockExceptionNullTickerOrDateTime() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -163,7 +163,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testGetCostBasisInvalidPortfolioNumber() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -174,7 +174,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testCostBasisInvalidPortfolioNumberNegative() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -185,7 +185,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testCostBasisValid() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -203,7 +203,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testGetTotalValueInvalidPortfolioNumber() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -214,7 +214,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testGetTotalValueInvalidPortfolioNumberNegative() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -225,7 +225,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testGetTotalValueBasisValid() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");
@@ -240,7 +240,7 @@ public class EmulatorModelImplTest {
 
   @Test
   public void testGetTotalValueBasisValidLaterDate() {
-    EmulatorModel testEmulator = new EmulatorModelImpl(APITypes.MOCK_API);
+    Model testEmulator = new ModelImpl(APITypes.MOCK_API);
     testEmulator.createPortfolio("sample1");
     testEmulator.createPortfolio("sample2");
     LocalDateTime dateTime = LocalDateTime.parse("2014-02-03T12:34");

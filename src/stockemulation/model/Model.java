@@ -9,7 +9,7 @@ import java.util.Map;
  * Emulator application. This allows a user to perform operations like: 1.Create a portfolio.
  * 2.Check contents of a portfolio. 3.Buy stocks. 4.Check value of a portfolio.
  */
-public interface EmulatorModel {
+public interface Model {
 
 
   // CORE FEATURES //

@@ -4,13 +4,15 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
- * This is the extended interface class for {@link EmulatorModel}. The extension includes buying
+ * This is the extended interface class for {@link Model}. The extension includes buying
  * shares of a stock along with a commission cost fot tha transaction, the ability to write
  * portfolio to a file and read portfolio from a file.
  */
-public interface ModelExtn extends EmulatorModel {
+public interface ModelExtn extends Model {
 
   /**
    * This methods lets the controller add a stock purchase to the selected portfolio. In the process
@@ -57,4 +59,23 @@ public interface ModelExtn extends EmulatorModel {
    */
   void readPortfolioFromFile(String filepath)
           throws IllegalArgumentException, IOException, ParseException;
+
+
+  void dollarCosrAveraging(int portfolioNumber,
+                           String strategyName,
+                           LocalDateTime startDate,
+                           LocalDateTime endDate,
+                           int freaquencyInDays);
+
+  void addStrategyToPortfolio(int portfolioNumber,
+                              String strategyName,
+                              Map<String, Double> tickerWeightMap,
+                              double inverstmentAmount,
+                              double commission);
+  List<String> getStrategyListFrompPortfolio(int portfolioNumber);
+
+
+
+
+
 }

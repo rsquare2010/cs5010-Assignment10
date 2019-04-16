@@ -6,6 +6,11 @@ import org.json.simple.JSONObject;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import stockemulation.util.StockInfoSanity;
 
@@ -19,6 +24,7 @@ import stockemulation.util.StockInfoSanity;
  */
 class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
 
+  Map<String, StrategyData> investmentStrategies;
 
   /**
    * Constructor that sets the data source reference, title of portfolio by calling the parent
@@ -31,6 +37,7 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
    */
   PortfolioExtnImpl(String title, API dataSource) throws IllegalArgumentException {
     super(title, dataSource);
+    this.investmentStrategies = new HashMap<>();
   }
 
   @Override
@@ -60,18 +67,10 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
     JSONObject obj = new JSONObject();
 
     obj.put("title", this.title);
-    JSONArray transactions = new JSONArray();
-    for (StockDataExtn stock : stockPurchaseList) {
-      JSONObject stockObj = new JSONObject();
-      stockObj.put("ticker", stock.getName());
-      stockObj.put("purchaseDate", stock.getPurchaseDate().toString());
-      stockObj.put("costPerUnit", stock.getCostPrice());
-      stockObj.put("quantity", stock.getQuantity());
-      stockObj.put("commission", stock.getCommission());
-      transactions.add(stockObj);
-    }
-    obj.put("transactions", transactions);
 
+    obj.put("transactions", addTransactionsToFileWrite());
+
+    obj.put("strategies", addStrategiesToFileWrite());
 
     try (FileWriter file = new FileWriter(filepath)) {
       file.write(obj.toJSONString());
@@ -89,4 +88,77 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
             .mapToDouble(s -> (s.getQuantity() * s.getCostPrice() + s.getCommission()))
             .sum();
   }
+
+  @Override
+  public void investWeighted(LocalDateTime investmentDate, double totalInvestmentAmount, Map<String, Double> stockWeights, double commission) {
+    StockInfoSanity.isDateTimeValid(investmentDate);
+    for (Map.Entry<String, Double> entry : stockWeights.entrySet()) {
+      this.buyShares(
+              entry.getKey(),
+              entry.getValue() * totalInvestmentAmount / 100,
+              investmentDate,
+              commission
+      );
+    }
+  }
+
+  @Override
+  public void investEqual(LocalDateTime investmentDate, double totalInvestmentAmount, double commission) {
+    double weightedAmountPerStock = totalInvestmentAmount / uniqueTickerList.size();
+    for (String tickerName : this.uniqueTickerList.keySet()) {
+      this.buyShares(
+              tickerName,
+              weightedAmountPerStock,
+              investmentDate,
+              commission);
+    }
+  }
+
+  @Override
+  public void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission) {
+    this.investmentStrategies.put(
+            strategyName,
+            new StrategyDataImpl(strategyName, tickerWeightMap, inverstmentAmount, commission)
+    );
+  }
+
+  @Override
+  public StrategyData getStrategyByName(String strategyName) {
+    if (!this.investmentStrategies.containsKey(strategyName)){
+      throw new IllegalStateException("The strategy does not exist in this portfolio");
+    }
+    return investmentStrategies.get(strategyName);
+  }
+
+  @Override
+  public List<String> getStrategiesList() {
+    return new ArrayList<>(investmentStrategies.keySet());
+  }
+
+  private JSONArray addTransactionsToFileWrite() {
+    JSONArray transactions = new JSONArray();
+    for (StockDataExtn stock : stockPurchaseList) {
+      JSONObject stockObj = new JSONObject();
+      stockObj.put("ticker", stock.getName());
+      stockObj.put("purchaseDate", stock.getPurchaseDate().toString());
+      stockObj.put("costPerUnit", stock.getCostPrice());
+      stockObj.put("quantity", stock.getQuantity());
+      stockObj.put("commission", stock.getCommission());
+      transactions.add(stockObj);
+    }
+    return transactions;
+  }
+
+  private JSONArray addStrategiesToFileWrite() {
+    JSONArray strategies = new JSONArray();
+    for (StrategyData strategyData : investmentStrategies.values()) {
+      JSONObject strategyObj = new JSONObject();
+      strategyObj.put("strategyName", strategyData.getStrategyName());
+      strategyObj.put("investmentAmount", strategyData.getInvestmentAmount());
+      strategyObj.put("tickerWeightsMap", strategyData.getTickerAndWeights());
+      strategyObj.put("commission", strategyData.getCommission());
+    }
+    return strategies;
+  }
+
 }

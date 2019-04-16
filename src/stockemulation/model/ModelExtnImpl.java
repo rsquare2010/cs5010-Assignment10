@@ -9,14 +9,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import stockemulation.util.StockInfoSanity;
 
 /**
  * This is an implementation of {@link ModelExtn} and has some of the implementations directly taken
- * from {@link EmulatorModelImpl} by extending it. This provide two constructors, one to create the
- * object with default data source which is Alpha Vantage api and other constructor to choose the
- * API.
+ * from {@link ModelImpl} by extending it. This provide two constructors, one to create the object
+ * with default data source which is Alpha Vantage api and other constructor to choose the API.
  */
-public class ModelExtnImpl extends EmulatorModelImpl implements ModelExtn {
+public class ModelExtnImpl extends ModelImpl implements ModelExtn {
 
 
   /**
@@ -59,6 +63,8 @@ public class ModelExtnImpl extends EmulatorModelImpl implements ModelExtn {
 
   }
 
+  // TODO: Update to add the new functionality
+
   @Override
   public void readPortfolioFromFile(String filepath) throws IllegalArgumentException, IOException,
           ParseException {
@@ -89,5 +95,26 @@ public class ModelExtnImpl extends EmulatorModelImpl implements ModelExtn {
               commission
       );
     }
+  }
+
+  @Override
+  public void dollarCosrAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate, LocalDateTime endDate, int freaquencyInDays) {
+    // TODO:
+  }
+
+  @Override
+  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission) {
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+    portfolios.get(portfolioNumber).createAndUpdateStrategy(strategyName, tickerWeightMap, inverstmentAmount, commission);
+  }
+
+  @Override
+  public List<String> getStrategyListFrompPortfolio(int portfolioNumber) {
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+    return portfolios.get(portfolioNumber).getStrategiesList();
   }
 }

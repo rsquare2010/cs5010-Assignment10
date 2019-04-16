@@ -1,0 +1,31 @@
+
+#### Files and Folders to Ignore ####
+
+## Files ##
+/*
+
+
+## Folders ##
+/*/
+/out/
+
+#### Files and Folders to Include ####
+
+## Files ##
+!/README.md
+!/NOTES.md
+!/TODO.md
+!/.gitignore
+!/CHANGELOG_*.md
+!/TODO_*.md
+
+
+## Folders ##
+!/src/
+!/test/
+!/res/
+
+
+
+
+

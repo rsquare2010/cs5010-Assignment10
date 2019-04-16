@@ -64,7 +64,7 @@ public interface StockInfoSanity {
    * @throws IllegalArgumentException if the price is invalid.
    */
   static void isPriceValid(double price) throws IllegalArgumentException {
-    if (price < 0) {
+    if (price <= 0) {
       throw new IllegalArgumentException("Price of stock to be bought cannot be negative");
     }
   }
