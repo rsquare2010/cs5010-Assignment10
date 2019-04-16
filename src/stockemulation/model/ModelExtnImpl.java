@@ -6,10 +6,12 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,12 +28,15 @@ import stockemulation.util.StockInfoSanity;
  */
 public class ModelExtnImpl extends ModelImpl implements ModelExtn {
 
+  Map<String, StrategyData> investmentStrategies;
+
   /**
    * Default constructor that calls the default constructor of the base class and sets the api to
    * the efault Alpha vantage api.
    */
   public ModelExtnImpl() {
     super();
+    this.investmentStrategies = new HashMap<>();
   }
 
   /**
@@ -41,6 +46,7 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
    */
   public ModelExtnImpl(APITypes datasourcetype) {
     super(datasourcetype);
+    this.investmentStrategies = new HashMap<>();
   }
 
   @Override
@@ -77,8 +83,66 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     createPortfolio(title);
 
     readTransactionFromPortfolioFile(jsonObject);
-    readStrategiesFromPortfolioFile(jsonObject);
 
+  }
+
+  @Override
+  public void addStrategyData(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission) {
+    this.investmentStrategies.put(
+            strategyName,
+            new StrategyDataImpl(strategyName, tickerWeightMap, investmentAmount, commission)
+    );
+  }
+
+  @Override
+  public void writeStrategyToFile(String filepath, String strategyName) throws IllegalArgumentException, IOException {
+    StrategyData strategyData = investmentStrategies.get(strategyName);
+    JSONObject strategyObj = new JSONObject();
+    strategyObj.put("strategyName", strategyData.getStrategyName());
+    strategyObj.put("tickerWeightsMap", strategyData.getTickerAndWeights());
+    strategyObj.put("investmentAmount", strategyData.getInvestmentAmount());
+    strategyObj.put("commission", strategyData.getCommission());
+
+    try (FileWriter file = new FileWriter(filepath)) {
+      file.write(strategyObj.toJSONString());
+      file.flush();
+    } catch (IOException e) {
+      throw new IOException(e);
+    }
+  }
+
+  @Override
+  public void readStrategyFromFile(String filepath) throws IllegalArgumentException, IOException, ParseException {
+    JSONParser parser = new JSONParser();
+    Object obj = parser.parse(new FileReader(filepath));
+    JSONObject jsonObject = (JSONObject) obj;
+
+    addStrategyData(
+            (String) jsonObject.get("strategyName"),
+            (Map<String, Double>) jsonObject.get("tickerWeightsMap"),
+            (double) jsonObject.get("investmentAmount"),
+            (double) jsonObject.get("commission")
+    );
+  }
+
+  @Override
+  public void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate) {
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+    StrategyData strategy = investmentStrategies.get(strategyName);
+    portfolios.get(portfolioNumber).investWeighted(
+            investmentDate,
+            strategy.getInvestmentAmount(),
+            strategy.getTickerAndWeights(),
+            strategy.getCommission()
+    );
+  }
+
+
+  @Override
+  public List<String> getStrategyList() {
+    return new ArrayList<>(investmentStrategies.keySet());
   }
 
   @Override
@@ -97,7 +161,7 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     }
 
     PortfolioExtn portfolio = portfolios.get(portfolioNumber);
-    StrategyData strategy = portfolio.getStrategyByName(strategyName);
+    StrategyData strategy = investmentStrategies.get(strategyName);
     LocalDateTime currentDate = startDate;
     if (endDate == null) {
       endDate = LocalDateTime.now();
@@ -105,35 +169,10 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
 
     while (currentDate.isBefore(endDate)) {
 
-      portfolio.investWithStrategy(strategyName, currentDate);
+      investWithStrategy(portfolioNumber, strategyName, currentDate);
 
       currentDate = currentDate.plusDays(freaquencyInDays);
     }
-  }
-
-  @Override
-  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission) {
-    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
-      throw new IllegalArgumentException("Invalid Portfolio number");
-    }
-    portfolios.get(portfolioNumber).createAndUpdateStrategy(strategyName, tickerWeightMap, inverstmentAmount, commission);
-  }
-
-  @Override
-  public List<String> getStrategyListFrompPortfolio(int portfolioNumber) {
-    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
-      throw new IllegalArgumentException("Invalid Portfolio number");
-    }
-    return portfolios.get(portfolioNumber).getStrategiesList();
-  }
-
-
-  @Override
-  public void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate) {
-    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
-      throw new IllegalArgumentException("Invalid Portfolio number");
-    }
-    portfolios.get(portfolioNumber).investWithStrategy(strategyName, investmentDate);
   }
 
   private void addStock(int portfolioNumber, LocalDateTime date, String ticker, double costPerUnit, double quantity, double commission) throws IllegalArgumentException {
@@ -159,25 +198,6 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
       );
     }
   }
-
-  private void readStrategiesFromPortfolioFile(JSONObject jsonObject) {
-    if (!jsonObject.containsKey("strategies")) {
-      return;
-    }
-    JSONArray strategies = (JSONArray) jsonObject.get("strategies");
-    Iterator<JSONObject> iterator = strategies.iterator();
-    while (iterator.hasNext()) {
-      JSONObject strategyObj = iterator.next();
-      addStrategyToPortfolio(
-              portfolios.size() - 1,
-              (String) strategyObj.get("strategyName"),
-              (Map<String, Double>) strategyObj.get("tickerWeightsMap"),
-              (double) strategyObj.get("investmentAmount"),
-              (double) strategyObj.get("commission")
-      );
-    }
-  }
-
 
 }
 

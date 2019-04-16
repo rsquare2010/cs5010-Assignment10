@@ -25,8 +25,6 @@ import stockemulation.util.StockInfoSanity;
  */
 class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
 
-  Map<String, StrategyData> investmentStrategies;
-
   /**
    * Constructor that sets the data source reference, title of portfolio by calling the parent
    * constructor and passing along the arguments it takes. Propagates and error thrown by the base
@@ -38,7 +36,6 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
    */
   PortfolioExtnImpl(String title, API dataSource) throws IllegalArgumentException {
     super(title, dataSource);
-    this.investmentStrategies = new HashMap<>();
   }
 
   @Override
@@ -80,8 +77,6 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
     obj.put("title", this.title);
 
     obj.put("transactions", addTransactionsToFileWrite());
-
-    obj.put("strategies", addStrategiesToFileWrite());
 
     try (FileWriter file = new FileWriter(filepath)) {
       file.write(obj.toJSONString());
@@ -127,35 +122,6 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
     }
   }
 
-  @Override
-  public void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission) {
-    this.investmentStrategies.put(
-            strategyName,
-            new StrategyDataImpl(strategyName, tickerWeightMap, investmentAmount, commission)
-    );
-  }
-
-  @Override
-  public StrategyData getStrategyByName(String strategyName) {
-    if (!this.investmentStrategies.containsKey(strategyName)) {
-      throw new IllegalStateException("The strategy does not exist in this portfolio");
-    }
-    return investmentStrategies.get(strategyName);
-  }
-
-  @Override
-  public List<String> getStrategiesList() {
-    return new ArrayList<>(investmentStrategies.keySet());
-  }
-
-  @Override
-  public void investWithStrategy(String strategyName, LocalDateTime investmentDate) {
-    LocalDateTime requiredDate = getMarketOpenDate(investmentDate);
-    StrategyData strategy = this.getStrategyByName(strategyName);
-    investWeighted(
-            requiredDate, strategy.getInvestmentAmount(), strategy.getTickerAndWeights(), strategy.getCommission());
-  }
-
   private LocalDateTime getMarketOpenDate(LocalDateTime investmentDate) {
     while (investmentDate.isBefore(LocalDateTime.now())) {
       try {
@@ -181,19 +147,6 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
       transactions.add(stockObj);
     }
     return transactions;
-  }
-
-  private JSONArray addStrategiesToFileWrite() {
-    JSONArray strategies = new JSONArray();
-    for (StrategyData strategyData : investmentStrategies.values()) {
-      JSONObject strategyObj = new JSONObject();
-      strategyObj.put("strategyName", strategyData.getStrategyName());
-      strategyObj.put("tickerWeightsMap", strategyData.getTickerAndWeights());
-      strategyObj.put("investmentAmount", strategyData.getInvestmentAmount());
-      strategyObj.put("commission", strategyData.getCommission());
-      strategies.add(strategyObj);
-    }
-    return strategies;
   }
 
 

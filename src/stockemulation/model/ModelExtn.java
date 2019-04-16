@@ -50,8 +50,7 @@ public interface ModelExtn extends Model {
    * into the program. The portfolio file should be  JSON file of the following format for the
    * content: {"title":"titlename", "transactions":[{"ticker":"tickername",
    * "purchaseDate":"datestring in LocalDateTime format", "quantity":value,"commission":value,
-   * "costPerUnit":value}, {}...], strategies: [{strategyName: name, tickerWeightsMap:{map},
-   * investmentAmount:amount, commission:commission},{},....]}.
+   * "costPerUnit":value}, {}...]}.
    *
    * @param filepath the path where the portfolio file is located.
    * @throws IllegalArgumentException if the file path is empty or null.
@@ -61,32 +60,48 @@ public interface ModelExtn extends Model {
   void readPortfolioFromFile(String filepath)
           throws IllegalArgumentException, IOException, ParseException;
 
+
+  // TODO _____________
+
   /**
-   * This function adds a specified elemental investment strategy data to the selected portfolio.
-   * Takes in the following inputs and throws error if the operation fails or if the inputs are
-   * invalid.
+   * This function adds a specified elemental investment strategy data. Takes in the following
+   * inputs and throws error if the operation fails or if the inputs are invalid.
    *
-   * @param portfolioNumber  the portfolio in which the strategy has to be added.
    * @param strategyName     name of the strategy.
    * @param tickerWeightMap  map of stock composition to their distribution weights.
    * @param investmentAmount the total amount that has to be invested using this strategy.
    * @param commission       the amount to be paid for each stock purchase in this investment.
    */
-  void addStrategyToPortfolio(int portfolioNumber,
-                              String strategyName,
-                              Map<String, Double> tickerWeightMap,
-                              double investmentAmount,
-                              double commission);
+  void addStrategyData(
+          String strategyName,
+          Map<String, Double> tickerWeightMap,
+          double investmentAmount,
+          double commission);
 
   /**
-   * This returns a list of the strategies in a selected portfolio as their string names. If the
-   * portfolio doesn't exits throws an error.
+   * This method writes the details stored in the selected strategy into a json file specified in
+   * the path. Throws an error if it is not able to complete the process or if the strategy doesnt
+   * exist.
    *
-   * @param portfolioNumber the portfolio from which the list of strategy names have to be obtained
-   *                        from.
-   * @return a list of the strategies in a selected portfolio as their string names.
+   * @param strategyName the strategy which has to be written to a json file.
+   * @param filepath     the path where the portfolio has to be written.
+   * @throws IOException if the write process is not successful or if portfolio doesnt exist.
    */
-  List<String> getStrategyListFrompPortfolio(int portfolioNumber);
+  void writeStrategyToFile(String filepath, String strategyName)
+          throws IllegalArgumentException, IOException;
+
+  /**
+   * This method reads the strategy details stored in a file at the specified path and loads it into
+   * the program. The strategy file should be  JSON file of the following format for the content:
+   * {strategyName: name, tickerWeightsMap:{map}, investmentAmount:amount, commission:commission}.
+   *
+   * @param filepath the path where the strategy file is located.
+   * @throws IllegalArgumentException if the file path is empty or null.
+   * @throws IOException              it cannot load the file or if it doesn't exist.
+   * @throws ParseException           if it cannot read from the loaded file,
+   */
+  void readStrategyFromFile(String filepath)
+          throws IllegalArgumentException, IOException, ParseException;
 
   /**
    * This is a one time investment in a portfolio with a selected elementary strategy. If either of
@@ -100,6 +115,13 @@ public interface ModelExtn extends Model {
    * @param investmentDate  the date at which this investment has to be made.
    */
   void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate);
+
+  /**
+   * This returns a list of the strategies as their string names.
+   *
+   * @return a list of the strategies as their string names.
+   */
+  List<String> getStrategyList();
 
   /**
    * TODO:
