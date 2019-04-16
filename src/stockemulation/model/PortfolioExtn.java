@@ -61,6 +61,24 @@ interface PortfolioExtn extends Portfolio {
    */
   void writeToFile(String filepath) throws IOException;
 
+
+  /**
+   * This helps to create a new object of type {@link StrategyData} or update an existing one to the
+   * strategy collection. This inputs are used to construct the implementation of the strategy
+   * data.
+   *
+   * @param strategyName    the name for the strategy that has to be added or updated.
+   * @param tickerWeightMap the map of stock composition to the weight distribution.
+   * @param investmentAmount the total amount to invest.
+   * @param commission the value to be paid for each but in this investment.
+   *
+   */
+  void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission);
+
+  StrategyData getStrategyByName(String strategyName);
+
+  List<String> getStrategiesList();
+
   /**
    * This is an elementary investment operation. This takes in a composition of stocks to invest in
    * and their distribution weights for the total investment amount, along with the commission. Then
@@ -87,9 +105,9 @@ interface PortfolioExtn extends Portfolio {
    * performed on a specific date. if it is not possible to invest on that date because of a
    * holiday. It will make the investment in the next possible date.
    *
-   * @param investmentDate the date at which this investment has to be made.
+   * @param investmentDate        the date at which this investment has to be made.
    * @param totalInvestmentAmount the amount that has to be invested,
-   * @param commission the amount to be paid for this each buy in this investment.
+   * @param commission            the amount to be paid for this each buy in this investment.
    */
   void investEqual(
           LocalDateTime investmentDate,
@@ -97,14 +115,16 @@ interface PortfolioExtn extends Portfolio {
           double commission
   );
 
-  void investWithStrategy(String strategyName, LocalDateTime speifiedDate);
-
-  void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission);
-
-  StrategyData getStrategyByName(String strategyName);
-
-  List<String> getStrategiesList();
-
+  /**
+   * This is an elementary invetment operation. This uses on of the existing strategy to do the
+   * investment on a particular date. If it is not possible to invest on that date because of a *
+   * holiday. It will make the investment in the next possible date.
+   *
+   * @param strategyName  the name of the strategy which has to be used for this elementary
+   *                      investment.
+   * @param specifiedDate the date at which this strategy has sto be sued to invest.
+   */
+  void investWithStrategy(String strategyName, LocalDateTime specifiedDate);
   // TODO: -------------------------- End ----------------------------- //
 
 }
