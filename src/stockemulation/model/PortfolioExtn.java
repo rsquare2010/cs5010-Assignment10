@@ -11,7 +11,9 @@ import java.util.Set;
  * This is the extended interface class for {@link Portfolio}. The extension includes buying shares
  * of a stock along with a commission cost fot tha transaction. having a feature to compute the cost
  * basis of the portfolio along with the commission details and the ability to write portfolio to a
- * file.
+ * file. This extension also includes elementary/one-time investment functions along with investing
+ * using a strategy. Ways to create new strategy data of the type {@link StrategyData} and getters
+ * to fetch individual and a list of strategies.
  */
 interface PortfolioExtn extends Portfolio {
 
@@ -59,8 +61,18 @@ interface PortfolioExtn extends Portfolio {
    */
   void writeToFile(String filepath) throws IOException;
 
-  // TODO: -------------------------- Assignment 10 ----------------------------- //
-
+  /**
+   * This is an elementary investment operation. This takes in a composition of stocks to invest in
+   * and their distribution weights for the total investment amount, along with the commission. Then
+   * buys shares for the stocks, don't exist in the portfolio it gets added while buying. The whole
+   * operation is performed on a specific date. if it is not possible to invest on that date because
+   * of a holiday. It will make the investment in the next possible date.
+   *
+   * @param investmentDate        the date at which the investment has to be made.
+   * @param totalInvestmentAmount the amount that has to be invested,
+   * @param stockWeights          the map of stock composition and distribution weights.
+   * @param commission            the amount to be paid for this each buy in this investment.
+   */
   void investWeighted(
           LocalDateTime investmentDate,
           double totalInvestmentAmount,
@@ -68,6 +80,17 @@ interface PortfolioExtn extends Portfolio {
           double commission
   );
 
+
+  /**
+   * This is an elementary investment operation. This invests a certain amount by distributing the
+   * value on each of the stock that exists in this portfolio equally. The whole operation is
+   * performed on a specific date. if it is not possible to invest on that date because of a
+   * holiday. It will make the investment in the next possible date.
+   *
+   * @param investmentDate the date at which this investment has to be made.
+   * @param totalInvestmentAmount the amount that has to be invested,
+   * @param commission the amount to be paid for this each buy in this investment.
+   */
   void investEqual(
           LocalDateTime investmentDate,
           double totalInvestmentAmount,
