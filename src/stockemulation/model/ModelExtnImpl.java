@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,6 @@ import java.util.Map;
  * with default data source which is Alpha Vantage api and other constructor to choose the API.
  */
 public class ModelExtnImpl extends ModelImpl implements ModelExtn {
-
 
   /**
    * Default constructor that calls the default constructor of the base class and sets the api to
@@ -157,10 +157,11 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     Iterator<JSONObject> iterator = strategies.iterator();
     while (iterator.hasNext()) {
       JSONObject strategyObj = iterator.next();
+      System.out.println(strategyObj.toJSONString());
       addStrategyToPortfolio(
               portfolios.size() - 1,
               (String) strategyObj.get("strategyName"),
-              (Map<String, Double>) strategyObj.get("tickerWeightMap"),
+              (Map<String, Double>) strategyObj.get("tickerWeightsMap"),
               (double) strategyObj.get("investmentAmount"),
               (double) strategyObj.get("commission")
       );

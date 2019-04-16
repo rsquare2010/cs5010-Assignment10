@@ -53,7 +53,7 @@ public class OneTimeStrategyBuyCommand extends CommonCommands {
     LocalDateTime dateTime = LocalDateTime.of(date, time);
     boolean isSuccess = true;
     try {
-      //model.dollarCosrAveraging(portfolioNumber, strategyName, dateTime, dateTime, 0);
+      model.investWithStrategy(portfolioNumber, strategyName, dateTime);
     } catch (IllegalArgumentException e) {
       isSuccess = false;
       view.showMessage("Operation failed: " + e.getMessage());

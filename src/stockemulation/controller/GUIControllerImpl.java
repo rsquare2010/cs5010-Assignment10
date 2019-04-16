@@ -259,9 +259,18 @@ public class GUIControllerImpl implements GUIController, Features {
     verifyCommissionForBuyForm(commission);
     if (isAllFieldsValid) {
       LocalDateTime localDateTime = convertDateToLocalDate(date).atTime(time);
-      model.buyStock(portfolioIndex, localDateTime, ticker, Double.parseDouble(cost),
-              Double.parseDouble(commission)); //FIXME catch exceptions.
+      boolean isSuccessfull = true;
+      try {
+        model.buyStock(portfolioIndex, localDateTime, ticker, Double.parseDouble(cost),
+                Double.parseDouble(commission));
+      } catch (IllegalArgumentException e) {
+        isSuccessfull = false;
+        view.showErrorMessage(e.getMessage());
+      }
       view.closeBuyStocksForm();
+      if(isSuccessfull) {
+        view.showMessage("Operation successful");
+      }
     }
   }
 
@@ -280,8 +289,47 @@ public class GUIControllerImpl implements GUIController, Features {
     isAllFieldsValid = true;
     verifyDatesForSingleStrategyBuyForm(date);
     if (isAllFieldsValid) {
-      System.out.println("All Fields Valid");
+      boolean isSuccessful = true;
+      LocalDateTime dateTime = LocalDateTime.of(convertDateToLocalDate(date), LocalTime.NOON);
+      try {
+        model.investWithStrategy(portfolioIndex, strategyName, dateTime);
+      } catch (IllegalArgumentException e) {
+        isSuccessful = false;
+        view.showErrorMessage(e.getMessage());
+      }
       view.closeSingleStrategyBuyForm();
+      if(isSuccessful) {
+        view.showMessage("Operation successful");
+      }
+
+    }
+  }
+
+  @Override
+  public void verifyAndBuyDollarCostAverage(int portfolioNumber, String strategyName,
+                                            Date startDate, Date endDate, String frequency) {
+    isAllFieldsValid = true;
+    verifyStartDateForDCA(startDate);
+    verifyEndDateForDCA(startDate, endDate);
+    verifyInterval(startDate, endDate, frequency);
+    if (isAllFieldsValid) {
+      boolean isSuccessful = true;
+      LocalDateTime startDateTime = LocalDateTime.of(convertDateToLocalDate(startDate),
+              LocalTime.NOON);
+      LocalDateTime endDateTime = LocalDateTime.of(convertDateToLocalDate(endDate),
+              LocalTime.NOON);
+      int interval = Integer.parseInt(frequency);
+      try {
+        model.dollarCostAveraging(portfolioNumber, strategyName, startDateTime, endDateTime,
+                interval);
+      } catch (IllegalArgumentException e) {
+        isSuccessful = false;
+        view.showErrorMessage(e.getMessage());
+      }
+
+      if (isSuccessful) {
+        view.showMessage("Operation successful");
+      }
     }
   }
 
@@ -300,11 +348,6 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void closeSingleStrategyBuyForm() {
-    view.closeSingleStrategyBuyForm();
-  }
-
-  @Override
   public void verifyDatesForSingleStrategyBuyForm(Date date) {
     if (date == null) {
       isAllFieldsValid = false;
@@ -319,6 +362,13 @@ public class GUIControllerImpl implements GUIController, Features {
       }
     }
   }
+
+  @Override
+  public void closeSingleStrategyBuyForm() {
+    view.closeSingleStrategyBuyForm();
+  }
+
+
 
   @Override
   public void showDollarCostAverageForm(int portfolioIndex) {
@@ -339,15 +389,7 @@ public class GUIControllerImpl implements GUIController, Features {
     view.closeDollarCostAverageForm();
   }
 
-  @Override
-  public void verifyAndBuyDollarCostAverage(int portfolioNumber, String strategyName,
-                                            Date startDate, Date endDate, String frequency) {
-    //model.buy();
-    System.out.println("Portfolio Number:" + portfolioNumber);
-    System.out.println("Start Date:" + startDate.toString());
-    System.out.println("End Date:" + endDate.toString());
-    System.out.println("frequency:" + frequency);
-  }
+
 
   @Override
   public void verifyStartDateForDCA(Date date) {
