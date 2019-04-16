@@ -155,7 +155,10 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
   }
 
   private void readStrategiesFromPortfolioFile(JSONObject jsonObject) {
-    JSONArray strategies = (JSONArray) jsonObject.get("transactions");
+    if (!jsonObject.containsKey("strategies")){
+      return;
+    }
+    JSONArray strategies = (JSONArray) jsonObject.get("strategies");
     Iterator<JSONObject> iterator = strategies.iterator();
     while (iterator.hasNext()) {
       JSONObject strategyObj = iterator.next();
