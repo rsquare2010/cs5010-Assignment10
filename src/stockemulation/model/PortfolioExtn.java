@@ -54,7 +54,12 @@ interface PortfolioExtn extends Portfolio {
    * @throws IllegalArgumentException by propagating error in doing an api call or stock data
    *                                  creation.
    */
-  void addShares(String tickerName, double costPerUnit, double quantity, LocalDateTime specifiedDate, double commission)
+  void addShares(
+          String tickerName,
+          double costPerUnit,
+          double quantity,
+          LocalDateTime specifiedDate,
+          double commission)
           throws IllegalArgumentException;
 
   /**
@@ -93,10 +98,25 @@ interface PortfolioExtn extends Portfolio {
    * @param investmentAmount the total amount to invest.
    * @param commission       the value to be paid for each but in this investment.
    */
-  void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission);
+  void createAndUpdateStrategy(
+          String strategyName,
+          Map<String, Double> tickerWeightMap,
+          double investmentAmount,
+          double commission);
 
+  /**
+   * Returns the reference of {@link StrategyData} that matches the specified name.
+   *
+   * @param strategyName the name of the strategy which has to be returned if it exists.
+   * @return the reference of {@link StrategyData} that matches the specified name.
+   */
   StrategyData getStrategyByName(String strategyName);
 
+  /**
+   * Returns all the strategies this portfolio has as a list of strings of their names.
+   *
+   * @return all the strategies this portfolio has as a list of strings of their names.
+   */
   List<String> getStrategiesList();
 
   /**
@@ -117,7 +137,6 @@ interface PortfolioExtn extends Portfolio {
           Map<String, Double> stockWeights,
           double commission
   );
-
 
   /**
    * This is an elementary investment operation. This invests a certain amount by distributing the
@@ -145,6 +164,6 @@ interface PortfolioExtn extends Portfolio {
    * @param specifiedDate the date at which this strategy has sto be sued to invest.
    */
   void investWithStrategy(String strategyName, LocalDateTime specifiedDate);
-  // TODO: -------------------------- End ----------------------------- //
+
 
 }
