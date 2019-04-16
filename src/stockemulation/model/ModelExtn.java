@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is the extended interface class for {@link Model}. The extension includes buying
- * shares of a stock along with a commission cost fot tha transaction, the ability to write
- * portfolio to a file and read portfolio from a file.
+ * This is the extended interface class for {@link Model}. The extension includes buying shares of a
+ * stock along with a commission cost fot tha transaction, the ability to write portfolio to a file
+ * and read portfolio from a file.
  */
 public interface ModelExtn extends Model {
 
   /**
-   * This methods lets the controller add a stock purchase to the selected portfolio. In the process
+   * This methods lets the controller buy a stock purchase to the selected portfolio. In the process
    * if any error occurred it is propagated to the controller to be handled. The stock purchase
    * include the following details: the name of the portfolio in which the purchase has to be added,
    * the stock name, date of purchase, the worth of stocks that have to bought, commission for the
@@ -31,6 +31,28 @@ public interface ModelExtn extends Model {
    */
   void buyStock(
           int portfolioNumber, LocalDateTime date, String ticker, Double price, double commission)
+          throws IllegalArgumentException;
+
+  /**
+   * This methods lets the controller add a stock purchase to the selected portfolio. In the process
+   * if any error occurred it is propagated to the controller to be handled. The stock purchase
+   * include the following details: the name of the portfolio in which the purchase has to be added,
+   * the stock name, date of purchase, the worth of stocks that have to bought, commission for the
+   * transaction. This is useful to add transaction data without making a purchase or doing a api
+   * call.
+   *
+   * @param portfolioNumber the portfolio to which the purchase has to be made.
+   * @param date            the date at which the purchase has to be made.
+   * @param ticker          the name of the stock.
+   * @param costPerUnit     the cost of single stock on that date it was purchased.
+   * @param quantity        the total quantity of shares of the stock bought in the transaction.
+   * @param commission      the commission cost for making the transaction.
+   * @throws IllegalArgumentException if any of the input is invalid.
+   * @throws IllegalArgumentException if any of the input causes member class to throw and error.
+   */
+  void addStock(
+          int portfolioNumber, LocalDateTime date, String ticker,
+          double costPerUnit, double quantity, double commission)
           throws IllegalArgumentException;
 
   /**
@@ -75,9 +97,6 @@ public interface ModelExtn extends Model {
                               double commission);
 
   List<String> getStrategyListFrompPortfolio(int portfolioNumber);
-
-
-
 
 
 }

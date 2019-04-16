@@ -62,6 +62,16 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
+  public void addShares(String tickerName, double costPerUnit, double quantity, LocalDateTime specifiedDate, double commission) throws IllegalArgumentException {
+    StockInfoSanity.isTickerValid(tickerName);
+    StockInfoSanity.isDateTimeValid(specifiedDate);
+    StockInfoSanity.isCommissionValid(commission);
+    updateComposition(tickerName, quantity);
+    stockPurchaseList.add(new StockDataExtnImpl(
+            tickerName, specifiedDate, costPerUnit, quantity, commission));
+  }
+
+  @Override
   public void writeToFile(String filepath) throws IOException {
     JSONObject obj = new JSONObject();
 

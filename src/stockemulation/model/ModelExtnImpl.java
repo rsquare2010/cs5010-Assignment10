@@ -49,6 +49,15 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
   }
 
   @Override
+  public void addStock(int portfolioNumber, LocalDateTime date, String ticker, double costPerUnit, double quantity, double commission) throws IllegalArgumentException {
+    if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
+      throw new IllegalArgumentException("Invalid Portfolio number");
+    }
+
+    portfolios.get(portfolioNumber).addShares(ticker, costPerUnit, quantity, date, commission);
+  }
+
+  @Override
   public void writePortfolioToFile(String filepath, int portfolioNumber)
           throws IllegalArgumentException, IOException {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
@@ -139,11 +148,12 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     Iterator<JSONObject> iterator = transactions.iterator();
     while (iterator.hasNext()) {
       JSONObject stockObj = iterator.next();
-      buyStock(
+      addStock(
               portfolios.size() - 1,
               LocalDateTime.parse((String) stockObj.get("purchaseDate")),
               (String) stockObj.get("ticker"),
-              (double) stockObj.get("costPerUnit") * (double) stockObj.get("quantity"),
+              (double) stockObj.get("costPerUnit"),
+              (double) stockObj.get("quantity"),
               (double) stockObj.get("commission")
       );
     }

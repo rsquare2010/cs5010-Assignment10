@@ -36,6 +36,27 @@ interface PortfolioExtn extends Portfolio {
           throws IllegalArgumentException;
 
   /**
+   * Add shares of a particular stock. The quantity of shares to be bought is computed from the
+   * specified total worth of shares which have to be bought. The user also has to specify when this
+   * particular stock has to be bought. The user also has to specify the commission cost for making
+   * this transaction.This is useful to add transaction data without making a purchase or doing a
+   * api call.
+   *
+   * @param tickerName    the ticker name of stock of format "XXXX" (all in caps).
+   * @param costPerUnit   the cost of one uit share of the stock on the purchase date.
+   * @param quantity      the total shares of the stock bought in the transaction.
+   * @param specifiedDate the date at which the shares of the stock has to be bought.
+   * @param commission    the commission cost for making this transaction.
+   * @throws IllegalArgumentException if the share's worth (value) is entered as negative.
+   * @throws IllegalArgumentException if the specifiedDate or tickerName is entered as null.
+   * @throws IllegalArgumentException if the tickerName is not of the right format.
+   * @throws IllegalArgumentException by propagating error in doing an api call or stock data
+   *                                  creation.
+   */
+  void addShares(String tickerName, double costPerUnit, double quantity, LocalDateTime specifiedDate, double commission)
+          throws IllegalArgumentException;
+
+  /**
    * Returns the cost basis of this portfolio at the specified time and also includes the commission
    * costs. The cost basis is the sum of the total worth of the shares of the stocks at the time
    * when they were bought. The date at which this has to be computed is passed as an argument. If
@@ -59,6 +80,23 @@ interface PortfolioExtn extends Portfolio {
    * @throws IOException if the write process is not successful.
    */
   void writeToFile(String filepath) throws IOException;
+
+
+  /**
+   * This helps to create a new object of type {@link StrategyData} or update an existing one to the
+   * strategy collection. This inputs are used to construct the implementation of the strategy
+   * data.
+   *
+   * @param strategyName     the name for the strategy that has to be added or updated.
+   * @param tickerWeightMap  the map of stock composition to the weight distribution.
+   * @param investmentAmount the total amount to invest.
+   * @param commission       the value to be paid for each but in this investment.
+   */
+  void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission);
+
+  StrategyData getStrategyByName(String strategyName);
+
+  List<String> getStrategiesList();
 
   /**
    * This is an elementary investment operation. This takes in a composition of stocks to invest in
@@ -86,9 +124,9 @@ interface PortfolioExtn extends Portfolio {
    * performed on a specific date. if it is not possible to invest on that date because of a
    * holiday. It will make the investment in the next possible date.
    *
-   * @param investmentDate the date at which this investment has to be made.
+   * @param investmentDate        the date at which this investment has to be made.
    * @param totalInvestmentAmount the amount that has to be invested,
-   * @param commission the amount to be paid for this each buy in this investment.
+   * @param commission            the amount to be paid for this each buy in this investment.
    */
   void investEqual(
           LocalDateTime investmentDate,
@@ -96,14 +134,16 @@ interface PortfolioExtn extends Portfolio {
           double commission
   );
 
-  void investWithStrategy(String strategyName, LocalDateTime speifiedDate);
-
-  void createAndUpdateStrategy(String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission);
-
-  StrategyData getStrategyByName(String strategyName);
-
-  List<String> getStrategiesList();
-
+  /**
+   * This is an elementary invetment operation. This uses on of the existing strategy to do the
+   * investment on a particular date. If it is not possible to invest on that date because of a *
+   * holiday. It will make the investment in the next possible date.
+   *
+   * @param strategyName  the name of the strategy which has to be used for this elementary
+   *                      investment.
+   * @param specifiedDate the date at which this strategy has sto be sued to invest.
+   */
+  void investWithStrategy(String strategyName, LocalDateTime specifiedDate);
   // TODO: -------------------------- End ----------------------------- //
 
 }
