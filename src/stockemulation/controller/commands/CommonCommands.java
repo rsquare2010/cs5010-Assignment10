@@ -197,7 +197,7 @@ abstract class CommonCommands implements EmulatorCommand {
       view.showMessage("Enter a number between 1 and " + strategyListSize);
       strategyNumber = getInt(scanner, view);
     }
-    return strategyList.get(strategyNumber);
+    return strategyList.get(strategyNumber - 1);
   }
 
   protected int getInt(Scanner scanner, EmulatorView view) {

@@ -60,10 +60,10 @@ public class Ticker extends JPanel {
 
   /**
    * Setter method to update the contents of the weight text field.
-   * @param weight a double which will be populated into the weight text field as a string.
+   * @param weight a String which will be populated into the weight text field as a string.
    */
-  public void setWeightField(Double weight) {
-    weightField.setText(weight.toString());
+  public void setWeightField(String weight) {
+    weightField.setText(weight);
   }
 
   /**

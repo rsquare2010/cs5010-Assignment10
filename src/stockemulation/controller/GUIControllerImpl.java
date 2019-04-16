@@ -326,7 +326,7 @@ public class GUIControllerImpl implements GUIController, Features {
         isSuccessful = false;
         view.showErrorMessage(e.getMessage());
       }
-
+      view.closeDollarCostAverageForm();
       if (isSuccessful) {
         view.showMessage("Operation successful");
       }
@@ -446,7 +446,7 @@ public class GUIControllerImpl implements GUIController, Features {
     if (isAllFieldsValid) {
       LocalDate startLocalDate = convertDateToLocalDate(startDate);
       LocalDate endLocalDate = convertDateToLocalDate(endDate);
-      if (startLocalDate.plusDays(12).isAfter(endLocalDate)) {
+      if (startLocalDate.plusDays(Long.valueOf(interval)).isAfter(endLocalDate)) {
         isAllFieldsValid = false;
         view.setIntervalDCAError("Interval has to be lesser than the difference between the dates");
       }

@@ -167,7 +167,6 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     Iterator<JSONObject> iterator = strategies.iterator();
     while (iterator.hasNext()) {
       JSONObject strategyObj = iterator.next();
-      System.out.println(strategyObj.toJSONString());
       addStrategyToPortfolio(
               portfolios.size() - 1,
               (String) strategyObj.get("strategyName"),

@@ -1,5 +1,6 @@
 package stockemulation.view;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,11 +78,13 @@ class TickerSet extends JPanel {
 
     if (entries.size() == 1) {
       entries.get(0).enableMinus(false);
-      entries.get(0).setWeightField(100.0);//OR
+      entries.get(0).setWeightField("100.0");
     } else {
       for (Ticker e : entries) {
         e.enableMinus(true);
-        e.setWeightField(100.0 / entries.size());//OR
+        Double value = 100.0/ entries.size();
+        DecimalFormat two = new DecimalFormat("#0.00");
+        e.setWeightField(two.format(value));
       }
     }
   }
