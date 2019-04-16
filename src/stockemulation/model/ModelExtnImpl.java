@@ -87,7 +87,7 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
   }
 
   @Override
-  public void addStrategyData(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission) {
+  public void addStrategyData(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission) throws IllegalArgumentException {
     this.investmentStrategies.put(
             strategyName,
             new StrategyDataImpl(strategyName, tickerWeightMap, investmentAmount, commission)
@@ -126,7 +126,8 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
   }
 
   @Override
-  public void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate) {
+  public void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate)
+          throws IllegalArgumentException {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
       throw new IllegalArgumentException("Invalid Portfolio number");
     }
@@ -152,25 +153,31 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
           LocalDateTime startDate,
           LocalDateTime endDate,
           int freaquencyInDays
-  ) {
+  ) throws IllegalArgumentException {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
       throw new IllegalArgumentException("Invalid Portfolio number");
     }
     if (strategyName == null || startDate == null) {
       throw new IllegalStateException("strategy name or start date cannot be null");
     }
+    if (freaquencyInDays <= 0) {
+      throw new IllegalArgumentException("investment frequency cannot be negative or 0.");
+    }
 
-    PortfolioExtn portfolio = portfolios.get(portfolioNumber);
-    StrategyData strategy = investmentStrategies.get(strategyName);
+    try {
+      PortfolioExtn portfolio = portfolios.get(portfolioNumber);
+      StrategyData strategy = investmentStrategies.get(strategyName);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException(e);
+    }
+
     LocalDateTime currentDate = startDate;
     if (endDate == null) {
       endDate = LocalDateTime.now();
     }
 
     while (currentDate.isBefore(endDate)) {
-
       investWithStrategy(portfolioNumber, strategyName, currentDate);
-
       currentDate = currentDate.plusDays(freaquencyInDays);
     }
   }
@@ -179,7 +186,6 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
       throw new IllegalArgumentException("Invalid Portfolio number");
     }
-
     portfolios.get(portfolioNumber).addShares(ticker, costPerUnit, quantity, date, commission);
   }
 

@@ -105,7 +105,7 @@ interface PortfolioExtn extends Portfolio {
           double totalInvestmentAmount,
           Map<String, Double> stockWeights,
           double commission
-  );
+  ) throws IllegalArgumentException;
 
   /**
    * This is an elementary investment operation. This invests a certain amount by distributing the
@@ -121,5 +121,5 @@ interface PortfolioExtn extends Portfolio {
           LocalDateTime investmentDate,
           double totalInvestmentAmount,
           double commission
-  );
+  ) throws IllegalArgumentException;
 }
