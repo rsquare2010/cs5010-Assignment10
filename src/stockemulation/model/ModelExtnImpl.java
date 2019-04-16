@@ -8,15 +8,10 @@ import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import stockemulation.util.StockInfoSanity;
 
 /**
  * This is an implementation of {@link ModelExtn} and has some of the implementations directly taken
@@ -104,8 +99,8 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     }
 
     while (currentDate.isBefore(endDate)) {
-      if (currentDate.getDayOfWeek() == DayOfWeek.SATURDAY || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY){
-        currentDate =  currentDate.plusDays(1);
+      if (currentDate.getDayOfWeek() == DayOfWeek.SATURDAY || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+        currentDate = currentDate.plusDays(1);
         continue;
       }
       portfolio.investWithStrategy(strategyName, currentDate);

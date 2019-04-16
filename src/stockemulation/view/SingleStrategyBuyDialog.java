@@ -13,6 +13,10 @@ import javax.swing.DefaultComboBoxModel;
 import stockemulation.controller.Features;
 import stockemulation.controller.GUIController;
 
+/**
+ * A class that defines a custom dialog which creates the view for the Single strategy buy
+ * operation.
+ */
 public class SingleStrategyBuyDialog extends CustomDialog {
 
   private JLabel dateErrorLabel;
@@ -21,6 +25,14 @@ public class SingleStrategyBuyDialog extends CustomDialog {
   private JComboBox strategyList;
   private int portfolioIndex;
 
+  /**
+   * Create an instance of the custom single strategy buy dialog, it takes in the frame to which
+   * it belongs, and a string text that is heading for the dialong. It also takes in an instance
+   * of the controller.
+   * @param frame the frame to which the dialog box belongs.
+   * @param text string that represents the heading of the dialog box.
+   * @param controller an instance of the controller.
+   */
   SingleStrategyBuyDialog(Frame frame, String text, GUIController controller) {
     super(frame, text);
 

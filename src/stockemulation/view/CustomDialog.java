@@ -20,6 +20,13 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * An abstract class that contains common operations between other custom dialogs that are
+ * created to perform various operations like buy stock or create a strategy. It extends the
+ * JDialog class. This dialog will have a root frame and two buttons one for yes and one for no,
+ * it will also have a single date component and methods to create aligned labels, error fields,
+ * text fields.
+ */
 public abstract class CustomDialog extends JDialog {
 
   protected JButton yesButton;

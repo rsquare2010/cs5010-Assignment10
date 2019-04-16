@@ -97,21 +97,23 @@ class AddStrategyDialog extends CustomDialog {
   private Map<String, Runnable> getFormValidationListeners(Features f) {
     Map<String, Runnable> formValidation = new HashMap<>();
 
-    formValidation.put(tickerTextField.getName(), () -> f.verifyTickerNameForStrategyForm(tickerTextField.getText()));
+    formValidation.put(tickerTextField.getName(),
+        () -> f.verifyTickerNameForStrategyForm(tickerTextField.getText()));
     formValidation.put(priceTextField.getName(),
-            () -> f.verifyPriceForStrategyForm(priceTextField.getText()));
+        () -> f.verifyPriceForStrategyForm(priceTextField.getText()));
     formValidation.put(commissionTextField.getName(),
-            () -> f.verifyCommissionForStrategyForm(commissionTextField.getText()));
+        () -> f.verifyCommissionForStrategyForm(commissionTextField.getText()));
     return formValidation;
   }
 
   private Map<String, Runnable> getHideErrorListeners() {
     Map<String, Runnable> hideError = new HashMap<>();
     hideError.put(tickerTextField.getName(), () -> resetAndHideErrorLabel(tickerErrorLabel));
-    hideError.put(strategyNameTextField.getName(), () -> resetAndHideErrorLabel(strategyNameErrorLabel));
+    hideError.put(strategyNameTextField.getName(),
+        () -> resetAndHideErrorLabel(strategyNameErrorLabel));
     hideError.put(priceTextField.getName(), () -> resetAndHideErrorLabel(priceErrorLabel));
     hideError.put(commissionTextField.getName(),
-            () -> resetAndHideErrorLabel(commissionErrorLabel));
+        () -> resetAndHideErrorLabel(commissionErrorLabel));
     return hideError;
   }
 

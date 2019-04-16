@@ -342,7 +342,7 @@ public class GUIControllerImpl implements GUIController, Features {
   @Override
   public void verifyAndBuyDollarCostAverage(int portfolioNumber, String strategyName,
                                             Date startDate, Date endDate, String frequency) {
-//    model.dollarCostAveraging();
+    //model.buy();
     System.out.println("Portfolio Number:" + portfolioNumber);
     System.out.println("Start Date:" + startDate.toString());
     System.out.println("End Date:" + endDate.toString());

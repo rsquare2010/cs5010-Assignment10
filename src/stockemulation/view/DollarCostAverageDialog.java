@@ -18,6 +18,10 @@ import javax.swing.DefaultComboBoxModel;
 import stockemulation.controller.Features;
 import stockemulation.controller.GUIController;
 
+/**
+ * A class that defines a custom dialog which creates the view for a dollar cost average strategy
+ * to buy operation.
+ */
 public class DollarCostAverageDialog extends CustomDialog {
 
   private JLabel startDateErrorLabel;
@@ -31,6 +35,14 @@ public class DollarCostAverageDialog extends CustomDialog {
   private int portfolioIndex;
 
 
+  /**
+   * Creates an instance of the DollarCostAverageDialog class, it takes in the frame over which
+   * this dialog will be displayed, a text string that will be the tile fo the dialog box and an
+   * instance of the controller.
+   * @param frame the frame to which the dialog box belongs.
+   * @param text string that represents the heading of the dialog box.
+   * @param controller an instance of the controller.
+   */
   DollarCostAverageDialog(Frame frame, String text, GUIController controller) {
     super(frame, text);
 

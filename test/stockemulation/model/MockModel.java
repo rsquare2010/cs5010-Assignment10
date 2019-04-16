@@ -78,19 +78,25 @@ public class MockModel implements ModelExtn {
   @Override
   public void writePortfolioToFile(String filepath, int portfolioNumber)
           throws IllegalArgumentException, IOException {
-    //Not do anything here
+    //Not do anything here.
   }
 
   @Override
   public void readPortfolioFromFile(String filepath)
           throws IllegalArgumentException, IOException, ParseException {
-    //Not do anything here
+    //Not do anything here.
   }
 
   @Override
-  public void dollarCosrAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate,
-                                  LocalDateTime endDate, int freaquencyInDays) {
-    //Not do anything here
+  public void investWithStrategy(int portfolioNumber, String strategyName,
+                                 LocalDateTime investmentDate) {
+    //Not do anything here.
+  }
+
+  @Override
+  public void dollarCostAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate,
+                                  LocalDateTime endDate, int frequencyInDays) {
+    //Not do anything here.
   }
 
   @Override

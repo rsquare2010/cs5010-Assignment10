@@ -10,13 +10,44 @@ import stockemulation.model.ModelExtn;
 import stockemulation.util.StockInfoSanity;
 import stockemulation.view.EmulatorView;
 
+/**
+ * An extension of the {@link CommonCommands} class. An instance of this class supports all
+ * operations related to creating a strategy. It takes in input from the user for the name of the
+ * strategy to be created. It creates a strategy if there isn't one already with the same name
+ * with the help of the model. This class lets the user know if creating a new strategy  was
+ * successful or not using the view.
+**/
 public class CreateStrategyCommand extends CommonCommands {
 
 
-  public CreateStrategyCommand(Scanner scanner) throws IllegalArgumentException {
+  /**
+   * Create an instance of the CreateStrategyCommand class. This instance allows you to enter
+   * instructions from the commandline and provide necessary information to create a new strategy.
+   *
+   * @param scanner an instance of Scanner class used to get user input.
+   */
+  public CreateStrategyCommand(Scanner scanner) {
     super(scanner);
   }
 
+  /**
+   * This method creates a new strategy. It asks the user to enter the name of the portfolio to be
+   * created. It creates a new strategy with the entered name unless there already exists another
+   * strategy with the same name. White spaces at the beginning and end of the name string are
+   * ignored.  It asks the user to pick the portfolio under which the strategy will be created. It
+   * then asks the following information from the user: Ticker names and weights associated with
+   * those ticker names. Sum of the weights should be equal to 100, weights cannot be negative.
+   * User will also have to specify the Ticker of the stock they want to buy (Stock tickers are
+   * in upper case and less than 5 characters). The commission fees for every transaction  And
+   * finally the amount of money in USD they want to buy stocks for. This operation cannot be
+   * performed if a portfolio does not already exist.
+   *
+   * @param model This method takes in an ModelExtn model to help perform the actions and generate a
+   *              result.
+   * @param view  The method also takes in an EmulatorView to notify the user on successful creation
+   *              of a strategy or the failure to create one as well as to provide prompts to get
+   *              user input to perform actions.
+   */
   @Override
   public void execute(ModelExtn model, EmulatorView view) {
 

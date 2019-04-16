@@ -18,7 +18,7 @@ import stockemulation.controller.Features;
 import stockemulation.controller.GUIController;
 
 /**
- * This is custom Dialog created by extending the JDialog class. It generates a form to collect
+ * This is custom Dialog created by extending the CustomDialog class. It generates a form to collect
  * information from the user to facilitate the buy stocks operation.
  */
 class BuyStockDialog extends CustomDialog {

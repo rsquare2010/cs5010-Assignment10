@@ -39,7 +39,6 @@ public interface StockInfoSanity {
    * @param specifiedDateTime the object reference of LocalDateTime type which has to be verified,
    * @throws IllegalArgumentException if the specifiedDate is invalid as specified above.
    */
-
   static void isDateTimeValid(LocalDateTime specifiedDateTime) throws IllegalArgumentException {
     if (specifiedDateTime == null) {
       throw new IllegalArgumentException("DateTime of purchase cannot be null");
@@ -97,6 +96,13 @@ public interface StockInfoSanity {
     }
   }
 
+  /**
+   * This method checks if the wight attached to a ticker symbol is valid or not. Weights are
+   * percentages and so cannot be negative or above hundred.
+   * @param weight a double representing a percentage weight attached to a stock ticker.
+   * @throws IllegalArgumentException Is thrown if the weight is equal to or lesser than 0 or if
+   *                                  it is more than 100.
+   */
   static void isWeightValid(double weight) throws IllegalArgumentException {
     if (weight <= 0.0) {
       throw new IllegalArgumentException("Weight of a ticker has to be more than 0");
