@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Map;
 
 import stockemulation.model.ModelExtn;
 import stockemulation.util.StockInfoSanity;
@@ -55,7 +56,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyDates(Date date) {
+  public void verifyDatesForBuyForm(Date date) {
     if (date == null) {
       isAllFieldsValid = false;
       view.setBuyFormDateError("Date cannot be empty");
@@ -63,7 +64,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyTime(LocalTime time) {
+  public void verifyTimeForBuyForm(LocalTime time) {
     if (time == null) {
       isAllFieldsValid = false;
       view.setBuyFormTimeError("Time cannot be empty");
@@ -78,7 +79,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyTicker(String ticker) {
+  public void verifyTickerForBuyForm(String ticker) {
     try {
       StockInfoSanity.isTickerValid(ticker);
     } catch (IllegalArgumentException e) {
@@ -88,7 +89,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyCost(String price) {
+  public void verifyCostForBuyForm(String price) {
     if (price == null || price.isEmpty()) {
       isAllFieldsValid = false;
       view.setBuyFormPriceError("Price cannot be empty");
@@ -98,7 +99,7 @@ public class GUIControllerImpl implements GUIController, Features {
           StockInfoSanity.isPriceValid(Double.parseDouble(price));
         } catch (IllegalArgumentException e) {
           isAllFieldsValid = false;
-          view.setBuyFormTickerError(e.getMessage());
+          view.setBuyFormPriceError(e.getMessage());
         }
       } else {
         view.setBuyFormPriceError("Price has to be a number");
@@ -108,7 +109,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void verifyCommission(String commission) {
+  public void verifyCommissionForBuyForm(String commission) {
     if (commission == null) {
       isAllFieldsValid = false;
       view.setBuyFormCommissionError("Commission is invalid");
@@ -128,6 +129,74 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
+  public void verifyPriceForStrategyForm(String price) {
+    if (price == null || price.isEmpty()) {
+      isAllFieldsValid = false;
+      view.setStrategyFormPriceError("Price cannot be empty");
+    } else {
+      if (validatePrice(price)) {
+        try {
+          StockInfoSanity.isPriceValid(Double.parseDouble(price));
+        } catch (IllegalArgumentException e) {
+          isAllFieldsValid = false;
+          view.setStrategyFormTickerError(e.getMessage());
+        }
+      } else {
+        view.setStrategyFormPriceError("Price has to be a number");
+        isAllFieldsValid = false;
+      }
+    }
+  }
+
+  @Override
+  public void verifyCommissionForStrategyForm(String commission) {
+    if (commission == null) {
+      isAllFieldsValid = false;
+      view.setStrategyFormCommissionError("Commission is invalid");
+    } else {
+      if (validatePrice(commission)) {
+        try {
+          StockInfoSanity.isCommissionValid(Double.parseDouble(commission));
+        } catch (IllegalArgumentException e) {
+          isAllFieldsValid = false;
+          view.setStrategyFormCommissionError(e.getMessage());
+        }
+      } else {
+        view.setStrategyFormCommissionError("Commission has to be a number");
+        isAllFieldsValid = false;
+      }
+    }
+  }
+
+  @Override
+  public void verifyTickerNameForStrategyForm(String tickerName) {
+    try {
+      StockInfoSanity.isTickerValid(tickerName);
+    } catch (IllegalArgumentException e) {
+      isAllFieldsValid = false;
+      view.setStrategyFormTickerError(e.getMessage());
+    }
+  }
+
+  @Override
+  public void createAStrategy(String strategyName, Map<String, String> tickerWeights, String price, String commission) {
+    System.out.println("Strategy Name: "+ strategyName);
+    System.out.println("Weight tickers"+tickerWeights.keySet().toString());
+    System.out.println("Weight weights"+tickerWeights.values().toString());
+    System.out.println("Price: "+price);
+    System.out.println("Commission:"+commission);
+
+    //If strategy name is not null or empty.
+    //If the contents fo the map are not null or empty? How do i verify weights?
+    //If the price is not null?
+    //if the commission is valid?
+
+    //model.saveStrategy();
+    //done message.
+  }
+
+
+  @Override
   public void buyStocks() {
     if (model.getPortfolioCount() == 0) {
       view.showErrorMessage("Please create a portfolio before you buy stocks");
@@ -140,22 +209,27 @@ public class GUIControllerImpl implements GUIController, Features {
   public void verifyFormAndBuy(Date date, LocalTime time, String ticker,
                                String cost, String commission, int portfolioIndex) {
     isAllFieldsValid = true;
-    verifyDates(date);
-    verifyTime(time);
-    verifyTicker(ticker);
-    verifyCost(cost);
-    verifyCommission(commission);
+    verifyDatesForBuyForm(date);
+    verifyTimeForBuyForm(time);
+    verifyTickerForBuyForm(ticker);
+    verifyCostForBuyForm(cost);
+    verifyCommissionForBuyForm(commission);
     if (isAllFieldsValid) {
       LocalDateTime localDateTime = convertDateToLocalDate(date).atTime(time);
       model.buyStock(portfolioIndex, localDateTime, ticker, Double.parseDouble(cost),
-              Double.parseDouble(commission));
+              Double.parseDouble(commission)); //FIXME catch exceptions.
       view.closeBuyStocksForm();
     }
   }
 
   @Override
-  public void closeForm() {
+  public void closeBuyForm() {
     view.closeBuyStocksForm();
+  }
+
+  @Override
+  public void closeStrategyForm() {
+    view.closeStrategyForm();
   }
 
   @Override
@@ -198,6 +272,15 @@ public class GUIControllerImpl implements GUIController, Features {
     }
   }
 
+//  @Override
+//  public void createAStrategy() {
+//    if (model.getPortfolioCount() == 0) {
+//      view.showErrorMessage("Please create a portfolio before you buy stocks");
+//    } else {
+//      view.showCreateStrategyForm();
+//    }
+//  }
+
   private LocalDate convertDateToLocalDate(Date date) {
     return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
   }
@@ -209,5 +292,14 @@ public class GUIControllerImpl implements GUIController, Features {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public void createStrategy() {
+    if (model.getPortfolioCount() == 0) {
+      view.showErrorMessage("Please create a portfolio before you create a Strategy");
+    } else {
+      view.showCreateStrategyForm();
+    }
   }
 }

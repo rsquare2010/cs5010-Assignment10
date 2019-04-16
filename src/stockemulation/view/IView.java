@@ -2,6 +2,8 @@ package stockemulation.view;
 
 import java.util.Map;
 
+import javax.swing.*;
+
 import stockemulation.controller.Features;
 
 /**
@@ -41,6 +43,11 @@ public interface IView extends EmulatorView {
    * Show relevant UI to the users to get the data to perform the Buy stocks operation.
    */
   void showBuyStocksForm();
+
+  /**
+   * Show relevant UI to the users to get the data to perform the Buy stocks operation.
+   */
+  void showCreateStrategyForm();
 
   /**
    * Close/hide the UI that was shown to facilitate the user to buy stocks.
@@ -89,4 +96,14 @@ public interface IView extends EmulatorView {
    * @param value the value of a portfolio on a given date.
    */
   void setPortfolioValueOnDate(Double costBasis, Double value);
+
+  void setStrategyFormTickerError(String message);
+
+  void setStrategyFormWeightError(String message);
+
+  void setStrategyFormPriceError(String message);
+
+  void setStrategyFormCommissionError(String message);
+
+  void closeStrategyForm();
 }

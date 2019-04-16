@@ -46,8 +46,8 @@ class BuyStockDialog extends JDialog {
   private JLabel priceErrorLabel;
   private JLabel commissionErrorLabel;
 
-  private JButton yesButton;
-  private JButton noButton;
+  protected JButton yesButton;
+  protected JButton noButton;
   private JPanel rootPanel;
   private int portfolioIndex;
   private String[] hours = {"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
@@ -101,10 +101,10 @@ class BuyStockDialog extends JDialog {
     yesButton.addActionListener(l -> f.verifyFormAndBuy(dateChooser.getDate(),
             getSelectedTime(), tickerTextField.getText(),
             priceTextField.getText(), commissionTextField.getText(), portfolioIndex));
-    noButton.addActionListener(l -> f.closeForm());
+    noButton.addActionListener(l -> f.closeBuyForm());
   }
 
-  private FocusListener getFormFocusListener(Map<String, Runnable> formValidation, Map<String,
+  protected FocusListener getFormFocusListener(Map<String, Runnable> formValidation, Map<String,
           Runnable> hideError) {
     return new FocusListener() {
       @Override
@@ -134,14 +134,14 @@ class BuyStockDialog extends JDialog {
 
   private Map<String, Runnable> getFormValidationListeners(Features f) {
     Map<String, Runnable> formValidation = new HashMap<>();
-    formValidation.put(dateChooser.getName(), () -> f.verifyDates(dateChooser.getDate()));
-    formValidation.put(hourBox.getName(), () -> f.verifyTime(getSelectedTime()));
-    formValidation.put(minuteBox.getName(), () -> f.verifyTime(getSelectedTime()));
+    formValidation.put(dateChooser.getName(), () -> f.verifyDatesForBuyForm(dateChooser.getDate()));
+    formValidation.put(hourBox.getName(), () -> f.verifyTimeForBuyForm(getSelectedTime()));
+    formValidation.put(minuteBox.getName(), () -> f.verifyTimeForBuyForm(getSelectedTime()));
 
-    formValidation.put(tickerTextField.getName(), () -> f.verifyTicker(tickerTextField.getText()));
-    formValidation.put(priceTextField.getName(), () -> f.verifyCost(priceTextField.getText()));
+    formValidation.put(tickerTextField.getName(), () -> f.verifyTickerForBuyForm(tickerTextField.getText()));
+    formValidation.put(priceTextField.getName(), () -> f.verifyCostForBuyForm(priceTextField.getText()));
     formValidation.put(commissionTextField.getName(),
-        () -> f.verifyCommission(commissionTextField.getText()));
+        () -> f.verifyCommissionForBuyForm(commissionTextField.getText()));
     return formValidation;
   }
 
@@ -168,14 +168,14 @@ class BuyStockDialog extends JDialog {
     commissionErrorLabel = createErrorField();
   }
 
-  private void addComponentsToRootPanel(String message, JLabel errorLabel,
+  protected void addComponentsToRootPanel(String message, JLabel errorLabel,
                                         Component specificComponent) {
     rootPanel.add(createAlignedLabel(message));
     rootPanel.add(errorLabel);
     rootPanel.add(specificComponent);
   }
 
-  private Component getDateComponent() {
+  protected Component getDateComponent() {
     dateChooser = new JDateChooser();
     dateChooser.setName("date");
     dateChooser.setDateFormatString("yyyy-MM-dd");
@@ -196,7 +196,7 @@ class BuyStockDialog extends JDialog {
     return timePanel;
   }
 
-  private JLabel createErrorField() {
+  protected JLabel createErrorField() {
     JLabel errorLabel = new JLabel();
     errorLabel.setVisible(false);
     errorLabel.setForeground(Color.RED);
@@ -204,13 +204,13 @@ class BuyStockDialog extends JDialog {
     return errorLabel;
   }
 
-  private JLabel createAlignedLabel(String text) {
+  protected JLabel createAlignedLabel(String text) {
     JLabel label = new JLabel(text);
     label.setAlignmentX(SwingConstants.CENTER);
     return label;
   }
 
-  private void addOptionsToRootPanel() {
+  protected void addOptionsToRootPanel() {
     JPanel options = new JPanel(new FlowLayout());
 
     yesButton = new JButton("Yes");

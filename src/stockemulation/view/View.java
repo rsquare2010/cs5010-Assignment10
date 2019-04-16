@@ -40,9 +40,12 @@ public class View extends JFrame implements IView {
   private JLabel value;
   private JLabel valueLabel;
   private BuyStockDialog buyStockDialog;
+  private JButton createStrategyButton;
+  private AddStrategyDialog createStrategyDialog;
   private JTabbedPane tabbedPane;
   private String[] column = {"Serial no", "Ticker", "Number of stocks"};
   private JTable table;
+  private String[][] data;
 
   /**
    * A constructor to the view class that that provides the name of the window as a parameter as
@@ -71,6 +74,7 @@ public class View extends JFrame implements IView {
     this.setJMenuBar(menuBar);
 
     setupBuyStockDialog();
+    setupCreateStrategyDialog();
   }
 
   @Override
@@ -78,8 +82,10 @@ public class View extends JFrame implements IView {
     save.addActionListener(l -> saveToFile(f));
     open.addActionListener(l -> readFromFile(f));
     buyStockDialog.setFeatures(f);
+    createStrategyDialog.setFeatures(f);
     buyStockButton.addActionListener(l -> f.buyStocks());
     createPortfolioButton.addActionListener(l -> f.createPortfolio(showInputDialog()));
+    createStrategyButton.addActionListener(l -> f.createStrategy());
     dateChooser.addPropertyChangeListener(l -> setDateAndFetchDetails(dateChooser.getDate(), f));
     tabbedPane.addChangeListener(l -> fetchInformationBasedOnTab(tabbedPane.getSelectedIndex(), f));
     portfolioList.addActionListener(l -> f.getPortfolioSummary(portfolioList.getSelectedIndex()));
@@ -128,6 +134,12 @@ public class View extends JFrame implements IView {
   }
 
   @Override
+  public void showCreateStrategyForm() {
+    createStrategyDialog.pack();
+    createStrategyDialog.setVisible(true);
+  }
+
+  @Override
   public void closeBuyStocksForm() {
     buyStockDialog.clearAndHide();
     portfolioList.setSelectedIndex(portfolioList.getSelectedIndex());
@@ -163,7 +175,7 @@ public class View extends JFrame implements IView {
     tabbedPane.setVisible(true);
     tabbedPane.setSelectedIndex(0);
 
-    String[][] data = new String[portfolioSummary.size()][3];
+    data = new String[portfolioSummary.size()][3];
     Set entries = portfolioSummary.entrySet();
     Iterator entriesIterator = entries.iterator();
 
@@ -192,6 +204,26 @@ public class View extends JFrame implements IView {
   }
 
   @Override
+  public void setStrategyFormTickerError(String message) {
+    createStrategyDialog.setTickerErrorLabel(message);
+  }
+
+  @Override
+  public void setStrategyFormWeightError(String message) {
+
+  }
+
+  @Override
+  public void setStrategyFormPriceError(String message) {
+    createStrategyDialog.setStrategyFormPriceErrorLabel(message);
+  }
+
+  @Override
+  public void setStrategyFormCommissionError(String message) {
+    createStrategyDialog.setCommissionErrorLabel(message);
+  }
+
+  @Override
   public void showMessage(String message) {
     statusLabel.setForeground(Color.BLACK);
     statusLabel.setText(message);
@@ -201,6 +233,12 @@ public class View extends JFrame implements IView {
   public void showErrorMessage(String message) {
     statusLabel.setText(message);
     statusLabel.setForeground(Color.RED);
+  }
+
+  @Override
+  public void closeStrategyForm() {
+    createStrategyDialog.clearAndHide();
+//    portfolioList.setSelectedIndex(portfolioList.getSelectedIndex());
   }
 
   private JPanel setupLeftPanel() {
@@ -257,6 +295,8 @@ public class View extends JFrame implements IView {
     JPanel buyStockButtonPanel = new JPanel();
     buyStockButton = new JButton("Buy Stocks");
     buyStockButtonPanel.add(buyStockButton);
+    createStrategyButton = new JButton("Create strategy");
+    buyStockButtonPanel.add(createStrategyButton);
     centerPanel.add(buyStockButtonPanel, BorderLayout.SOUTH);
     return centerPanel;
   }
@@ -312,6 +352,10 @@ public class View extends JFrame implements IView {
 
   private void setupBuyStockDialog() {
     buyStockDialog = new BuyStockDialog(this, "Buy Stocks", null);
+  }
+
+  private void setupCreateStrategyDialog() {
+    createStrategyDialog = new AddStrategyDialog(this, "Add Strategy", null);
   }
 
   private void fetchInformationBasedOnTab(int index, Features f) {

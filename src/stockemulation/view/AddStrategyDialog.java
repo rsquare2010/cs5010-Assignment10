@@ -1,27 +1,13 @@
 package stockemulation.view;
 
-import com.toedter.calendar.JDateChooser;
-
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.time.LocalTime;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import stockemulation.controller.Features;
@@ -36,24 +22,19 @@ class AddStrategyDialog extends JDialog {
   private JTextField strategyNameTextField;
   private JTextField commissionTextField;
   private JTextField tickerTextField;
-  private JDateChooser dateChooser;
-  private JComboBox hourBox;
-  private JComboBox minuteBox;
+  private JTextField priceTextField;
 
-  private JLabel dateErrorLabel;
-  private JLabel timeErrorLabel;
   private JLabel tickerErrorLabel;
   private JLabel strategyNameErrorLabel;
   private JLabel commissionErrorLabel;
+  private JLabel priceErrorLabel;
 
   private JButton yesButton;
   private JButton noButton;
   private JPanel rootPanel;
+  private EntrySet weightSet;
+  private List<String> tickerList;
   private int portfolioIndex;
-  private String[] hours = {"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
-          "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"};
-  private String[] minutes = {"00", "05", "10", "15", "20", "25", "30", "35", "40", "45",
-          "50", "55"};
 
 
   /**
@@ -72,20 +53,28 @@ class AddStrategyDialog extends JDialog {
 
     initialiseFields();
 
-    addComponentsToRootPanel("Date to buy stocks:", dateErrorLabel, getDateComponent());
-    addComponentsToRootPanel("Time of purchase:", timeErrorLabel, getTimeComponent());
-    addComponentsToRootPanel("Ticker name of the stock", tickerErrorLabel,
-            tickerTextField);
     addComponentsToRootPanel("Enter the name of the strategy", strategyNameErrorLabel,
             strategyNameTextField);
+    weightSet = new EntrySet();
+    weightSet.setAlignmentX(SwingConstants.CENTER);
+    addComponentsToRootPanel("Ticker name and weight of the stock", tickerErrorLabel,
+            weightSet);
+    addComponentsToRootPanel("Please enter the amount you want to invest",
+            priceErrorLabel, priceTextField);
+
     addComponentsToRootPanel("Commission for this transaction", commissionErrorLabel,
             commissionTextField);
     addOptionsToRootPanel();
 
-    getContentPane().add(rootPanel);
+    JScrollPane scrollPane = new JScrollPane();
+    scrollPane.setViewportView(rootPanel);
+    getContentPane().add(scrollPane);
+
+
     pack();
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
   }
+
 
   void setSelectedPortfolioIndex(int portfolioIndex) {
     this.portfolioIndex = portfolioIndex;
@@ -98,10 +87,9 @@ class AddStrategyDialog extends JDialog {
     FocusListener inputVerificationListener = getFormFocusListener(formValidation, hideError);
     addFocusListenerToUIComponents(inputVerificationListener);
 
-    yesButton.addActionListener(l -> f.verifyFormAndBuy(dateChooser.getDate(),
-            getSelectedTime(), tickerTextField.getText(),
-            strategyNameTextField.getText(), commissionTextField.getText(), portfolioIndex));
-    noButton.addActionListener(l -> f.closeForm());
+    yesButton.addActionListener(l-> f.createAStrategy(strategyNameTextField.getText(),
+            weightSet.getContents(), priceTextField.getText(), commissionTextField.getText()));
+    noButton.addActionListener(l -> f.closeStrategyForm());
   }
 
   private FocusListener getFormFocusListener(Map<String, Runnable> formValidation, Map<String,
@@ -124,9 +112,6 @@ class AddStrategyDialog extends JDialog {
   }
 
   private void addFocusListenerToUIComponents(FocusListener focusListener) {
-    dateChooser.addFocusListener(focusListener);
-    hourBox.addFocusListener(focusListener);
-    minuteBox.addFocusListener(focusListener);
     tickerTextField.addFocusListener(focusListener);
     strategyNameTextField.addFocusListener(focusListener);
     commissionTextField.addFocusListener(focusListener);
@@ -134,22 +119,17 @@ class AddStrategyDialog extends JDialog {
 
   private Map<String, Runnable> getFormValidationListeners(Features f) {
     Map<String, Runnable> formValidation = new HashMap<>();
-    formValidation.put(dateChooser.getName(), () -> f.verifyDates(dateChooser.getDate()));
-    formValidation.put(hourBox.getName(), () -> f.verifyTime(getSelectedTime()));
-    formValidation.put(minuteBox.getName(), () -> f.verifyTime(getSelectedTime()));
 
-    formValidation.put(tickerTextField.getName(), () -> f.verifyTicker(tickerTextField.getText()));
-    formValidation.put(strategyNameTextField.getName(), () -> f.verifyCost(strategyNameTextField.getText()));
+    formValidation.put(tickerTextField.getName(), () -> f.verifyTickerNameForStrategyForm(tickerTextField.getText()));
+    formValidation.put(priceTextField.getName(),
+            () -> f.verifyPriceForStrategyForm(priceTextField.getText()));
     formValidation.put(commissionTextField.getName(),
-            () -> f.verifyCommission(commissionTextField.getText()));
+            () -> f.verifyCommissionForStrategyForm(commissionTextField.getText()));
     return formValidation;
   }
 
   private Map<String, Runnable> getHideErrorListeners() {
     Map<String, Runnable> hideError = new HashMap<>();
-    hideError.put(dateChooser.getName(), () -> resetAndHideErrorLabel(dateErrorLabel));
-    hideError.put(hourBox.getName(), () -> resetAndHideErrorLabel(timeErrorLabel));
-    hideError.put(minuteBox.getName(), () -> resetAndHideErrorLabel(timeErrorLabel));
     hideError.put(tickerTextField.getName(), () -> resetAndHideErrorLabel(tickerErrorLabel));
     hideError.put(strategyNameTextField.getName(), () -> resetAndHideErrorLabel(strategyNameErrorLabel));
     hideError.put(commissionTextField.getName(),
@@ -159,11 +139,11 @@ class AddStrategyDialog extends JDialog {
 
   private void initialiseFields() {
     tickerTextField = createTextFieldWithName("ticker");
-    strategyNameTextField = createTextFieldWithName("price");
+    strategyNameTextField = createTextFieldWithName("strategy name");
+    priceTextField = createTextFieldWithName("price");
     commissionTextField = createTextFieldWithName("commission");
-    dateErrorLabel = createErrorField();
-    timeErrorLabel = createErrorField();
     tickerErrorLabel = createErrorField();
+    priceErrorLabel = createErrorField();
     strategyNameErrorLabel = createErrorField();
     commissionErrorLabel = createErrorField();
   }
@@ -173,27 +153,6 @@ class AddStrategyDialog extends JDialog {
     rootPanel.add(createAlignedLabel(message));
     rootPanel.add(errorLabel);
     rootPanel.add(specificComponent);
-  }
-
-  private Component getDateComponent() {
-    dateChooser = new JDateChooser();
-    dateChooser.setName("date");
-    dateChooser.setDateFormatString("yyyy-MM-dd");
-    dateChooser.setMaxSelectableDate(new Date());
-    dateChooser.setAlignmentX(SwingConstants.CENTER);
-    return dateChooser;
-  }
-
-  private Component getTimeComponent() {
-    JPanel timePanel = new JPanel(new GridLayout(1, 0));
-    hourBox = new JComboBox(hours);
-    hourBox.setName("hour");
-    minuteBox = new JComboBox(minutes);
-    minuteBox.setName("minute");
-    timePanel.add(hourBox);
-    timePanel.add(minuteBox);
-    timePanel.setAlignmentX(SwingConstants.CENTER);
-    return timePanel;
   }
 
   private JLabel createErrorField() {
@@ -233,20 +192,16 @@ class AddStrategyDialog extends JDialog {
     setErrorMessage(commissionErrorLabel, message);
   }
 
-  void setDateErrorLabel(String message) {
-    setErrorMessage(dateErrorLabel, message);
-  }
-
-  void setTimeErrorLabel(String message) {
-    setErrorMessage(timeErrorLabel, message);
-  }
-
   void setTickerErrorLabel(String message) {
     setErrorMessage(tickerErrorLabel, message);
   }
 
   void setStrategyNameErrorLabel(String message) {
     setErrorMessage(strategyNameErrorLabel, message);
+  }
+
+  void setStrategyFormPriceErrorLabel(String message) {
+    setErrorMessage(priceErrorLabel, message);
   }
 
   private void setErrorMessage(JLabel label, String message) {
@@ -264,11 +219,5 @@ class AddStrategyDialog extends JDialog {
     textField.setName(name);
     textField.setAlignmentX(SwingConstants.CENTER);
     return textField;
-  }
-
-  private LocalTime getSelectedTime() {
-    String hour = hours[hourBox.getSelectedIndex()];
-    String minute = minutes[minuteBox.getSelectedIndex()];
-    return LocalTime.of(Integer.parseInt(hour), Integer.parseInt(minute));
   }
 }
