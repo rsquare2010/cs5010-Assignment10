@@ -24,6 +24,7 @@ public class SingleStrategyBuyDialog extends CustomDialog {
 
     initialiseFields();
 
+    strategyList = new JComboBox(strategies);
     rootPanel.add(createAlignedLabel("Choose a strategy to invest in:"));
     rootPanel.add(strategyList);
     addComponentsToRootPanel("Date to buy stocks:", dateErrorLabel, getDateComponent());
@@ -43,17 +44,30 @@ public class SingleStrategyBuyDialog extends CustomDialog {
     FocusListener inputVerificationListener = getFormFocusListener(formValidation, hideError);
     addFocusListenerToUIComponents(inputVerificationListener);
 
-//    yesButton.addActionListener(l -> f.verifyFormAndBuy();
-//    noButton.addActionListener(l -> f.closeSingleStrategyBuyForm());
+    yesButton.addActionListener(l -> f.verifyStrategyFormAndBuy(portfolioIndex,
+            getSelectedStrategy(), dateChooser.getDate()));
+    noButton.addActionListener(l -> f.closeSingleStrategyBuyForm());
   }
 
   void setSelectedPortfolioIndex(int portfolioIndex) {
     this.portfolioIndex = portfolioIndex;
   }
 
+  void setStrategies(String[] strategies) {
+    this.strategies = strategies;
+    ComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(this.strategies);
+    this.strategyList.setModel(comboBoxModel);
+    this.strategyList.setSelectedIndex(this.strategyList.getSelectedIndex());
+  }
+
+  void clearAndHide() {
+    setVisible(false);
+  }
+
   private Map<String, Runnable> getFormValidationListeners(Features f) {
     Map<String, Runnable> formValidation = new HashMap<>();
-    formValidation.put(dateChooser.getName(), () -> f.verifyDatesForBuyForm(dateChooser.getDate()));
+    formValidation.put(dateChooser.getName(),
+            () -> f.verifyDatesForSingleStrategyBuyForm(dateChooser.getDate()));
     return formValidation;
   }
 
@@ -67,4 +81,11 @@ public class SingleStrategyBuyDialog extends CustomDialog {
     return hideError;
   }
 
+  void setDateErrorLabel(String message) {
+    setErrorMessage(dateErrorLabel, message);
+  }
+
+  private String getSelectedStrategy() {
+    return strategies[strategyList.getSelectedIndex()];
+  }
 }

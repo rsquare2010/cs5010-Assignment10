@@ -92,6 +92,28 @@ public interface Features {
 
   void createStrategy();
 
-  void closeStrategyForm();
+  void closeAddStrategyForm();
+
+  void verifyStrategyFormAndBuy(int portfolioIndex, String strategyName, Date date);
+
+  void showSingleBuyStrategyForm(int portfolioIndex);
+
+  void closeSingleStrategyBuyForm();
+
+  void verifyDatesForSingleStrategyBuyForm(Date date);
+
+  void showDollarCostAverageForm(int portfolioIndex);
+
+  void closeDollarCostAverageForm();
+
+  void verifyAndBuyDollarCostAverage(int portfolioIndex, String strategyName, Date startDate,
+                                     Date endDate,
+                                     String frequency);
+
+  void verifyStartDateForDCA(Date date);
+
+  void verifyEndDateForDCA(Date startDate, Date endDate);
+
+  void verifyInterval(Date startDate, Date endDate, String interval);
 
 }

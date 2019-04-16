@@ -70,7 +70,6 @@ class AddStrategyDialog extends CustomDialog {
 
 
   void setSelectedPortfolioIndex(int portfolioIndex) {
-    System.out.println("Setting p index add:"+portfolioIndex);
     this.portfolioIndex = portfolioIndex;
   }
 
@@ -84,13 +83,14 @@ class AddStrategyDialog extends CustomDialog {
     yesButton.addActionListener(l-> f.createAStrategy(portfolioIndex,
             strategyNameTextField.getText(),
             weightSet.getContents(), priceTextField.getText(), commissionTextField.getText()));
-    noButton.addActionListener(l -> f.closeStrategyForm());
+    noButton.addActionListener(l -> f.closeAddStrategyForm());
   }
 
 
   private void addFocusListenerToUIComponents(FocusListener focusListener) {
     tickerTextField.addFocusListener(focusListener);
     strategyNameTextField.addFocusListener(focusListener);
+    priceTextField.addFocusListener(focusListener);
     commissionTextField.addFocusListener(focusListener);
   }
 
@@ -109,6 +109,7 @@ class AddStrategyDialog extends CustomDialog {
     Map<String, Runnable> hideError = new HashMap<>();
     hideError.put(tickerTextField.getName(), () -> resetAndHideErrorLabel(tickerErrorLabel));
     hideError.put(strategyNameTextField.getName(), () -> resetAndHideErrorLabel(strategyNameErrorLabel));
+    hideError.put(priceTextField.getName(), ()-> resetAndHideErrorLabel(priceErrorLabel));
     hideError.put(commissionTextField.getName(),
             () -> resetAndHideErrorLabel(commissionErrorLabel));
     return hideError;
@@ -138,7 +139,6 @@ class AddStrategyDialog extends CustomDialog {
   }
 
   void setTickerErrorLabel(String message) {
-    System.out.println("TickerErrorLabel:"+message);
     setErrorMessage(tickerErrorLabel, message);
   }
 

@@ -105,5 +105,21 @@ public interface IView extends EmulatorView {
 
   void setStrategyFormCommissionError(String message);
 
-  void closeStrategyForm();
+  void closeAddStrategyForm();
+
+  void showSingleBuyStrategy(String[] strategies);
+
+  void closeSingleStrategyBuyForm();
+
+  void setSingleBuyStrategyDateError(String message);
+
+  void showDollarCostAverageStrategy(String[] strategies);
+
+  void closeDollarCostAverageForm();
+
+  void setIntervalDCAError(String message);
+
+  void setStartDateDCAError(String message);
+
+  void setEndDateDCAError(String message);
 }

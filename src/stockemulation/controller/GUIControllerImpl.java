@@ -196,7 +196,7 @@ public class GUIControllerImpl implements GUIController, Features {
       }
       model.addStrategyToPortfolio(portfolioNumber, strategyName, weights,
               Double.parseDouble(price), Double.parseDouble(commission));//FIXME catch exception.
-      view.closeStrategyForm();
+      view.closeAddStrategyForm();
     }
   }
 
@@ -271,8 +271,146 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void closeStrategyForm() {
-    view.closeStrategyForm();
+  public void closeAddStrategyForm() {
+    view.closeAddStrategyForm();
+  }
+
+  @Override
+  public void verifyStrategyFormAndBuy(int portfolioIndex, String strategyName, Date date) {
+    isAllFieldsValid = true;
+    verifyDatesForSingleStrategyBuyForm(date);
+    if(isAllFieldsValid) {
+      System.out.println("All Fields Valid");
+      view.closeSingleStrategyBuyForm();
+    }
+  }
+
+  @Override
+  public void showSingleBuyStrategyForm(int portfolioIndex) {
+    if (model.getPortfolioCount() == 0) {
+      view.showErrorMessage("Please create a portfolio before you perform this operation");
+    } else {
+      List<String> strategies = model.getStrategyListFrompPortfolio(portfolioIndex);
+      if (strategies.size() == 0) {
+        view.showErrorMessage("Please create a strategy before you perform this operation");
+      } else {
+        view.showSingleBuyStrategy(strategies.toArray(new String[0]));
+      }
+    }
+  }
+
+  @Override
+  public void closeSingleStrategyBuyForm() {
+    view.closeSingleStrategyBuyForm();
+  }
+
+  @Override
+  public void verifyDatesForSingleStrategyBuyForm(Date date) {
+    if (date == null) {
+      isAllFieldsValid = false;
+      view.setSingleBuyStrategyDateError("Date cannot be empty");
+    } else {
+      LocalDateTime dateTime = LocalDateTime.of(convertDateToLocalDate(date), LocalTime.NOON);
+      try {
+        StockInfoSanity.isDateTimeValid(dateTime);
+      } catch (IllegalArgumentException e) {
+        isAllFieldsValid = false;
+        view.setSingleBuyStrategyDateError(e.getMessage());
+      }
+    }
+  }
+
+  @Override
+  public void showDollarCostAverageForm(int portfolioIndex) {
+    if (model.getPortfolioCount() == 0) {
+      view.showErrorMessage("Please create a portfolio before you perform this operation");
+    } else {
+      List<String> strategies = model.getStrategyListFrompPortfolio(portfolioIndex);
+      if (strategies.size() == 0) {
+        view.showErrorMessage("Please create a strategy before you perform this operation");
+      } else {
+        view.showDollarCostAverageStrategy(strategies.toArray(new String[0]));
+      }
+    }
+  }
+
+  @Override
+  public void closeDollarCostAverageForm() {
+    view.closeDollarCostAverageForm();
+  }
+
+  @Override
+  public void verifyAndBuyDollarCostAverage(int portfolioNumber, String strategyName,
+                                            Date startDate, Date endDate, String frequency) {
+//    model.dollarCostAveraging();
+    System.out.println("Portfolio Number:" + portfolioNumber);
+    System.out.println("Start Date:" + startDate.toString());
+    System.out.println("End Date:" + endDate.toString());
+    System.out.println("frequency:" + frequency);
+  }
+
+  @Override
+  public void verifyStartDateForDCA(Date date) {
+    if (date == null) {
+      isAllFieldsValid = false;
+      view.setStartDateDCAError("Date cannot be empty");
+    } else {
+      LocalDateTime dateTime = LocalDateTime.of(convertDateToLocalDate(date), LocalTime.NOON);
+      try {
+        StockInfoSanity.isDateTimeValid(dateTime);
+      } catch (IllegalArgumentException e) {
+        isAllFieldsValid = false;
+        view.setStartDateDCAError(e.getMessage());
+      }
+    }
+  }
+
+  @Override
+  public void verifyEndDateForDCA(Date startDate, Date endDate) {
+    if (endDate == null) {
+      isAllFieldsValid = false;
+      view.setEndDateDCAError("End Date cannot be empty");
+    } else {
+      LocalDateTime dateTime = LocalDateTime.of(convertDateToLocalDate(endDate), LocalTime.NOON);
+      try {
+        StockInfoSanity.isDateTimeValid(dateTime);
+      } catch (IllegalArgumentException e) {
+        isAllFieldsValid = false;
+        view.setEndDateDCAError(e.getMessage());
+      }
+    }
+    verifyStartDateForDCA(startDate);
+    if(isAllFieldsValid) {
+      if(startDate.compareTo(endDate) == -1) {
+
+      } else {
+        view.setEndDateDCAError("End date has to be greater than start date");
+      }
+    }
+  }
+
+  @Override
+  public void verifyInterval(Date startDate, Date endDate, String interval) {
+    verifyStartDateForDCA(startDate);
+    verifyEndDateForDCA(startDate,endDate);
+    if(!isValidNumber(interval)) {
+      isAllFieldsValid = false;
+      view.setIntervalDCAError("Please enter a number");
+    } else {
+      int intervalInt = Integer.parseInt(interval);
+      if (intervalInt < 0) {
+        view.setIntervalDCAError("Interval cannot be negative");
+      }
+    }
+    if(isAllFieldsValid) {
+      LocalDate startLocalDate = convertDateToLocalDate(startDate);
+      LocalDate endLocalDate = convertDateToLocalDate(endDate);
+      if(startLocalDate.plusDays(12).isAfter(endLocalDate)) {
+        isAllFieldsValid = false;
+        view.setIntervalDCAError("Interval has to be lesser than the difference between the dates");
+      }
+    }
+
   }
 
   @Override
@@ -315,15 +453,6 @@ public class GUIControllerImpl implements GUIController, Features {
     }
   }
 
-//  @Override
-//  public void createAStrategy() {
-//    if (model.getPortfolioCount() == 0) {
-//      view.showErrorMessage("Please create a portfolio before you buy stocks");
-//    } else {
-//      view.showCreateStrategyForm();
-//    }
-//  }
-
   private LocalDate convertDateToLocalDate(Date date) {
     return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
   }
@@ -331,6 +460,15 @@ public class GUIControllerImpl implements GUIController, Features {
   private boolean validatePrice(String cost) {
     try {
       Double.parseDouble(cost);
+    } catch (NumberFormatException exception) {
+      return false;
+    }
+    return true;
+  }
+
+  private boolean isValidNumber(String interval) {
+    try {
+      Integer.parseInt(interval);
     } catch (NumberFormatException exception) {
       return false;
     }

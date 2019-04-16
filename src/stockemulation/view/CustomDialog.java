@@ -98,7 +98,7 @@ public abstract class CustomDialog extends JDialog {
     return textField;
   }
 
-  protected Component getDateComponent() {
+  protected JDateChooser getDateComponent() {
     dateChooser = new JDateChooser();
     dateChooser.setName("date");
     dateChooser.setDateFormatString("yyyy-MM-dd");
