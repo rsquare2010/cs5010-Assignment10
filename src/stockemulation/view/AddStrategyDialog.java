@@ -1,14 +1,16 @@
 package stockemulation.view;
 
 import java.awt.*;
-import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
 
 import stockemulation.controller.Features;
 import stockemulation.controller.GUIController;
@@ -17,7 +19,7 @@ import stockemulation.controller.GUIController;
  * This is custom Dialog created by extending the JDialog class. It generates a form to collect
  * information from the user to facilitate the buy stocks operation.
  */
-class AddStrategyDialog extends JDialog {
+class AddStrategyDialog extends CustomDialog {
 
   private JTextField strategyNameTextField;
   private JTextField commissionTextField;
@@ -29,9 +31,6 @@ class AddStrategyDialog extends JDialog {
   private JLabel commissionErrorLabel;
   private JLabel priceErrorLabel;
 
-  private JButton yesButton;
-  private JButton noButton;
-  private JPanel rootPanel;
   private EntrySet weightSet;
   private List<String> tickerList;
   private int portfolioIndex;
@@ -45,11 +44,8 @@ class AddStrategyDialog extends JDialog {
    * @param controller an instance of the GUIController class.
    */
   AddStrategyDialog(Frame frame, String text, GUIController controller) {
-    super(frame, text, true);
+    super(frame, text);
 
-    rootPanel = new JPanel();
-    rootPanel.setBorder(new EmptyBorder(10, 10, 10, 30));
-    rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.Y_AXIS));
 
     initialiseFields();
 
@@ -70,13 +66,11 @@ class AddStrategyDialog extends JDialog {
     scrollPane.setViewportView(rootPanel);
     getContentPane().add(scrollPane);
 
-
-    pack();
-    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
   }
 
 
   void setSelectedPortfolioIndex(int portfolioIndex) {
+    System.out.println("Setting p index add:"+portfolioIndex);
     this.portfolioIndex = portfolioIndex;
   }
 
@@ -87,29 +81,12 @@ class AddStrategyDialog extends JDialog {
     FocusListener inputVerificationListener = getFormFocusListener(formValidation, hideError);
     addFocusListenerToUIComponents(inputVerificationListener);
 
-    yesButton.addActionListener(l-> f.createAStrategy(strategyNameTextField.getText(),
+    yesButton.addActionListener(l-> f.createAStrategy(portfolioIndex,
+            strategyNameTextField.getText(),
             weightSet.getContents(), priceTextField.getText(), commissionTextField.getText()));
     noButton.addActionListener(l -> f.closeStrategyForm());
   }
 
-  private FocusListener getFormFocusListener(Map<String, Runnable> formValidation, Map<String,
-          Runnable> hideError) {
-    return new FocusListener() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        if (hideError.containsKey(e.getComponent().getName())) {
-          hideError.get(e.getComponent().getName()).run();
-        }
-      }
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        if (formValidation.containsKey(e.getComponent().getName())) {
-          formValidation.get(e.getComponent().getName()).run();
-        }
-      }
-    };
-  }
 
   private void addFocusListenerToUIComponents(FocusListener focusListener) {
     tickerTextField.addFocusListener(focusListener);
@@ -148,38 +125,6 @@ class AddStrategyDialog extends JDialog {
     commissionErrorLabel = createErrorField();
   }
 
-  private void addComponentsToRootPanel(String message, JLabel errorLabel,
-                                        Component specificComponent) {
-    rootPanel.add(createAlignedLabel(message));
-    rootPanel.add(errorLabel);
-    rootPanel.add(specificComponent);
-  }
-
-  private JLabel createErrorField() {
-    JLabel errorLabel = new JLabel();
-    errorLabel.setVisible(false);
-    errorLabel.setForeground(Color.RED);
-    errorLabel.setAlignmentX(SwingConstants.CENTER);
-    return errorLabel;
-  }
-
-  private JLabel createAlignedLabel(String text) {
-    JLabel label = new JLabel(text);
-    label.setAlignmentX(SwingConstants.CENTER);
-    return label;
-  }
-
-  private void addOptionsToRootPanel() {
-    JPanel options = new JPanel(new FlowLayout());
-
-    yesButton = new JButton("Yes");
-    noButton = new JButton("no");
-    options.add(yesButton);
-    options.add(noButton);
-    options.setAlignmentX(SwingConstants.CENTER);
-
-    rootPanel.add(options);
-  }
 
   /**
    * This method clears the dialog and hides it.
@@ -193,6 +138,7 @@ class AddStrategyDialog extends JDialog {
   }
 
   void setTickerErrorLabel(String message) {
+    System.out.println("TickerErrorLabel:"+message);
     setErrorMessage(tickerErrorLabel, message);
   }
 
@@ -202,22 +148,5 @@ class AddStrategyDialog extends JDialog {
 
   void setStrategyFormPriceErrorLabel(String message) {
     setErrorMessage(priceErrorLabel, message);
-  }
-
-  private void setErrorMessage(JLabel label, String message) {
-    label.setText(message);
-    label.setVisible(true);
-  }
-
-  private void resetAndHideErrorLabel(JLabel label) {
-    label.setText("");
-    label.setVisible(false);
-  }
-
-  private JTextField createTextFieldWithName(String name) {
-    JTextField textField = new JTextField();
-    textField.setName(name);
-    textField.setAlignmentX(SwingConstants.CENTER);
-    return textField;
   }
 }

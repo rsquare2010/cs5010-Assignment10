@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import stockemulation.model.ModelExtn;
@@ -179,22 +181,63 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void createAStrategy(String strategyName, Map<String, String> tickerWeights, String price, String commission) {
-    System.out.println("Strategy Name: "+ strategyName);
-    System.out.println("Weight tickers"+tickerWeights.keySet().toString());
-    System.out.println("Weight weights"+tickerWeights.values().toString());
-    System.out.println("Price: "+price);
-    System.out.println("Commission:"+commission);
+  public void createAStrategy(int portfolioNumber,String strategyName,
+                              Map<String, String> tickerWeights, String price, String commission) {
 
-    //If strategy name is not null or empty.
-    //If the contents fo the map are not null or empty? How do i verify weights?
-    //If the price is not null?
-    //if the commission is valid?
-
-    //model.saveStrategy();
-    //done message.
+    isAllFieldsValid = true;
+    verifyStrategyName(portfolioNumber, strategyName);
+    verifyWeights(tickerWeights);
+    verifyPriceForStrategyForm(price);
+    verifyCommissionForStrategyForm(commission);
+    if(isAllFieldsValid) {
+      Map<String, Double> weights = new HashMap<>();
+      for(Map.Entry entry : tickerWeights.entrySet()){
+        weights.put(entry.getKey().toString(), Double.parseDouble(entry.getValue().toString()));
+      }
+      model.addStrategyToPortfolio(portfolioNumber, strategyName, weights,
+              Double.parseDouble(price), Double.parseDouble(commission));//FIXME catch exception.
+      view.closeStrategyForm();
+    }
   }
 
+  private void verifyStrategyName(int portfolioNumber, String name) {
+    if (name != null && !(name.trim().isEmpty())) {
+      List<String> strategyList = model.getStrategyListFrompPortfolio(portfolioNumber);
+      if(strategyList.contains(name)) {
+        isAllFieldsValid = false;
+        view.setStrategyFormNameError("A strategy with the same name already exists for the " +
+                "portfolio");
+      }
+    } else {
+      view.setStrategyFormNameError(" Please Enter a valid strategy");
+      isAllFieldsValid = false;
+    }
+  }
+
+  private void verifyWeights(Map<String, String> weights) {
+    double sum = 0.0;
+    for(Map.Entry entry : weights.entrySet()){
+      verifyTickerNameForStrategyForm(entry.getKey().toString());
+      if (validatePrice(entry.getValue().toString())) {
+        try {
+          StockInfoSanity.isWeightValid(Double.parseDouble(entry.getValue().toString()));
+        } catch (IllegalArgumentException e) {
+          isAllFieldsValid = false;
+          view.setStrategyFormTickerError(e.getMessage());
+        }
+        if(isAllFieldsValid) {
+          sum += Double.parseDouble(entry.getValue().toString());
+        }
+      } else {
+        view.setStrategyFormTickerError("Weight has to be a number between 0 and 100");
+        isAllFieldsValid = false;
+      }
+    }
+    if(100 - sum > 0.01 || sum - 100 > 0.01) { //Check weights with precision.
+      isAllFieldsValid = false;
+      view.setStrategyFormTickerError("sum of weights should be 100");
+    }
+  }
 
   @Override
   public void buyStocks() {

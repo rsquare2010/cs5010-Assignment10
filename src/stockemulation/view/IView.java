@@ -97,9 +97,9 @@ public interface IView extends EmulatorView {
    */
   void setPortfolioValueOnDate(Double costBasis, Double value);
 
-  void setStrategyFormTickerError(String message);
+  void setStrategyFormNameError(String message);
 
-  void setStrategyFormWeightError(String message);
+  void setStrategyFormTickerError(String message);
 
   void setStrategyFormPriceError(String message);
 

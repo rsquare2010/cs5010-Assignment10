@@ -1,28 +1,18 @@
 package stockemulation.view;
 
-import com.toedter.calendar.JDateChooser;
-
 import java.awt.Frame;
 import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.BoxLayout;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import stockemulation.controller.Features;
 import stockemulation.controller.GUIController;
@@ -31,12 +21,11 @@ import stockemulation.controller.GUIController;
  * This is custom Dialog created by extending the JDialog class. It generates a form to collect
  * information from the user to facilitate the buy stocks operation.
  */
-class BuyStockDialog extends JDialog {
+class BuyStockDialog extends CustomDialog {
 
   private JTextField priceTextField;
   private JTextField commissionTextField;
   private JTextField tickerTextField;
-  private JDateChooser dateChooser;
   private JComboBox hourBox;
   private JComboBox minuteBox;
 
@@ -46,9 +35,6 @@ class BuyStockDialog extends JDialog {
   private JLabel priceErrorLabel;
   private JLabel commissionErrorLabel;
 
-  protected JButton yesButton;
-  protected JButton noButton;
-  private JPanel rootPanel;
   private int portfolioIndex;
   private String[] hours = {"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
     "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"};
@@ -64,11 +50,7 @@ class BuyStockDialog extends JDialog {
    * @param controller an instance of the GUIController class.
    */
   BuyStockDialog(Frame frame, String text, GUIController controller) {
-    super(frame, text, true);
-
-    rootPanel = new JPanel();
-    rootPanel.setBorder(new EmptyBorder(10, 10, 10, 30));
-    rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.Y_AXIS));
+    super(frame, text);
 
     initialiseFields();
 
@@ -80,11 +62,9 @@ class BuyStockDialog extends JDialog {
             priceTextField);
     addComponentsToRootPanel("Commission for this transaction", commissionErrorLabel,
             commissionTextField);
+
     addOptionsToRootPanel();
 
-    getContentPane().add(rootPanel);
-    pack();
-    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
   }
 
   void setSelectedPortfolioIndex(int portfolioIndex) {
@@ -104,24 +84,7 @@ class BuyStockDialog extends JDialog {
     noButton.addActionListener(l -> f.closeBuyForm());
   }
 
-  protected FocusListener getFormFocusListener(Map<String, Runnable> formValidation, Map<String,
-          Runnable> hideError) {
-    return new FocusListener() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        if (hideError.containsKey(e.getComponent().getName())) {
-          hideError.get(e.getComponent().getName()).run();
-        }
-      }
 
-      @Override
-      public void focusLost(FocusEvent e) {
-        if (formValidation.containsKey(e.getComponent().getName())) {
-          formValidation.get(e.getComponent().getName()).run();
-        }
-      }
-    };
-  }
 
   private void addFocusListenerToUIComponents(FocusListener focusListener) {
     dateChooser.addFocusListener(focusListener);
@@ -168,21 +131,9 @@ class BuyStockDialog extends JDialog {
     commissionErrorLabel = createErrorField();
   }
 
-  protected void addComponentsToRootPanel(String message, JLabel errorLabel,
-                                        Component specificComponent) {
-    rootPanel.add(createAlignedLabel(message));
-    rootPanel.add(errorLabel);
-    rootPanel.add(specificComponent);
-  }
 
-  protected Component getDateComponent() {
-    dateChooser = new JDateChooser();
-    dateChooser.setName("date");
-    dateChooser.setDateFormatString("yyyy-MM-dd");
-    dateChooser.setMaxSelectableDate(new Date());
-    dateChooser.setAlignmentX(SwingConstants.CENTER);
-    return dateChooser;
-  }
+
+
 
   private Component getTimeComponent() {
     JPanel timePanel = new JPanel(new GridLayout(1, 0));
@@ -194,32 +145,6 @@ class BuyStockDialog extends JDialog {
     timePanel.add(minuteBox);
     timePanel.setAlignmentX(SwingConstants.CENTER);
     return timePanel;
-  }
-
-  protected JLabel createErrorField() {
-    JLabel errorLabel = new JLabel();
-    errorLabel.setVisible(false);
-    errorLabel.setForeground(Color.RED);
-    errorLabel.setAlignmentX(SwingConstants.CENTER);
-    return errorLabel;
-  }
-
-  protected JLabel createAlignedLabel(String text) {
-    JLabel label = new JLabel(text);
-    label.setAlignmentX(SwingConstants.CENTER);
-    return label;
-  }
-
-  protected void addOptionsToRootPanel() {
-    JPanel options = new JPanel(new FlowLayout());
-
-    yesButton = new JButton("Yes");
-    noButton = new JButton("no");
-    options.add(yesButton);
-    options.add(noButton);
-    options.setAlignmentX(SwingConstants.CENTER);
-
-    rootPanel.add(options);
   }
 
   /**
@@ -247,23 +172,6 @@ class BuyStockDialog extends JDialog {
 
   void setPriceErrorLabel(String message) {
     setErrorMessage(priceErrorLabel, message);
-  }
-
-  private void setErrorMessage(JLabel label, String message) {
-    label.setText(message);
-    label.setVisible(true);
-  }
-
-  private void resetAndHideErrorLabel(JLabel label) {
-    label.setText("");
-    label.setVisible(false);
-  }
-
-  private JTextField createTextFieldWithName(String name) {
-    JTextField textField = new JTextField();
-    textField.setName(name);
-    textField.setAlignmentX(SwingConstants.CENTER);
-    return textField;
   }
 
   private LocalTime getSelectedTime() {

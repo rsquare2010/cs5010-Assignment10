@@ -86,4 +86,19 @@ public class MockModel implements ModelExtn {
           throws IllegalArgumentException, IOException, ParseException {
     //Not do anything here
   }
+
+  @Override
+  public void dollarCosrAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate, LocalDateTime endDate, int freaquencyInDays) {
+
+  }
+
+  @Override
+  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission) {
+
+  }
+
+  @Override
+  public List<String> getStrategyListFrompPortfolio(int portfolioNumber) {
+    return null;
+  }
 }

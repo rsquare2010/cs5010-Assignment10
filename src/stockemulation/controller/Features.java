@@ -36,7 +36,8 @@ public interface Features {
 
   void verifyTickerNameForStrategyForm(String tickerName);
 
-  void createAStrategy(String strategyName, Map<String, String> tickerWeights, String price,
+  void createAStrategy(int portfolioNumber, String strategyName, Map<String, String> tickerWeights,
+                       String price,
                        String commission);
 
 

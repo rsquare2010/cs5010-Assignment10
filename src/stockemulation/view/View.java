@@ -136,6 +136,7 @@ public class View extends JFrame implements IView {
   @Override
   public void showCreateStrategyForm() {
     createStrategyDialog.pack();
+    createStrategyDialog.setSelectedPortfolioIndex(portfolioList.getSelectedIndex());
     createStrategyDialog.setVisible(true);
   }
 
@@ -209,8 +210,8 @@ public class View extends JFrame implements IView {
   }
 
   @Override
-  public void setStrategyFormWeightError(String message) {
-
+  public void setStrategyFormNameError(String message) {
+    createStrategyDialog.setStrategyNameErrorLabel(message);
   }
 
   @Override
