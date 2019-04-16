@@ -46,7 +46,7 @@ public class OneTimeStrategyBuyCommand extends CommonCommands {
     if (portfolioNumber == -1) {
       return;
     } else {
-      strategyName = chooseStrategy(model, view, portfolioNumber);
+      strategyName = chooseStrategy(model, view);
     }
     LocalDate date = super.getDate(model, view);
     LocalTime time = LocalTime.of(15, 00);

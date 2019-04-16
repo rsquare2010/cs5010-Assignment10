@@ -120,4 +120,10 @@ public interface IView extends EmulatorView {
   void setStartDateDCAError(String message);
 
   void setEndDateDCAError(String message);
+
+  void setStrategyList(String[] strategies);
+
+  void showSelectStrategyForm(String[] strategies);
+
+  void hideSelectStrategyForm();
 }

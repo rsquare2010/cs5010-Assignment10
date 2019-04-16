@@ -120,4 +120,6 @@ public interface Features {
 
   void readStrategyFromFile(String filePath);
 
+  void showSelectStrategyForm();
+
 }

@@ -49,7 +49,7 @@ public class DollarCostAverageCommand extends CommonCommands {
     if (portfolioNumber == -1) {
       return;
     } else {
-      strategyName = chooseStrategy(model, view, portfolioNumber);
+      strategyName = chooseStrategy(model, view);
     }
     LocalDate startDate = super.getDate(model, view);
     LocalTime starttime = LocalTime.of(15, 00);

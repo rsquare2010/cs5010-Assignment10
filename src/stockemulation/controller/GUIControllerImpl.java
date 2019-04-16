@@ -194,15 +194,24 @@ public class GUIControllerImpl implements GUIController, Features {
       for (Map.Entry entry : tickerWeights.entrySet()) {
         weights.put(entry.getKey().toString(), Double.parseDouble(entry.getValue().toString()));
       }
-      model.addStrategyToPortfolio(portfolioNumber, strategyName, weights,
-              Double.parseDouble(price), Double.parseDouble(commission));//FIXME catch exception.
+      boolean isSuccessful = true;
+      try {
+        model.addStrategyData(strategyName, weights, Double.parseDouble(price),
+                Double.parseDouble(commission));
+      } catch (IllegalArgumentException e) {
+        isSuccessful = false;
+        view.showErrorMessage(e.getMessage());
+      }
+      if(isSuccessful) {
+        view.setStrategyList(model.getStrategyList().toArray(new String[0]));
+      }
       view.closeAddStrategyForm();
     }
   }
 
   private void verifyStrategyName(int portfolioNumber, String name) {
     if (name != null && !(name.trim().isEmpty())) {
-      List<String> strategyList = model.getStrategyListFrompPortfolio(portfolioNumber);
+      List<String> strategyList = model.getStrategyList();
       if (strategyList.contains(name)) {
         isAllFieldsValid = false;
         view.setStrategyFormNameError("A strategy with the same name already exists for the "
@@ -337,7 +346,7 @@ public class GUIControllerImpl implements GUIController, Features {
     if (model.getPortfolioCount() == 0) {
       view.showErrorMessage("Please create a portfolio before you perform this operation");
     } else {
-      List<String> strategies = model.getStrategyListFrompPortfolio(portfolioIndex);
+      List<String> strategies = model.getStrategyList();
       if (strategies.size() == 0) {
         view.showErrorMessage("Please create a strategy before you perform this operation");
       } else {
@@ -374,7 +383,7 @@ public class GUIControllerImpl implements GUIController, Features {
     if (model.getPortfolioCount() == 0) {
       view.showErrorMessage("Please create a portfolio before you perform this operation");
     } else {
-      List<String> strategies = model.getStrategyListFrompPortfolio(portfolioIndex);
+      List<String> strategies = model.getStrategyList();
       if (strategies.size() == 0) {
         view.showErrorMessage("Please create a strategy before you perform this operation");
       } else {
@@ -455,22 +464,31 @@ public class GUIControllerImpl implements GUIController, Features {
 
   @Override
   public void saveStrategy(String fileName, String strategyName) {
-//    try {
-//      model.writePortfolioToFile(filePath, portfolioIndex);
-//    } catch (IOException | IllegalArgumentException e) {
-//      view.showErrorMessage(e.getMessage());
-//    }
+    try {
+      model.writeStrategyToFile(fileName, strategyName);
+      view.hideSelectStrategyForm();
+    } catch (IOException | IllegalArgumentException e) {
+      view.showErrorMessage(e.getMessage());
+    }
   }
 
   @Override
   public void readStrategyFromFile(String filePath) {
-//    boolean isError = false;
-//    try {
-////      model.readPortfolioFromFile(filePath);
-//    } catch (IllegalArgumentException | ParseException | IOException e) {
-//      isError = true;
-//      view.showErrorMessage(e.getMessage());
-//    }
+    boolean isError = false;
+    try {
+      model.readStrategyFromFile(filePath);
+    } catch (IllegalArgumentException | ParseException | IOException e) {
+      isError = true;
+      view.showErrorMessage(e.getMessage());
+    }
+    if (!isError) {
+      view.setStrategyList(model.getStrategyList().toArray(new String[0]));
+    }
+  }
+
+  @Override
+  public void showSelectStrategyForm() {
+    view.showSelectStrategyForm(model.getStrategyList().toArray(new String[0]));
   }
 
   @Override
@@ -537,10 +555,6 @@ public class GUIControllerImpl implements GUIController, Features {
 
   @Override
   public void createStrategy() {
-    if (model.getPortfolioCount() == 0) {
-      view.showErrorMessage("Please create a portfolio before you create a Strategy");
-    } else {
-      view.showCreateStrategyForm();
-    }
+    view.showCreateStrategyForm();
   }
 }

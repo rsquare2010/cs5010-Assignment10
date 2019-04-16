@@ -88,37 +88,6 @@ interface PortfolioExtn extends Portfolio {
 
 
   /**
-   * This helps to create a new object of type {@link StrategyData} or update an existing one to the
-   * strategy collection. This inputs are used to construct the implementation of the strategy
-   * data.
-   *
-   * @param strategyName     the name for the strategy that has to be added or updated.
-   * @param tickerWeightMap  the map of stock composition to the weight distribution.
-   * @param investmentAmount the total amount to invest.
-   * @param commission       the value to be paid for each but in this investment.
-   */
-  void createAndUpdateStrategy(
-          String strategyName,
-          Map<String, Double> tickerWeightMap,
-          double investmentAmount,
-          double commission);
-
-  /**
-   * Returns the reference of {@link StrategyData} that matches the specified name.
-   *
-   * @param strategyName the name of the strategy which has to be returned if it exists.
-   * @return the reference of {@link StrategyData} that matches the specified name.
-   */
-  StrategyData getStrategyByName(String strategyName);
-
-  /**
-   * Returns all the strategies this portfolio has as a list of strings of their names.
-   *
-   * @return all the strategies this portfolio has as a list of strings of their names.
-   */
-  List<String> getStrategiesList();
-
-  /**
    * This is an elementary investment operation. This takes in a composition of stocks to invest in
    * and their distribution weights for the total investment amount, along with the commission. Then
    * buys shares for the stocks, don't exist in the portfolio it gets added while buying. The whole
@@ -152,17 +121,4 @@ interface PortfolioExtn extends Portfolio {
           double totalInvestmentAmount,
           double commission
   );
-
-  /**
-   * This is an elementary invetment operation. This uses on of the existing strategy to do the
-   * investment on a particular date. If it is not possible to invest on that date because of a *
-   * holiday. It will make the investment in the next possible date.
-   *
-   * @param strategyName  the name of the strategy which has to be used for this elementary
-   *                      investment.
-   * @param specifiedDate the date at which this strategy has sto be sued to invest.
-   */
-  void investWithStrategy(String strategyName, LocalDateTime specifiedDate);
-
-
 }

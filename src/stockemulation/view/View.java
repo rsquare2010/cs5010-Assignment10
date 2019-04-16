@@ -108,7 +108,7 @@ public class View extends JFrame implements IView {
   public void setFeatures(Features f) {
     save.addActionListener(l -> saveToFile(f));
     open.addActionListener(l -> readFromFile(f));
-    saveStrategies.addActionListener(l -> showSelectStrategyForm());
+    saveStrategies.addActionListener(l -> f.showSelectStrategyForm());
     loadStrategies.addActionListener(l -> loadStrategiesFromFile(f));
     buyStockDialog.setFeatures(f);
     createStrategyDialog.setFeatures(f);
@@ -172,6 +172,11 @@ public class View extends JFrame implements IView {
     ComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(portfolioList);
     this.portfolioList.setModel(comboBoxModel);
     this.portfolioList.setSelectedIndex(this.portfolioList.getSelectedIndex());
+  }
+
+  @Override
+  public void setStrategyList(String[] strategies) {
+    this.strategies = strategies;
   }
 
   @Override
@@ -492,9 +497,13 @@ public class View extends JFrame implements IView {
     selectStrategy = new SelectStrategy(this, "Strategies");
   }
 
-  private void showSelectStrategyForm() {
+  public void showSelectStrategyForm(String[] strategies) {
     selectStrategy.pack();
     selectStrategy.setVisible(true);
     selectStrategy.setStrategies(strategies);
+  }
+
+  public void hideSelectStrategyForm() {
+    selectStrategy.setVisible(false);
   }
 }

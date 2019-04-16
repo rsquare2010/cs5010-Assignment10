@@ -178,9 +178,9 @@ abstract class CommonCommands implements EmulatorCommand {
     return !date.isAfter(LocalDate.now());
   }
 
-  protected String chooseStrategy(ModelExtn model, EmulatorView view, int portfolioNumber) {
+  protected String chooseStrategy(ModelExtn model, EmulatorView view) {
     view.showMessage("Choose ");
-    List<String> strategyList = model.getStrategyListFrompPortfolio(portfolioNumber);
+    List<String> strategyList = model.getStrategyList();
     if (strategyList.size() == 0) {
       view.showMessage("create a strategy before you perform this operation");
       return null;

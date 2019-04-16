@@ -88,25 +88,34 @@ public class MockModel implements ModelExtn {
   }
 
   @Override
+  public void addStrategyData(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission) {
+    //Not do anything here.
+  }
+
+  @Override
+  public void writeStrategyToFile(String filepath, String strategyName) throws IllegalArgumentException, IOException {
+    //Not do anything here.
+  }
+
+  @Override
+  public void readStrategyFromFile(String filepath) throws IllegalArgumentException, IOException, ParseException {
+    //Not do anything here.
+  }
+
+  @Override
   public void investWithStrategy(int portfolioNumber, String strategyName,
                                  LocalDateTime investmentDate) {
     //Not do anything here.
   }
 
   @Override
+  public List<String> getStrategyList() {
+    return null;
+  }
+
+  @Override
   public void dollarCostAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate,
                                   LocalDateTime endDate, int frequencyInDays) {
     //Not do anything here.
-  }
-
-  @Override
-  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String, Double>
-          tickerWeightMap, double inverstmentAmount, double commission) {
-    //Not do anything here
-  }
-
-  @Override
-  public List<String> getStrategyListFrompPortfolio(int portfolioNumber) {
-    return null;
   }
 }

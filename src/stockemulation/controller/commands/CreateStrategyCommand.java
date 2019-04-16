@@ -109,7 +109,7 @@ public class CreateStrategyCommand extends CommonCommands {
     boolean isCreatedSuccessfully = false;
     String name = scanner.next();
     try {
-      model.addStrategyToPortfolio(portfolioNumber, name, weights, price, commissionPrice);
+      model.addStrategyData(name, weights, price, commissionPrice);
     } catch (IllegalArgumentException e) {
       isCreatedSuccessfully = false;
       view.showMessage(e.getMessage());
