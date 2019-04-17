@@ -81,8 +81,9 @@ class PortfolioImpl implements Portfolio {
 
   @Override
   public double getTotalValue(LocalDateTime specifiedDate) throws IllegalArgumentException {
+    LocalDateTime dateTime = getMarketOpenDate(specifiedDate);
     return stockPurchaseList.stream()
-            .filter(s -> s.getPurchaseDate().isBefore(specifiedDate))
+            .filter(s -> s.getPurchaseDate().isBefore(dateTime))
             .mapToDouble(s -> (s.getQuantity() * dataSource
                     .getPriceAtTime(specifiedDate.toLocalDate(), s.getName())))
             .sum();
@@ -102,6 +103,18 @@ class PortfolioImpl implements Portfolio {
     else {
       uniqueTickerList.put(tickerName, quantity);
     }
+  }
+
+  protected LocalDateTime getMarketOpenDate(LocalDateTime investmentDate) {
+    while (investmentDate.isBefore(LocalDateTime.now())) {
+      try {
+        StockInfoSanity.isDateTimeValid(investmentDate);
+        break;
+      } catch (IllegalArgumentException e) {
+        investmentDate = investmentDate.plusDays(1);
+      }
+    }
+    return investmentDate;
   }
 
 }

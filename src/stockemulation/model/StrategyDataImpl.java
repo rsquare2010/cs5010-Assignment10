@@ -63,4 +63,12 @@ class StrategyDataImpl implements StrategyData {
   public double getCommission() {
     return commission;
   }
+
+  @Override
+  public String toString() {
+    return "{\"strategyName\":\"" + strategyName
+            + "\",\"investmentAmount\":" + investmentAmount
+            + ",\"commission\":" + commission
+            + ",\"tickerWeightsMap\":" + tickerAndWeights.toString() + "}";
+  }
 }

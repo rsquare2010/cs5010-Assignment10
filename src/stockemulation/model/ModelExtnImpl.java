@@ -98,6 +98,9 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
 
   @Override
   public void writeStrategyToFile(String filepath, String strategyName) throws IllegalArgumentException, IOException {
+    if (!investmentStrategies.containsKey(strategyName)) {
+      throw new IllegalArgumentException("This sterategy doesnt exist");
+    }
     StrategyData strategyData = investmentStrategies.get(strategyName);
     JSONObject strategyObj = new JSONObject();
     strategyObj.put("strategyName", strategyData.getStrategyName());
@@ -118,12 +121,17 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     JSONParser parser = new JSONParser();
     Object obj = parser.parse(new FileReader(filepath));
     JSONObject jsonObject = (JSONObject) obj;
+    try{
     addStrategyData(
             (String) jsonObject.get("strategyName"),
             (Map<String, Double>) jsonObject.get("tickerWeightsMap"),
             (double) jsonObject.get("investmentAmount"),
             (double) jsonObject.get("commission")
     );
+    } catch (NullPointerException e) {
+      throw new IOException("Wrong or corrupt File data structures");
+    }
+
   }
 
   @Override
@@ -204,8 +212,16 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
               (double) stockObj.get("commission")
       );
     }
+
+
   }
 
+  String getStrategyDetails(String strategyName) throws IllegalArgumentException {
+    if (!investmentStrategies.containsKey(strategyName)) {
+      throw new IllegalArgumentException("Strategy doesnt exist.");
+    }
+   return investmentStrategies.get(strategyName).toString();
+  }
 }
 
 

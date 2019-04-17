@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,8 @@ import static junit.framework.TestCase.assertEquals;
  */
 public class ModelExtnImplTest {
 
+  private Map<String, Double> testTickerweights;
+
   @Rule
   public final ExpectedException exception = ExpectedException.none();
 
@@ -33,6 +36,10 @@ public class ModelExtnImplTest {
     testModel.buyStock(0, testTime1, "AAPL", 300.0, 10);
 
     testModel.writePortfolioToFile("modelread.json", 0);
+
+    testTickerweights = new HashMap<>();
+    testTickerweights.put("AAPL", 20.0);
+    testTickerweights.put("GOOG", 25.0);
   }
 
   // Constructor Tests //
@@ -175,5 +182,119 @@ public class ModelExtnImplTest {
     testModel.readPortfolioFromFile("modelread.json");
     assertEquals("{AAPL=10.0}", testModel.getPortfolioDetails(0).toString());
   }
+
+
+  // Strategy Tests //
+
+  @Test
+  public void testAddStrategy() {
+    ModelExtn testModel = new ModelExtnImpl(APITypes.MOCK_API);
+    testModel.addStrategyData(
+            "test", testTickerweights, 30, 20);
+    assertEquals(1, testModel.getStrategyList().size());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testAddStrategyException() {
+    ModelExtn testModel = new ModelExtnImpl(APITypes.MOCK_API);
+    testModel.addStrategyData(
+            "test", null, 30, 20);
+    testModel.addStrategyData(
+            null, testTickerweights, 30, 20);
+  }
+
+  @Test
+  public void testWriteStrategyToFile() throws Exception {
+    ModelExtn testModel = new ModelExtnImpl(APITypes.MOCK_API);
+    testModel.addStrategyData(
+            "test", testTickerweights, 30, 20);
+    testModel.writeStrategyToFile("testStrategy.json", "test");
+    String contentsGenerated = new String(Files.readAllBytes(Paths.get("testStrategy.json")));
+    assertEquals("{\"strategyName\":\"test\",\"investmentAmount\":30.0,\"commission\":"
+            + "20.0,\"tickerWeightsMap\":{\"GOOG\":25.0,\"AAPL\":20.0}}", contentsGenerated);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testWriteStrategyToFileException() throws Exception {
+    ModelExtn testModel = new ModelExtnImpl(APITypes.MOCK_API);
+    testModel.addStrategyData(
+            "test", testTickerweights, 30, 20);
+    testModel.writeStrategyToFile("testStrategy.json", "te3st");
+  }
+
+  @Test(expected = IOException.class)
+  public void testWriteStrategyToFileIOException() throws Exception {
+    ModelExtn testModel = new ModelExtnImpl(APITypes.MOCK_API);
+    testModel.addStrategyData(
+            "test", testTickerweights, 30, 20);
+    testModel.writeStrategyToFile("", "test");
+  }
+
+  @Test
+  public void testReadStrategyFromFileNoFile() throws Exception {
+    ModelExtn testModel = new ModelExtnImpl(APITypes.MOCK_API);
+
+    exception.expect(FileNotFoundException.class);
+    testModel.readStrategyFromFile("m");
+  }
+
+  @Test
+  public void testReadStrategyFromFileParseException() throws Exception {
+    ModelExtn testModel = new ModelExtnImpl(APITypes.MOCK_API);
+
+    exception.expect(IOException.class);
+    testModel.readStrategyFromFile("modelread.json");
+  }
+
+  @Test
+  public void testReadStrategyFromFile() throws Exception {
+    ModelExtn testModel = new ModelExtnImpl(APITypes.MOCK_API);
+    testModel.readStrategyFromFile("testStrategy.json");
+    assertEquals("{\"strategyName\":\"test\",\"investmentAmount\":30.0,\"commission\""
+                    + ":20.0,\"tickerWeightsMap\":{\"GOOG\":25.0,\"AAPL\":20.0}}",
+            ((ModelExtnImpl) testModel).getStrategyDetails("test"));
+  }
+
+
+  @Test
+  public void testInvestWithStrategy() {
+
+  }
+
+  @Test
+  public void testInvestWithStrategyDifferentMultiple() {
+
+  }
+
+  @Test
+  public void testGetStrategyList() {
+
+  }
+
+  @Test
+  public void testDCANormal() {
+
+  }
+
+  @Test
+  public void testDCANormalDifferentStrategy() {
+
+  }
+
+  @Test
+  public void testDCANormalDifferentPeriod() {
+
+  }
+
+  @Test
+  public void testDCANormalDifferentFrequency() {
+
+  }
+
+  @Test
+  public void testDCANormalInvestmentDateOnHolidayOrWeekend() {
+
+  }
+
 
 }
