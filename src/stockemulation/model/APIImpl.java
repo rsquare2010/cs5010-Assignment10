@@ -51,7 +51,7 @@ class APIImpl implements API {
   /**
    * This method hits the AlphaVantage API and fetches the price of a stock whose ticker is passed
    * as a parameter on a given date which is an additional parameter. The price that is fetched is
-   * the opening price of the stock on that day. If the market was shut on the given date an
+   * the closing price of the stock on that day. If the market was shut on the given date an
    * exception is thrown.
    *
    * @param date        The date on which to obtain the opening price of a stock.

@@ -13,6 +13,8 @@ import stockemulation.controller.commands.DollarCostAverageCommand;
 import stockemulation.controller.commands.LoadPortfolioFromFileCommand;
 import stockemulation.controller.commands.OneTimeStrategyBuyCommand;
 import stockemulation.controller.commands.OpenPortfolioCommand;
+import stockemulation.controller.commands.ReadStrategyFromFile;
+import stockemulation.controller.commands.SaveStrategyToFile;
 import stockemulation.controller.commands.WritePortfolioToFileCommand;
 import stockemulation.model.ModelExtn;
 import stockemulation.view.EmulatorView;
@@ -59,6 +61,8 @@ public class EmulatorControllerImpl implements EmulatorController {
     knownCommands.put("7", s -> new CreateStrategyCommand(s));
     knownCommands.put("8", s -> new OneTimeStrategyBuyCommand(s));
     knownCommands.put("9", s -> new DollarCostAverageCommand(s));
+    knownCommands.put("10", s -> new ReadStrategyFromFile(s));
+    knownCommands.put("11", s -> new SaveStrategyToFile(s));
 
     while (scanner.hasNext()) {
       EmulatorCommand c;
@@ -90,6 +94,8 @@ public class EmulatorControllerImpl implements EmulatorController {
     view.showMessage("7. create a strategy");
     view.showMessage( "8. One time buy with strategy");
     view.showMessage( "9. dollar cost average with strategy");
+    view.showMessage("10. read a strategy from a file");
+    view.showMessage("11. save a strategy to a file");
     view.showMessage("press \"q\" or \"quit\" to exit this application");
   }
 }

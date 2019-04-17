@@ -46,8 +46,8 @@ public class MockModel implements ModelExtn {
     if (date.getYear() != 2014 || date.getMonthValue() != 07 || date.getDayOfMonth() != 12) {
       throw new IllegalArgumentException("date was modified");
     }
-    if (portfolioNumber != 1 || date.getHour() != 12 || date.getMinute() != 21) {
-      throw new IllegalArgumentException("date was modified");
+    if (portfolioNumber != 0 || date.getHour() != 12 || date.getMinute() != 21) {
+      throw new IllegalArgumentException("date was modified!");
     }
     if (!ticker.matches("AAPL")) {
       throw new IllegalArgumentException("ticker was changed");

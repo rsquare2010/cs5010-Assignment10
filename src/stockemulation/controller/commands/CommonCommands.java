@@ -150,7 +150,7 @@ abstract class CommonCommands implements EmulatorCommand {
     view.showMessage("Enter the filepath");
     String filePath = scanner.next();
     while (filePath.isEmpty()) {
-      view.showMessage("Enter a valid ticker of four characters in upper case");
+      view.showMessage("Enter a valid file path");
       filePath = scanner.next();
     }
     return filePath;

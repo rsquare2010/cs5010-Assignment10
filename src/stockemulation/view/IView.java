@@ -95,33 +95,90 @@ public interface IView extends EmulatorView {
    */
   void setPortfolioValueOnDate(Double costBasis, Double value);
 
+  /**
+   * Show an error message when the strategy name entered by the user is invalid.
+   * @param message to be displayed when invalid strategy name information is entered.
+   */
   void setStrategyFormNameError(String message);
 
+  /**
+   * Show an error message when the ticker information entered by the user is invalid.
+   * @param message to be displayed when invalid ticker information is entered.
+   */
   void setStrategyFormTickerError(String message);
 
+  /**
+   * Show an error message when the price entered by the user is invalid.
+   * @param message to be displayed when invalid price is entered.
+   */
   void setStrategyFormPriceError(String message);
 
+  /**
+   * Show an error message when the commission fees entered by the user is invalid.
+   * @param message to be displayed when invalid commission fees is entered.
+   */
   void setStrategyFormCommissionError(String message);
 
+  /**
+   * method to close the form used to create a new strategy.
+   */
   void closeAddStrategyForm();
 
+  /**
+   * Show the form to perform a single buy with distributed weights for multiple stocks in a
+   * portfolio.
+   * @param strategies the weights of different stocks and the ticker name associated with them.
+   */
   void showSingleBuyStrategy(String[] strategies);
 
+  /**
+   * Method to close the single strategy buy form.
+   */
   void closeSingleStrategyBuyForm();
 
+  /**
+   * Show an error message when the date entered by the user is invalid.
+   * @param message to be displayed when invalid date is entered.
+   */
   void setSingleBuyStrategyDateError(String message);
 
+  /**
+   * Show the form used to perform dollar cost averaging buy operation.
+   * @param strategies the list of weight and associated tickers that can be used to perform DCA.
+   */
   void showDollarCostAverageStrategy(String[] strategies);
 
+  /**
+   * Close the form used to perform dollar cost averaging buy operation.
+   */
   void closeDollarCostAverageForm();
 
+  /**
+   * Show an error message when the interval number of days specified by the user is invalid.
+   * @param message to be displayed when invalid interval number of days is entered.
+   */
   void setIntervalDCAError(String message);
 
+  /**
+   * Show an error message when the date entered by the user is invalid.
+   * @param message to be displayed when invalid date is entered.
+   */
   void setStartDateDCAError(String message);
 
+  /**
+   * Show an error message when the date entered by the user is invalid.
+   * @param message to be displayed when invalid date is entered.
+   */
   void setEndDateDCAError(String message);
 
+  /**
+   * Show the form to select a strategy from a list of strategies to be saved.
+   * @param strategies the list of strategies from which a strategy will be chosen.
+   */
   void showSelectStrategyForm(String[] strategies);
 
+  /**
+   * hide the form which lets you choose a strategy from a list of strategies.
+   */
   void hideSelectStrategyForm();
 }

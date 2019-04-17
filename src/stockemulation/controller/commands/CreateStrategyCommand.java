@@ -51,18 +51,13 @@ public class CreateStrategyCommand extends CommonCommands {
   @Override
   public void execute(ModelExtn model, EmulatorView view) {
 
-    int portfolioNumber = super.choosePortfolio(model, view);
-
-    if (portfolioNumber == -1) {
-      return;
-    }
     List<String> tickerList = new ArrayList<>();
     String ticker;
     String option;
     do {
       ticker = getTicker(model, view);
       tickerList.add(ticker);
-      view.showMessage("Press Y to add another Ticker");
+      view.showMessage("Press Y to add a Ticker");
       option = scanner.next();
     }
     while (option.equalsIgnoreCase("y"));

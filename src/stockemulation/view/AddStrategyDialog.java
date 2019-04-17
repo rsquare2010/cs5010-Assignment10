@@ -32,7 +32,6 @@ class AddStrategyDialog extends CustomDialog {
 
   private TickerSet weightSet;
   private List<String> tickerList;
-  private int portfolioIndex;
 
 
   /**
@@ -68,11 +67,6 @@ class AddStrategyDialog extends CustomDialog {
 
   }
 
-
-  void setSelectedPortfolioIndex(int portfolioIndex) {
-    this.portfolioIndex = portfolioIndex;
-  }
-
   void setFeatures(Features f) {
     Map<String, Runnable> formValidation = getFormValidationListeners(f);
     Map<String, Runnable> hideError = getHideErrorListeners();
@@ -80,8 +74,7 @@ class AddStrategyDialog extends CustomDialog {
     FocusListener inputVerificationListener = getFormFocusListener(formValidation, hideError);
     addFocusListenerToUIComponents(inputVerificationListener);
 
-    yesButton.addActionListener(l -> f.createAStrategy(portfolioIndex,
-            strategyNameTextField.getText(),
+    yesButton.addActionListener(l -> f.createAStrategy(strategyNameTextField.getText(),
             weightSet.getContents(), priceTextField.getText(), commissionTextField.getText()));
     noButton.addActionListener(l -> f.closeAddStrategyForm());
   }

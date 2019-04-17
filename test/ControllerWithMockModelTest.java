@@ -61,7 +61,7 @@ public class ControllerWithMockModelTest {
   @Test
   public void controllerTestBuyStocksScreen() {
     ByteArrayInputStream in =
-            new ByteArrayInputStream(("1 test 3 1 2014 07 14 12 21 AAPL 5000 10 q").getBytes());
+            new ByteArrayInputStream(("1 test 3 1 2014 07 12 12 21 AAPL 5000 10 q").getBytes());
     controller = new EmulatorControllerImpl(new InputStreamReader(in));
 
     controller.start(model, view);
@@ -74,7 +74,7 @@ public class ControllerWithMockModelTest {
   @Test
   public void controllerTestSummaryPortfolioScreen() {
     ByteArrayInputStream in =
-            new ByteArrayInputStream(("1 test 3 1 2014 07 14 12 21 AAPL 5000 10 4 1 2017 02 16 q")
+            new ByteArrayInputStream(("1 test 3 1 2014 07 12 12 21 AAPL 5000 10 4 1 2017 02 16 q")
                     .getBytes());
     controller = new EmulatorControllerImpl(new InputStreamReader(in));
 
@@ -96,6 +96,11 @@ public class ControllerWithMockModelTest {
     sb.append("4. to check cost basis and value of a portfolio on a date\n");
     sb.append("5. write to file\n");
     sb.append("6. read from file\n");
+    sb.append("7. create a strategy\n");
+    sb.append( "8. One time buy with strategy\n");
+    sb.append( "9. dollar cost average with strategy\n");
+    sb.append("10. read a strategy from a file\n");
+    sb.append("11. save a strategy to a file\n");
     sb.append("press \"q\" or \"quit\" to exit this application\n");
 
     return sb.toString();

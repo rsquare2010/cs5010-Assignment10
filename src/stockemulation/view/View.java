@@ -182,7 +182,6 @@ public class View extends JFrame implements IView {
   @Override
   public void showCreateStrategyForm() {
     createStrategyDialog.pack();
-    createStrategyDialog.setSelectedPortfolioIndex(portfolioList.getSelectedIndex());
     createStrategyDialog.setVisible(true);
   }
 

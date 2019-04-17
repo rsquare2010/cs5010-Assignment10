@@ -181,11 +181,11 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void createAStrategy(int portfolioNumber, String strategyName,
+  public void createAStrategy(String strategyName,
                               Map<String, String> tickerWeights, String price, String commission) {
 
     isAllFieldsValid = true;
-    verifyStrategyName(portfolioNumber, strategyName);
+    verifyStrategyName(strategyName);
     verifyWeights(tickerWeights);
     verifyPriceForStrategyForm(price);
     verifyCommissionForStrategyForm(commission);
@@ -209,7 +209,7 @@ public class GUIControllerImpl implements GUIController, Features {
     }
   }
 
-  private void verifyStrategyName(int portfolioNumber, String name) {
+  private void verifyStrategyName(String name) {
     if (name != null && !(name.trim().isEmpty())) {
       List<String> strategyList = model.getStrategyList();
       if (strategyList.contains(name)) {

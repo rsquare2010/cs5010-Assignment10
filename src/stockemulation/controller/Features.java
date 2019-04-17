@@ -36,7 +36,7 @@ public interface Features {
 
   void verifyTickerNameForStrategyForm(String tickerName);
 
-  void createAStrategy(int portfolioNumber, String strategyName, Map<String, String> tickerWeights,
+  void createAStrategy(String strategyName, Map<String, String> tickerWeights,
                        String price,
                        String commission);
 
@@ -90,22 +90,60 @@ public interface Features {
    */
   void readFromFile(String filePath);
 
+  /**
+   * View callback to trigger a create strategy form.
+   */
   void createStrategy();
 
+  /**
+   * Close the form which provides the ability to create a new strategy.
+   */
   void closeAddStrategyForm();
 
+  /**
+   * Perform a single buy operation using a strategy, in  particular portfolio on a given date.
+   * @param portfolioIndex the portfolio under which this operation will happen.
+   * @param strategyName the strategy used to perform this operation.
+   * @param date the date on which this transaction will happen.
+   */
   void verifyStrategyFormAndBuy(int portfolioIndex, String strategyName, Date date);
 
+  /**
+   * Show the form to perform a single buy operation using weights.
+   * @param portfolioIndex the portfolio under which this buy operation happens.
+   */
   void showSingleBuyStrategyForm(int portfolioIndex);
 
+  /**
+   * Close the form which helps perform a single buy operation using strategies.
+   */
   void closeSingleStrategyBuyForm();
 
+  /**
+   * Verify if the date entered for an operation is valid.
+   * @param date the date to be verified.
+   */
   void verifyDatesForSingleStrategyBuyForm(Date date);
 
+  /**
+   * Show the form which helps perform the dollar cost average investment strategy.
+   * @param portfolioIndex the portfolio under which this investment should happen.
+   */
   void showDollarCostAverageForm(int portfolioIndex);
 
+  /**
+   * Close the form which helps perform the dollar cost average investment strategy.
+   */
   void closeDollarCostAverageForm();
 
+  /**
+   * Verify the different inputs and perform the dollar cost average investment strategy buy.
+   * @param portfolioIndex the portfolio under which the transaction happens.
+   * @param strategyName the strategy used to perform the operation.
+   * @param startDate the date on which the DCA starts.
+   * @param endDate the date on which the DCA ends.
+   * @param frequency the number of days between every periodic investment.
+   */
   void verifyAndBuyDollarCostAverage(int portfolioIndex, String strategyName, Date startDate,
                                      Date endDate,
                                      String frequency);

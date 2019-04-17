@@ -124,13 +124,19 @@ public interface ModelExtn extends Model {
   List<String> getStrategyList();
 
   /**
-   * TODO:
+   * This is a high level strategy investment in a portfolio. You can perform periodic buys with
+   * a strategy. To perform this you need to specify the start date, end date and the interval in
+   * which this operation will happen. The buy operation will happen to the specification of the
+   * strategy every n'th day from the start date till the end date. The nth day is specified as
+   * the interval/frequency it is always specified as days. If a transaction falls on a weekend
+   * the transaction will be retried on the upcoming weekday.
    *
-   * @param portfolioNumber TODO
-   * @param strategyName    TODO
-   * @param startDate       TODO
-   * @param endDate         TODO
-   * @param frequencyInDays TODO
+   * @param portfolioNumber the portfolio index where this investment will happen.
+   * @param strategyName    the name of the strategy used to perform the buy operation.
+   * @param startDate       the date on which the transactions will start.
+   * @param endDate         the date on which the transactions will end.
+   * @param frequencyInDays the frequency interval with which transactions will happen. It is
+   *                        specified in days.
    */
   void dollarCostAveraging(
           int portfolioNumber,
