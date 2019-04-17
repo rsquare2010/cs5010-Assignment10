@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -18,6 +20,7 @@ import static junit.framework.TestCase.assertEquals;
 public class PortfolioExtnImplTest {
 
   private API testAPI;
+  private Map<String, Double> testTickerweights;
 
   @Rule
   public final ExpectedException exception = ExpectedException.none();
@@ -25,6 +28,9 @@ public class PortfolioExtnImplTest {
   @Before
   public void startUp() {
     testAPI = API.getInstance(APITypes.MOCK_API);
+    testTickerweights = new HashMap<>();
+    testTickerweights.put("AAPL", 20.0);
+    testTickerweights.put("GOOG", 25.0);
   }
 
 
@@ -217,4 +223,61 @@ public class PortfolioExtnImplTest {
                     + ":10.0,\"costPerUnit\":30.0}]}",
             contents);
   }
+
+
+  @Test
+  public void testInvestmentWithWeightsNormal() {
+    PortfolioExtn testPortfolio = new PortfolioExtnImpl("testPortfolio", testAPI);
+    LocalDateTime testTime1 = LocalDateTime.parse("2014-04-03T12:32");
+    testPortfolio.investWeighted(testTime1, 6000, testTickerweights, 20);
+    assertEquals(
+            "{GOOG=50.0, AAPL=40.0}",
+            testPortfolio.getCompositionSimple().toString());
+  }
+
+  @Test
+  public void testInvestmentWithWeightsWeekend() {
+    PortfolioExtn testPortfolio = new PortfolioExtnImpl("testPortfolio", testAPI);
+    LocalDateTime testTime1 = LocalDateTime.parse("2014-07-12T12:32");
+    testPortfolio.investWeighted(testTime1, 6000, testTickerweights, 20);
+    assertEquals(
+            "{GOOG=50.0, AAPL=40.0}",
+            testPortfolio.getCompositionSimple().toString());
+  }
+
+
+  @Test
+  public void testInvestmentWithWeightsHoliday() {
+    PortfolioExtn testPortfolio = new PortfolioExtnImpl("testPortfolio", testAPI);
+    LocalDateTime testTime1 = LocalDateTime.parse("2014-12-12T12:32");
+    testPortfolio.investWeighted(testTime1, 6000, testTickerweights, 20);
+    assertEquals(
+            "{GOOG=50.0, AAPL=40.0}",
+            testPortfolio.getCompositionSimple().toString());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvestmentWithWeightsException() {
+    PortfolioExtn testPortfolio = new PortfolioExtnImpl("testPortfolio", testAPI);
+    LocalDateTime testTime1 = LocalDateTime.parse("2014-12-12T12:32");
+    testPortfolio.investWeighted(testTime1, -6000, null, -20);
+  }
+
+
+  @Test
+  public void testInvestmentEqualNormal() {
+    PortfolioExtn testPortfolio = new PortfolioExtnImpl("testPortfolio", testAPI);
+    LocalDateTime testTime1 = LocalDateTime.parse("2014-12-12T12:32");
+    testPortfolio.buyShares("AAPL", 300, testTime1, 10);
+    testPortfolio.buyShares("GOOG", 3000, testTime1, 20);
+    testPortfolio.investEqual(testTime1, 6000, 20);
+    assertEquals(
+            "{GOOG=200.0, AAPL=110.0}",
+            testPortfolio.getCompositionSimple().toString());
+  }
+
+
 }
+
+
+

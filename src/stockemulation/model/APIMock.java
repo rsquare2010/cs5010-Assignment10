@@ -43,6 +43,10 @@ class APIMock implements API {
       throw new IllegalArgumentException("Stock doesn't exist");
     }
 
+    if (date == LocalDate.parse("2014-12-12")) {
+      throw new IllegalArgumentException("Holiday");
+    }
+
     if (date.isBefore(LocalDate.parse("2016-01-01"))) {
       return 30;
     } else {

@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import stockemulation.util.StockInfoSanity;
+
 /**
  * An implementation of the StockMarketEmulator Model Interface, An instance of this class
  * facilitates the user in performing the operations supported by the Stock Market Emulator
@@ -74,6 +76,7 @@ public class ModelImpl implements Model {
       throw new IllegalArgumentException("Invalid Portfolio number");
     }
 
+
     return portfolios.get(portfolioNumber).getCostBasis(specifiedDate);
   }
 
@@ -105,5 +108,17 @@ public class ModelImpl implements Model {
   @Override
   public String toString() {
     return "Number of Portfolios: " + getPortfolioCount();
+  }
+
+  private LocalDateTime getMarketOpenDate(LocalDateTime investmentDate) {
+    while (investmentDate.isBefore(LocalDateTime.now())) {
+      try {
+        StockInfoSanity.isDateTimeValid(investmentDate);
+        break;
+      } catch (IllegalArgumentException e) {
+        investmentDate = investmentDate.minusDays(1);
+      }
+    }
+    return investmentDate;
   }
 }

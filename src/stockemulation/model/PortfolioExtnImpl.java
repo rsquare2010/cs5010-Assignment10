@@ -86,8 +86,9 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   @Override
   public double getCostBasis(LocalDateTime specifiedDate)
           throws IllegalStateException {
+    LocalDateTime dateTime = getMarketOpenDate(specifiedDate);
     return stockPurchaseList.stream()
-            .filter(s -> s.getPurchaseDate().isBefore(specifiedDate))
+            .filter(s -> s.getPurchaseDate().isBefore(dateTime))
             .mapToDouble(s -> (s.getQuantity() * s.getCostPrice() + s.getCommission()))
             .sum();
   }
@@ -131,19 +132,6 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
               requiredDate,
               commission);
     }
-  }
-  
-  private LocalDateTime getMarketOpenDate(LocalDateTime investmentDate) {
-    while (investmentDate.isBefore(LocalDateTime.now())) {
-      try {
-        StockInfoSanity.isDateTimeValid(investmentDate);
-        break;
-      } catch (IllegalArgumentException e) {
-        investmentDate = investmentDate.plusDays(1);
-        continue;
-      }
-    }
-    return investmentDate;
   }
 
   private JSONArray addTransactionsToFileWrite() {
