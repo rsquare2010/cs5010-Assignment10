@@ -6,11 +6,7 @@ import org.json.simple.JSONObject;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import stockemulation.util.StockInfoSanity;
 
@@ -61,7 +57,8 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
   }
 
   @Override
-  public void addShares(String tickerName, double costPerUnit, double quantity, LocalDateTime specifiedDate, double commission) throws IllegalArgumentException {
+  public void addShares(String tickerName, double costPerUnit, double quantity, LocalDateTime
+          specifiedDate, double commission) throws IllegalArgumentException {
     StockInfoSanity.isTickerValid(tickerName);
     StockInfoSanity.isDateTimeValid(specifiedDate);
     StockInfoSanity.isCommissionValid(commission);
@@ -136,8 +133,6 @@ class PortfolioExtnImpl extends PortfolioImpl implements PortfolioExtn {
               commission);
     }
   }
-
-
 
   private JSONArray addTransactionsToFileWrite() {
     JSONArray transactions = new JSONArray();

@@ -1,69 +1,84 @@
 package stockemulation.view;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
 
-import javax.swing.*;
-
+/**
+ * A class that represents one instance of the Ticker field. This class contains a textfield that
+ * accepts user input for ticker symbol, another textfield for weight and two buttons, one to add
+ * more Ticker fields and one to remove this field.
+ */
 public class Ticker extends JPanel {
 
   private JTextField tickerField;
   private JTextField weightField;
   private JButton add;
   private JButton remove;
-  private EntrySet parent;
+  private TickerSet parent;
 
-  public Ticker(String tickerFieldText, String weightFieldText, EntrySet list) {
+  /**
+   * Create an instance of the Ticker class with preset stings for the ticker symbol, the weight
+   * associated with it as well as the list to which this ticker needs ot be added.
+   * @param tickerFieldText the string to prepopulate the ticker symbol text field.
+   * @param weightFieldText the string to prepopulate the weight text field.
+   * @param list the list of Tickers to which this element will be added.
+   */
+  public Ticker(String tickerFieldText, String weightFieldText, TickerSet list) {
     this.parent = list;
-    this.add = new JButton(new AddEntryAction());
-    add.setBounds(0,0, 30,30);
-    this.remove = new JButton(new RemoveEntryAction());
-    remove.setBounds(0,0, 30,30);
+    this.add = new JButton(" + ");
+    add.setBounds(0, 0, 30, 30);
+    this.remove = new JButton(" - ");
+    remove.setBounds(0, 0, 30, 30);
     this.tickerField = new JTextField(10);
     this.tickerField.setText(tickerFieldText);
     this.weightField = new JTextField(10);
     this.weightField.setText(weightFieldText);
+    this.add.addActionListener(l -> parent.cloneEntry(Ticker.this));
+    this.remove.addActionListener(l -> parent.removeItem(Ticker.this));
     add(this.tickerField);
     add(this.weightField);
     add(this.add);
     add(this.remove);
   }
 
+  /**
+   * Getter method to obtain the current contents of the ticker symbol text field.
+   * @return A string that represents the contents of the ticker symbol text field.
+   */
   public String getTickerText() {
     return tickerField.getText();
   }
 
+  /**
+   * Getter method to obtain the current contents of the weight text field.
+   * @return A string that represents the contents of the weight text field.
+   */
   public String getWeight() {
     return weightField.getText();
   }
 
-  public class AddEntryAction extends AbstractAction {
-
-    public AddEntryAction() {
-      super("+");
-    }
-
-    public void actionPerformed(ActionEvent e) {
-      parent.cloneEntry(Ticker.this);
-    }
-
+  /**
+   * Setter method to update the contents of the weight text field.
+   * @param weight a String which will be populated into the weight text field as a string.
+   */
+  public void setWeightField(String weight) {
+    weightField.setText(weight);
   }
 
-  public class RemoveEntryAction extends AbstractAction {
-
-    public RemoveEntryAction() {
-      super("-");
-    }
-
-    public void actionPerformed(ActionEvent e) {
-      parent.removeItem(Ticker.this);
-    }
-  }
-
+  /**
+   * Set a flag that denotes if the add button for this field is enabled or not.
+   * @param enabled a boolean parameter which enables the add button if true, disables it if false.
+   */
   public void enableAdd(boolean enabled) {
     this.add.setEnabled(enabled);
   }
 
+  /**
+   * Set a flag that denotes if the remove button for this field is enabled or not.
+   * @param enabled a boolean parameter which enables the remove button if true, disables it if
+   *                false.
+   */
   public void enableMinus(boolean enabled) {
     this.remove.setEnabled(enabled);
   }

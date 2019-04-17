@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import stockemulation.controller.EmulatorCommand;
 import stockemulation.model.Model;
+import stockemulation.model.ModelExtn;
 import stockemulation.util.StockInfoSanity;
 import stockemulation.view.EmulatorView;
 
@@ -177,11 +178,41 @@ abstract class CommonCommands implements EmulatorCommand {
     return !date.isAfter(LocalDate.now());
   }
 
-  private int getInt(Scanner scanner, EmulatorView view) {
+  protected String chooseStrategy(ModelExtn model, EmulatorView view) {
+    view.showMessage("Choose ");
+    List<String> strategyList = model.getStrategyList();
+    if (strategyList.size() == 0) {
+      view.showMessage("create a strategy before you perform this operation");
+      return null;
+    }
+    StringBuilder strategyListFormatted = new StringBuilder();
+    int strategyListSize = strategyList.size();
+    for (int i = 0; i < strategyListSize; i++) {
+      strategyListFormatted.append(i + 1).append(".").append(strategyList.get(i)).append("\n");
+    }
+    view.showMessage("Enter the number of the strategy you want to use");
+    view.showMessage(strategyListFormatted.toString());
+    int strategyNumber = getInt(scanner, view);
+    while (strategyNumber < 1 || strategyNumber > strategyListSize) {
+      view.showMessage("Enter a number between 1 and " + strategyListSize);
+      strategyNumber = getInt(scanner, view);
+    }
+    return strategyList.get(strategyNumber - 1);
+  }
+
+  protected int getInt(Scanner scanner, EmulatorView view) {
     while (!scanner.hasNextInt()) {
       scanner.next();
       view.showMessage("Enter a valid number");
     }
     return scanner.nextInt();
+  }
+
+  protected Double getDouble(Scanner scanner, EmulatorView view) {
+    while (!scanner.hasNextDouble()) {
+      scanner.next();
+      view.showMessage("Enter a number");
+    }
+    return scanner.nextDouble();
   }
 }

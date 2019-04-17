@@ -116,4 +116,10 @@ public interface Features {
 
   void verifyInterval(Date startDate, Date endDate, String interval);
 
+  void saveStrategy(String filePath, String strategyName);
+
+  void readStrategyFromFile(String filePath);
+
+  void showSelectStrategyForm();
+
 }

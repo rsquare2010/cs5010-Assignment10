@@ -10,7 +10,23 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JPanel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.WindowConstants;
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -36,6 +52,8 @@ public class View extends JFrame implements IView {
   private JLabel selectedDate;
   private JMenuItem save;
   private JMenuItem open;
+  private JMenuItem saveStrategies;
+  private JMenuItem loadStrategies;
   private JLabel statusLabel;
   private JDateChooser dateChooser;
   private JLabel costBasis;
@@ -46,10 +64,10 @@ public class View extends JFrame implements IView {
   private DollarCostAverageDialog dollarCostAverageDialog;
   private AddStrategyDialog createStrategyDialog;
   private SingleStrategyBuyDialog singleBuyStrategyDialog;
+  private SelectStrategy selectStrategy;
   private JTabbedPane tabbedPane;
   private String[] column = {"Serial no", "Ticker", "Number of stocks"};
   private JTable table;
-  private String[][] data;
 
   /**
    * A constructor to the view class that that provides the name of the window as a parameter as
@@ -80,6 +98,7 @@ public class View extends JFrame implements IView {
     setupBuyStockDialog();
     setupCreateStrategyDialog();
     setupSingleBuyStrategyDialog();
+    setupSelectStrategies();
     setupDollarCostAverageStrategyDialog();
   }
 
@@ -87,9 +106,12 @@ public class View extends JFrame implements IView {
   public void setFeatures(Features f) {
     save.addActionListener(l -> saveToFile(f));
     open.addActionListener(l -> readFromFile(f));
+    saveStrategies.addActionListener(l -> f.showSelectStrategyForm());
+    loadStrategies.addActionListener(l -> loadStrategiesFromFile(f));
     buyStockDialog.setFeatures(f);
     createStrategyDialog.setFeatures(f);
     singleBuyStrategyDialog.setFeatures(f);
+    selectStrategy.setFeatures(f);
     dollarCostAverageDialog.setFeatures(f);
     buyStockButton.addActionListener(l -> f.buyStocks());
     dollarCostAverageStrategyButton.addActionListener(l ->
@@ -121,12 +143,24 @@ public class View extends JFrame implements IView {
   private void readFromFile(Features features) {
     final JFileChooser fchooser = new JFileChooser(".");
     FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "Text based files", "csv", "json");
+            "Text based files",  "json");
     fchooser.setFileFilter(filter);
     int retvalue = fchooser.showOpenDialog(this);
     if (retvalue == JFileChooser.APPROVE_OPTION) {
       File f = fchooser.getSelectedFile();
       features.readFromFile(f.getAbsolutePath());
+    }
+  }
+
+  private void loadStrategiesFromFile(Features features) {
+    final JFileChooser fchooser = new JFileChooser(".");
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Text based files",  "json");
+    fchooser.setFileFilter(filter);
+    int retvalue = fchooser.showOpenDialog(this);
+    if (retvalue == JFileChooser.APPROVE_OPTION) {
+      File f = fchooser.getSelectedFile();
+      features.readStrategyFromFile(f.getAbsolutePath());
     }
   }
 
@@ -187,6 +221,7 @@ public class View extends JFrame implements IView {
   public void setPortfolioSummary(Map<String, Double> portfolioSummary) {
     tabbedPane.setVisible(true);
     tabbedPane.setSelectedIndex(0);
+    String[][] data;
 
     data = new String[portfolioSummary.size()][3];
     Set entries = portfolioSummary.entrySet();
@@ -407,9 +442,14 @@ public class View extends JFrame implements IView {
     menu = new JMenu("Files");
     save = new JMenuItem("Save");
     open = new JMenuItem("Read");
+    saveStrategies = new JMenuItem( "Save strategies");
+    loadStrategies = new JMenuItem( "load strategies");
+
 
     menu.add(save);
     menu.add(open);
+    menu.add(saveStrategies);
+    menu.add(loadStrategies);
     menuBar.add(menu);
     return menuBar;
   }
@@ -444,5 +484,21 @@ public class View extends JFrame implements IView {
     selectedDate.setText(date.toString());
     features.getPortfolioValue(portfolioList.getSelectedIndex(),
             dateChooser.getDate());
+  }
+
+  private void setupSelectStrategies() {
+    selectStrategy = new SelectStrategy(this, "Strategies");
+  }
+
+  @Override
+  public void showSelectStrategyForm(String[] strategies) {
+    selectStrategy.pack();
+    selectStrategy.setVisible(true);
+    selectStrategy.setStrategies(strategies);
+  }
+
+  @Override
+  public void hideSelectStrategyForm() {
+    selectStrategy.setVisible(false);
   }
 }

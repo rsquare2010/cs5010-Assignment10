@@ -1,11 +1,10 @@
 package stockemulation.view;
 
-import java.awt.*;
+import java.awt.Frame;
 import java.awt.event.FocusListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -31,7 +30,7 @@ class AddStrategyDialog extends CustomDialog {
   private JLabel commissionErrorLabel;
   private JLabel priceErrorLabel;
 
-  private EntrySet weightSet;
+  private TickerSet weightSet;
   private List<String> tickerList;
   private int portfolioIndex;
 
@@ -39,8 +38,9 @@ class AddStrategyDialog extends CustomDialog {
   /**
    * Create an instance of this class by providing the parent Frame, the window title as a string
    * and an instance of the GUIController.
-   * @param frame the parent from over which this dialog pops up.
-   * @param text the title of this Dialog box.
+   *
+   * @param frame      the parent from over which this dialog pops up.
+   * @param text       the title of this Dialog box.
    * @param controller an instance of the GUIController class.
    */
   AddStrategyDialog(Frame frame, String text, GUIController controller) {
@@ -51,7 +51,7 @@ class AddStrategyDialog extends CustomDialog {
 
     addComponentsToRootPanel("Enter the name of the strategy", strategyNameErrorLabel,
             strategyNameTextField);
-    weightSet = new EntrySet();
+    weightSet = new TickerSet();
     weightSet.setAlignmentX(SwingConstants.CENTER);
     addComponentsToRootPanel("Ticker name and weight of the stock", tickerErrorLabel,
             weightSet);
@@ -80,7 +80,7 @@ class AddStrategyDialog extends CustomDialog {
     FocusListener inputVerificationListener = getFormFocusListener(formValidation, hideError);
     addFocusListenerToUIComponents(inputVerificationListener);
 
-    yesButton.addActionListener(l-> f.createAStrategy(portfolioIndex,
+    yesButton.addActionListener(l -> f.createAStrategy(portfolioIndex,
             strategyNameTextField.getText(),
             weightSet.getContents(), priceTextField.getText(), commissionTextField.getText()));
     noButton.addActionListener(l -> f.closeAddStrategyForm());
@@ -97,21 +97,23 @@ class AddStrategyDialog extends CustomDialog {
   private Map<String, Runnable> getFormValidationListeners(Features f) {
     Map<String, Runnable> formValidation = new HashMap<>();
 
-    formValidation.put(tickerTextField.getName(), () -> f.verifyTickerNameForStrategyForm(tickerTextField.getText()));
+    formValidation.put(tickerTextField.getName(),
+        () -> f.verifyTickerNameForStrategyForm(tickerTextField.getText()));
     formValidation.put(priceTextField.getName(),
-            () -> f.verifyPriceForStrategyForm(priceTextField.getText()));
+        () -> f.verifyPriceForStrategyForm(priceTextField.getText()));
     formValidation.put(commissionTextField.getName(),
-            () -> f.verifyCommissionForStrategyForm(commissionTextField.getText()));
+        () -> f.verifyCommissionForStrategyForm(commissionTextField.getText()));
     return formValidation;
   }
 
   private Map<String, Runnable> getHideErrorListeners() {
     Map<String, Runnable> hideError = new HashMap<>();
     hideError.put(tickerTextField.getName(), () -> resetAndHideErrorLabel(tickerErrorLabel));
-    hideError.put(strategyNameTextField.getName(), () -> resetAndHideErrorLabel(strategyNameErrorLabel));
-    hideError.put(priceTextField.getName(), ()-> resetAndHideErrorLabel(priceErrorLabel));
+    hideError.put(strategyNameTextField.getName(),
+        () -> resetAndHideErrorLabel(strategyNameErrorLabel));
+    hideError.put(priceTextField.getName(), () -> resetAndHideErrorLabel(priceErrorLabel));
     hideError.put(commissionTextField.getName(),
-            () -> resetAndHideErrorLabel(commissionErrorLabel));
+        () -> resetAndHideErrorLabel(commissionErrorLabel));
     return hideError;
   }
 

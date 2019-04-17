@@ -130,9 +130,9 @@ class APIImpl implements API {
         String key = (String) iterator.next();
         JSONObject prices = (JSONObject) timeSeriesObject.get(key);
         if (key.equals(time.toString())) {
-          value = prices.get("1. open").toString();
+          value = prices.get("4. close").toString();
         }
-        map.put(key, prices.get("1. open").toString());
+        map.put(key, prices.get("4. close").toString());
       }
       cache.put(ticker, new CacheImpl(LocalDate.now(), map));
     } else {

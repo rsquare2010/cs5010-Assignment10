@@ -8,18 +8,12 @@ import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import stockemulation.util.StockInfoSanity;
 
 /**
  * This is an implementation of {@link ModelExtn} and has some of the implementations directly taken
@@ -83,13 +77,14 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     createPortfolio(title);
     try {
       readTransactionFromPortfolioFile(jsonObject);
-    }catch (Exception e) {
-      portfolios.remove(portfolios.size()-1);
+    } catch (Exception e) {
+      portfolios.remove(portfolios.size() - 1);
     }
   }
 
   @Override
-  public void addStrategyData(String strategyName, Map<String, Double> tickerWeightMap, double investmentAmount, double commission) throws IllegalArgumentException {
+  public void addStrategyData(String strategyName, Map<String, Double> tickerWeightMap, double
+          investmentAmount, double commission) throws IllegalArgumentException {
     this.investmentStrategies.put(
             strategyName,
             new StrategyDataImpl(strategyName, tickerWeightMap, investmentAmount, commission)
@@ -117,7 +112,8 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
   }
 
   @Override
-  public void readStrategyFromFile(String filepath) throws IllegalArgumentException, IOException, ParseException {
+  public void readStrategyFromFile(String filepath) throws IllegalArgumentException,
+          IOException, ParseException {
     JSONParser parser = new JSONParser();
     Object obj = parser.parse(new FileReader(filepath));
     JSONObject jsonObject = (JSONObject) obj;
@@ -135,7 +131,8 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
   }
 
   @Override
-  public void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime investmentDate)
+  public void investWithStrategy(int portfolioNumber, String strategyName, LocalDateTime
+          investmentDate)
           throws IllegalArgumentException {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
       throw new IllegalArgumentException("Invalid Portfolio number");
@@ -191,7 +188,8 @@ public class ModelExtnImpl extends ModelImpl implements ModelExtn {
     }
   }
 
-  private void addStock(int portfolioNumber, LocalDateTime date, String ticker, double costPerUnit, double quantity, double commission) throws IllegalArgumentException {
+  private void addStock(int portfolioNumber, LocalDateTime date, String ticker, double costPerUnit,
+                        double quantity, double commission) throws IllegalArgumentException {
     if (portfolioNumber >= portfolios.size() || portfolioNumber < 0) {
       throw new IllegalArgumentException("Invalid Portfolio number");
     }

@@ -18,7 +18,7 @@ import stockemulation.controller.Features;
 import stockemulation.controller.GUIController;
 
 /**
- * This is custom Dialog created by extending the JDialog class. It generates a form to collect
+ * This is custom Dialog created by extending the CustomDialog class. It generates a form to collect
  * information from the user to facilitate the buy stocks operation.
  */
 class BuyStockDialog extends CustomDialog {
@@ -101,8 +101,10 @@ class BuyStockDialog extends CustomDialog {
     formValidation.put(hourBox.getName(), () -> f.verifyTimeForBuyForm(getSelectedTime()));
     formValidation.put(minuteBox.getName(), () -> f.verifyTimeForBuyForm(getSelectedTime()));
 
-    formValidation.put(tickerTextField.getName(), () -> f.verifyTickerForBuyForm(tickerTextField.getText()));
-    formValidation.put(priceTextField.getName(), () -> f.verifyCostForBuyForm(priceTextField.getText()));
+    formValidation.put(tickerTextField.getName(),
+        () -> f.verifyTickerForBuyForm(tickerTextField.getText()));
+    formValidation.put(priceTextField.getName(),
+        () -> f.verifyCostForBuyForm(priceTextField.getText()));
     formValidation.put(commissionTextField.getName(),
         () -> f.verifyCommissionForBuyForm(commissionTextField.getText()));
     return formValidation;

@@ -2,15 +2,31 @@ package stockemulation.view;
 
 import com.toedter.calendar.JDateChooser;
 
-import java.awt.*;
+import java.awt.Frame;
+import java.awt.Component;
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Date;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.JDialog;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * An abstract class that contains common operations between other custom dialogs that are
+ * created to perform various operations like buy stock or create a strategy. It extends the
+ * JDialog class. This dialog will have a root frame and two buttons one for yes and one for no,
+ * it will also have a single date component and methods to create aligned labels, error fields,
+ * text fields.
+ */
 public abstract class CustomDialog extends JDialog {
 
   protected JButton yesButton;

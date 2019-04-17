@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is an implementation of the Model interface. It is a mock model used to test the
- * controller class.
+ * This is an implementation of the Model interface. It is a mock model used to test the controller
+ * class.
  */
 public class MockModel implements ModelExtn {
 
@@ -78,27 +78,47 @@ public class MockModel implements ModelExtn {
   @Override
   public void writePortfolioToFile(String filepath, int portfolioNumber)
           throws IllegalArgumentException, IOException {
-    //Not do anything here
+    //Not do anything here.
   }
 
   @Override
   public void readPortfolioFromFile(String filepath)
           throws IllegalArgumentException, IOException, ParseException {
-    //Not do anything here
+    //Not do anything here.
   }
 
   @Override
-  public void dollarCosrAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate, LocalDateTime endDate, int freaquencyInDays) {
-
+  public void addStrategyData(String strategyName, Map<String, Double> tickerWeightMap,
+                              double investmentAmount, double commission) {
+    //Not do anything here.
   }
 
   @Override
-  public void addStrategyToPortfolio(int portfolioNumber, String strategyName, Map<String, Double> tickerWeightMap, double inverstmentAmount, double commission) {
-
+  public void writeStrategyToFile(String filepath, String strategyName) throws
+          IllegalArgumentException, IOException {
+    //Not do anything here.
   }
 
   @Override
-  public List<String> getStrategyListFrompPortfolio(int portfolioNumber) {
+  public void readStrategyFromFile(String filepath) throws IllegalArgumentException,
+          IOException, ParseException {
+    //Not do anything here.
+  }
+
+  @Override
+  public void investWithStrategy(int portfolioNumber, String strategyName,
+                                 LocalDateTime investmentDate) {
+    //Not do anything here.
+  }
+
+  @Override
+  public List<String> getStrategyList() {
     return null;
+  }
+
+  @Override
+  public void dollarCostAveraging(int portfolioNumber, String strategyName, LocalDateTime startDate,
+                                  LocalDateTime endDate, int frequencyInDays) {
+    //Not do anything here.
   }
 }

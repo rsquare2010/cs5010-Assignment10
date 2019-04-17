@@ -2,8 +2,6 @@ package stockemulation.view;
 
 import java.util.Map;
 
-import javax.swing.*;
-
 import stockemulation.controller.Features;
 
 /**
@@ -122,4 +120,8 @@ public interface IView extends EmulatorView {
   void setStartDateDCAError(String message);
 
   void setEndDateDCAError(String message);
+
+  void showSelectStrategyForm(String[] strategies);
+
+  void hideSelectStrategyForm();
 }

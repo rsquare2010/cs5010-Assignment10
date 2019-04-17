@@ -181,7 +181,7 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
-  public void createAStrategy(int portfolioNumber,String strategyName,
+  public void createAStrategy(int portfolioNumber, String strategyName,
                               Map<String, String> tickerWeights, String price, String commission) {
 
     isAllFieldsValid = true;
@@ -189,24 +189,33 @@ public class GUIControllerImpl implements GUIController, Features {
     verifyWeights(tickerWeights);
     verifyPriceForStrategyForm(price);
     verifyCommissionForStrategyForm(commission);
-    if(isAllFieldsValid) {
+    if (isAllFieldsValid) {
       Map<String, Double> weights = new HashMap<>();
-      for(Map.Entry entry : tickerWeights.entrySet()){
+      for (Map.Entry entry : tickerWeights.entrySet()) {
         weights.put(entry.getKey().toString(), Double.parseDouble(entry.getValue().toString()));
       }
-      model.addStrategyToPortfolio(portfolioNumber, strategyName, weights,
-              Double.parseDouble(price), Double.parseDouble(commission));//FIXME catch exception.
+      boolean isSuccessful = true;
+      try {
+        model.addStrategyData(strategyName, weights, Double.parseDouble(price),
+                Double.parseDouble(commission));
+      } catch (IllegalArgumentException e) {
+        isSuccessful = false;
+        view.showErrorMessage(e.getMessage());
+      }
+      if (isSuccessful) {
+        view.showMessage("Strategy created successfully.");
+      }
       view.closeAddStrategyForm();
     }
   }
 
   private void verifyStrategyName(int portfolioNumber, String name) {
     if (name != null && !(name.trim().isEmpty())) {
-      List<String> strategyList = model.getStrategyListFrompPortfolio(portfolioNumber);
-      if(strategyList.contains(name)) {
+      List<String> strategyList = model.getStrategyList();
+      if (strategyList.contains(name)) {
         isAllFieldsValid = false;
-        view.setStrategyFormNameError("A strategy with the same name already exists for the " +
-                "portfolio");
+        view.setStrategyFormNameError("A strategy with the same name already exists for the "
+                + "portfolio");
       }
     } else {
       view.setStrategyFormNameError(" Please Enter a valid strategy");
@@ -216,7 +225,7 @@ public class GUIControllerImpl implements GUIController, Features {
 
   private void verifyWeights(Map<String, String> weights) {
     double sum = 0.0;
-    for(Map.Entry entry : weights.entrySet()){
+    for (Map.Entry entry : weights.entrySet()) {
       verifyTickerNameForStrategyForm(entry.getKey().toString());
       if (validatePrice(entry.getValue().toString())) {
         try {
@@ -225,7 +234,7 @@ public class GUIControllerImpl implements GUIController, Features {
           isAllFieldsValid = false;
           view.setStrategyFormTickerError(e.getMessage());
         }
-        if(isAllFieldsValid) {
+        if (isAllFieldsValid) {
           sum += Double.parseDouble(entry.getValue().toString());
         }
       } else {
@@ -233,7 +242,7 @@ public class GUIControllerImpl implements GUIController, Features {
         isAllFieldsValid = false;
       }
     }
-    if(100 - sum > 0.01 || sum - 100 > 0.01) { //Check weights with precision.
+    if (100 - sum > 0.01 || sum - 100 > 0.01) { //Check weights with precision.
       isAllFieldsValid = false;
       view.setStrategyFormTickerError("sum of weights should be 100");
     }
@@ -259,9 +268,18 @@ public class GUIControllerImpl implements GUIController, Features {
     verifyCommissionForBuyForm(commission);
     if (isAllFieldsValid) {
       LocalDateTime localDateTime = convertDateToLocalDate(date).atTime(time);
-      model.buyStock(portfolioIndex, localDateTime, ticker, Double.parseDouble(cost),
-              Double.parseDouble(commission)); //FIXME catch exceptions.
+      boolean isSuccessfull = true;
+      try {
+        model.buyStock(portfolioIndex, localDateTime, ticker, Double.parseDouble(cost),
+                Double.parseDouble(commission));
+      } catch (IllegalArgumentException e) {
+        isSuccessfull = false;
+        view.showErrorMessage(e.getMessage());
+      }
       view.closeBuyStocksForm();
+      if (isSuccessfull) {
+        view.showMessage("Operation successful");
+      }
     }
   }
 
@@ -279,9 +297,47 @@ public class GUIControllerImpl implements GUIController, Features {
   public void verifyStrategyFormAndBuy(int portfolioIndex, String strategyName, Date date) {
     isAllFieldsValid = true;
     verifyDatesForSingleStrategyBuyForm(date);
-    if(isAllFieldsValid) {
-      System.out.println("All Fields Valid");
+    if (isAllFieldsValid) {
+      boolean isSuccessful = true;
+      LocalDateTime dateTime = LocalDateTime.of(convertDateToLocalDate(date), LocalTime.NOON);
+      try {
+        model.investWithStrategy(portfolioIndex, strategyName, dateTime);
+      } catch (IllegalArgumentException e) {
+        isSuccessful = false;
+        view.showErrorMessage(e.getMessage());
+      }
       view.closeSingleStrategyBuyForm();
+      if (isSuccessful) {
+        view.showMessage("Operation successful");
+      }
+    }
+  }
+
+  @Override
+  public void verifyAndBuyDollarCostAverage(int portfolioNumber, String strategyName,
+                                            Date startDate, Date endDate, String frequency) {
+    isAllFieldsValid = true;
+    verifyStartDateForDCA(startDate);
+    verifyEndDateForDCA(startDate, endDate);
+    verifyInterval(startDate, endDate, frequency);
+    if (isAllFieldsValid) {
+      boolean isSuccessful = true;
+      LocalDateTime startDateTime = LocalDateTime.of(convertDateToLocalDate(startDate),
+              LocalTime.NOON);
+      LocalDateTime endDateTime = LocalDateTime.of(convertDateToLocalDate(endDate),
+              LocalTime.NOON);
+      int interval = Integer.parseInt(frequency);
+      try {
+        model.dollarCostAveraging(portfolioNumber, strategyName, startDateTime, endDateTime,
+                interval);
+      } catch (IllegalArgumentException e) {
+        isSuccessful = false;
+        view.showErrorMessage(e.getMessage());
+      }
+      view.closeDollarCostAverageForm();
+      if (isSuccessful) {
+        view.showMessage("Operation successful");
+      }
     }
   }
 
@@ -290,18 +346,13 @@ public class GUIControllerImpl implements GUIController, Features {
     if (model.getPortfolioCount() == 0) {
       view.showErrorMessage("Please create a portfolio before you perform this operation");
     } else {
-      List<String> strategies = model.getStrategyListFrompPortfolio(portfolioIndex);
+      List<String> strategies = model.getStrategyList();
       if (strategies.size() == 0) {
         view.showErrorMessage("Please create a strategy before you perform this operation");
       } else {
         view.showSingleBuyStrategy(strategies.toArray(new String[0]));
       }
     }
-  }
-
-  @Override
-  public void closeSingleStrategyBuyForm() {
-    view.closeSingleStrategyBuyForm();
   }
 
   @Override
@@ -321,11 +372,18 @@ public class GUIControllerImpl implements GUIController, Features {
   }
 
   @Override
+  public void closeSingleStrategyBuyForm() {
+    view.closeSingleStrategyBuyForm();
+  }
+
+
+
+  @Override
   public void showDollarCostAverageForm(int portfolioIndex) {
     if (model.getPortfolioCount() == 0) {
       view.showErrorMessage("Please create a portfolio before you perform this operation");
     } else {
-      List<String> strategies = model.getStrategyListFrompPortfolio(portfolioIndex);
+      List<String> strategies = model.getStrategyList();
       if (strategies.size() == 0) {
         view.showErrorMessage("Please create a strategy before you perform this operation");
       } else {
@@ -339,15 +397,7 @@ public class GUIControllerImpl implements GUIController, Features {
     view.closeDollarCostAverageForm();
   }
 
-  @Override
-  public void verifyAndBuyDollarCostAverage(int portfolioNumber, String strategyName,
-                                            Date startDate, Date endDate, String frequency) {
-//    model.dollarCostAveraging();
-    System.out.println("Portfolio Number:" + portfolioNumber);
-    System.out.println("Start Date:" + startDate.toString());
-    System.out.println("End Date:" + endDate.toString());
-    System.out.println("frequency:" + frequency);
-  }
+
 
   @Override
   public void verifyStartDateForDCA(Date date) {
@@ -380,10 +430,9 @@ public class GUIControllerImpl implements GUIController, Features {
       }
     }
     verifyStartDateForDCA(startDate);
-    if(isAllFieldsValid) {
-      if(startDate.compareTo(endDate) == -1) {
-
-      } else {
+    if (isAllFieldsValid) {
+      if (startDate.compareTo(endDate) != -1) {
+        isAllFieldsValid = false;
         view.setEndDateDCAError("End date has to be greater than start date");
       }
     }
@@ -392,8 +441,8 @@ public class GUIControllerImpl implements GUIController, Features {
   @Override
   public void verifyInterval(Date startDate, Date endDate, String interval) {
     verifyStartDateForDCA(startDate);
-    verifyEndDateForDCA(startDate,endDate);
-    if(!isValidNumber(interval)) {
+    verifyEndDateForDCA(startDate, endDate);
+    if (!isValidNumber(interval)) {
       isAllFieldsValid = false;
       view.setIntervalDCAError("Please enter a number");
     } else {
@@ -402,15 +451,44 @@ public class GUIControllerImpl implements GUIController, Features {
         view.setIntervalDCAError("Interval cannot be negative");
       }
     }
-    if(isAllFieldsValid) {
+    if (isAllFieldsValid) {
       LocalDate startLocalDate = convertDateToLocalDate(startDate);
       LocalDate endLocalDate = convertDateToLocalDate(endDate);
-      if(startLocalDate.plusDays(12).isAfter(endLocalDate)) {
+      if (startLocalDate.plusDays(Long.valueOf(interval)).isAfter(endLocalDate)) {
         isAllFieldsValid = false;
         view.setIntervalDCAError("Interval has to be lesser than the difference between the dates");
       }
     }
 
+  }
+
+  @Override
+  public void saveStrategy(String fileName, String strategyName) {
+    try {
+      model.writeStrategyToFile(fileName, strategyName);
+      view.hideSelectStrategyForm();
+    } catch (IOException | IllegalArgumentException e) {
+      view.showErrorMessage(e.getMessage());
+    }
+  }
+
+  @Override
+  public void readStrategyFromFile(String filePath) {
+    boolean isError = false;
+    try {
+      model.readStrategyFromFile(filePath);
+    } catch (IllegalArgumentException | ParseException | IOException e) {
+      isError = true;
+      view.showErrorMessage(e.getMessage());
+    }
+    if (!isError) {
+      view.showMessage("Read from file successful.");
+    }
+  }
+
+  @Override
+  public void showSelectStrategyForm() {
+    view.showSelectStrategyForm(model.getStrategyList().toArray(new String[0]));
   }
 
   @Override
@@ -477,10 +555,6 @@ public class GUIControllerImpl implements GUIController, Features {
 
   @Override
   public void createStrategy() {
-    if (model.getPortfolioCount() == 0) {
-      view.showErrorMessage("Please create a portfolio before you create a Strategy");
-    } else {
-      view.showCreateStrategyForm();
-    }
+    view.showCreateStrategyForm();
   }
 }

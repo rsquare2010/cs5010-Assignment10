@@ -7,8 +7,11 @@ import java.util.function.Function;
 
 import stockemulation.controller.commands.BuyWithComissionCommand;
 import stockemulation.controller.commands.CreatePortfolioCommand;
+import stockemulation.controller.commands.CreateStrategyCommand;
 import stockemulation.controller.commands.DetailPortfolioCommand;
+import stockemulation.controller.commands.DollarCostAverageCommand;
 import stockemulation.controller.commands.LoadPortfolioFromFileCommand;
+import stockemulation.controller.commands.OneTimeStrategyBuyCommand;
 import stockemulation.controller.commands.OpenPortfolioCommand;
 import stockemulation.controller.commands.WritePortfolioToFileCommand;
 import stockemulation.model.ModelExtn;
@@ -53,7 +56,9 @@ public class EmulatorControllerImpl implements EmulatorController {
     knownCommands.put("4", s -> new DetailPortfolioCommand(s));
     knownCommands.put("5", s -> new WritePortfolioToFileCommand(s));
     knownCommands.put("6", s -> new LoadPortfolioFromFileCommand(s));
-
+    knownCommands.put("7", s -> new CreateStrategyCommand(s));
+    knownCommands.put("8", s -> new OneTimeStrategyBuyCommand(s));
+    knownCommands.put("9", s -> new DollarCostAverageCommand(s));
 
     while (scanner.hasNext()) {
       EmulatorCommand c;
@@ -82,6 +87,9 @@ public class EmulatorControllerImpl implements EmulatorController {
     view.showMessage("4. to check cost basis and value of a portfolio on a date");
     view.showMessage("5. write to file");
     view.showMessage("6. read from file");
+    view.showMessage("7. create a strategy");
+    view.showMessage( "8. One time buy with strategy");
+    view.showMessage( "9. dollar cost average with strategy");
     view.showMessage("press \"q\" or \"quit\" to exit this application");
   }
 }
